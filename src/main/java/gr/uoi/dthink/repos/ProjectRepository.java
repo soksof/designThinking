@@ -12,5 +12,5 @@ import java.util.List;
 public interface ProjectRepository extends JpaRepository<Project, Integer> {
 
     Project findByManager(User manager);
-    List<Project> findAllByUsers(User user);
+    List<Project> findAllByMembers(User user);
 }

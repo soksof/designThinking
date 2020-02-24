@@ -25,7 +25,7 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedOn;
     @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "users")
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "members")
     private Set<Project> projects = new HashSet<>();
 
     public User() {
