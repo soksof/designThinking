@@ -1,0 +1,145 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:with="http://www.thymeleaf.org/extras/with"
+      layout:decorate="~{layout}"
+      with:title="My Dashboard">
+<th:block layout:fragment="content">
+
+    <div class="app-main__inner">
+        <!-- MAIN CONTENT TITLE -->
+        <div class="app-page-title">
+            <div class="page-title-wrapper">
+                <div class="page-title-heading">
+                    <div class="page-title-icon">
+                        <i class="pe-7s-display1 icon-gradient bg-mean-fruit">
+                        </i>
+                    </div>
+                    <div>User Dashboard
+                        <div class="page-title-subheading">Here you can interact your projects (active and archived) as well as view
+                            video resources (tutorials and best practices)
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="page-title-actions">
+                    <button type="button" data-toggle="tooltip" title="Example Tooltip" data-placement="bottom" class="btn-shadow mr-3 btn btn-dark">
+                        <i class="fa fa-star"></i>
+                    </button>
+                    <div class="d-inline-block dropdown">
+                        <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn-shadow dropdown-toggle btn btn-info">
+                                            <span class="btn-icon-wrapper pr-2 opacity-7">
+                                                <i class="fa fa-business-time fa-w-20"></i>
+                                            </span>
+                            Buttons
+                        </button>
+                        <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
+                            <ul class="nav flex-column">
+                                <li class="nav-item">
+                                    <a href="javascript:void(0);" class="nav-link">
+                                        <i class="nav-link-icon lnr-inbox"></i>
+                                        <span>Inbox</span>
+                                        <div class="ml-auto badge badge-pill badge-secondary">86</div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="javascript:void(0);" class="nav-link">
+                                        <i class="nav-link-icon lnr-book"></i>
+                                        <span>Book</span>
+                                        <div class="ml-auto badge badge-pill badge-danger">5</div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="javascript:void(0);" class="nav-link">
+                                        <i class="nav-link-icon lnr-picture"></i>
+                                        <span>Picture</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a disabled href="javascript:void(0);" class="nav-link disabled">
+                                        <i class="nav-link-icon lnr-file-empty"></i>
+                                        <span>File Disabled</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>-->
+            </div>
+        </div>
+        <!-- END OF MAIN CONTENT TITLE -->
+
+        <!-- START OF TABS DEFINITION -->
+        <ul class="body-tabs body-tabs-layout tabs-animated body-tabs-animated nav">
+            <li class="nav-item">
+                <a role="tab" class="nav-link active" id="tab-1" data-toggle="tab" href="#tab-content-1">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a role="tab" class="nav-link" id="tab-2" data-toggle="tab" href="#tab-content-2">
+                    <span>Resources</span>
+                </a>
+            </li>
+        </ul>
+        <!-- END OF TABS DEFINITION -->
+
+        <!-- START OF TABS CONTENT -->
+        <div class="tab-content">
+            <div class="tab-pane tabs-animation fade show active" id="tab-content-1" role="tabpanel">
+                <!-- ROW OF CONTENT -->
+                <!--<div class="row">
+                    <div class="col-lg-6">-->
+
+                <!--<button class="mb-2 mr-2 border-0 btn-transition btn btn-outline-focus">Start a new Project!-->
+                <button class="mb-2 mr-2 btn-transition btn btn-outline-focus">Start a new Project!
+                </button>
+                <div class="main-card mb-3 card">
+                    <div class="card-body"><h5 class="card-title">Active Projects</h5>
+                        <table name="projects" id="tableProjects" class="mb-0 table table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Design Challenge</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Project 1</td>
+                                <td>Leader</td>
+                                <td>Field Research</td>
+                                <td>Improve the experience of visitors in Acropolis</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Project 2</td>
+                                <td>Member</td>
+                                <td>Insights</td>
+                                <td>kajsdlkasjdlkasjdlasjdlkasdjlskad</td>
+                                <td>...</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                    <!--</div>
+                </div>-->
+                <!-- END OF ROW OF CONTENT -->
+            </div>
+            <div class="tab-pane tabs-animation fade" id="tab-content-2" role="tabpanel">
+                <!-- ROW OF CONTENT -->
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card-border mb-3 card card-body border-primary"><h5 class="card-title">Primary Card Border</h5>With supporting text below as a natural lead-in to additional content.</div>
+                    </div>
+                </div>
+                <!-- END OF ROW OF CONTENT -->
+            </div>
+        </div>
+        <!-- END OF TABS CONTENT -->
+    </div>
+</th:block>
+</html>
