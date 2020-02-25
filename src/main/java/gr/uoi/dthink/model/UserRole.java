@@ -1,20 +1,17 @@
 package gr.uoi.dthink.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import javax.persistence.*;
+import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 public class UserRole {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(unique = true)
     private String name;
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users;
 
     public UserRole() {
     }
@@ -49,5 +46,13 @@ public class UserRole {
 
     public String toString() {
         return this.name.toUpperCase();
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 }

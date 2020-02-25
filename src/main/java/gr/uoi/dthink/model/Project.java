@@ -1,9 +1,7 @@
 package gr.uoi.dthink.model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -29,8 +27,6 @@ public class Project {
             joinColumns = { @JoinColumn(name = "project_id") },
             inverseJoinColumns = { @JoinColumn(name = "extreme_user_id") })
     private Set<ExtremeUser> extremeUsers = new HashSet<>();
-
-
 
     public int getId() {
         return id;

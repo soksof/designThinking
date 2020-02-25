@@ -6,18 +6,18 @@ import java.util.*;
 @Entity
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
     private String lastName;
     @Column(unique = true)
-    private String userName;
-    @Column(unique = true)
     private String email;
     private String password;
+    @Transient
+    private String passwordConfirm;
     private String profilePic;
-    @ManyToOne
-    private UserRole role;
+    @ManyToMany
+    private Set<UserRole> roles;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdOn;
     @Temporal(TemporalType.TIMESTAMP)
@@ -55,14 +55,6 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -87,12 +79,12 @@ public class User {
         this.profilePic = profilePic;
     }
 
-    public UserRole getRole() {
-        return role;
+    public Set<UserRole> getRoles() {
+        return roles;
     }
 
-    public void setRole(UserRole role) {
-        this.role = role;
+    public void setRole(Set<UserRole> roles) {
+        this.roles = roles;
     }
 
     public Date getLastLogin() {
@@ -128,5 +120,13 @@ public class User {
 
     public void setProjects(Set<Project> projects) {
         this.projects = projects;
+    }
+
+    public String getPasswordConfirm() {
+        return passwordConfirm;
+    }
+
+    public void setPasswordConfirm(String passwordConfirm) {
+        this.passwordConfirm = passwordConfirm;
     }
 }

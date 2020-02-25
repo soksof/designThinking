@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:with="http://www.thymeleaf.org/extras/with"
+      with:title="'Welcome to the Design Thinking Platform'">
+<th:block layout:insert="~{fragments/htmlHead}"/>
+<body>
+<div class="app-container app-theme-white body-tabs-shadow">
+    <div class="app-container">
+        <div class="h-100 bg-plum-plate bg-animation">
+            <div class="d-flex h-100 justify-content-center align-items-center">
+                <div class="mx-auto app-login-box col-md-8">
+                    <div class="header_logo-inv mx-auto"></div>
+<!--                    <div class="logo-src"></div>-->
+                    <div class="modal-dialog w-100 mx-auto">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="h5 modal-title text-center">
+                                    <h4 class="mt-2">
+                                        <div th:if="${(param.logout != null)}">
+                                            </div>
+                                        <div th:if="${(param.logout == null)}">Είσοδος</div>
+<!--                                        <span>Παρακαλώ εισάγετε τα προσωπικά σας στοιχεία παρακάτω.</span>-->
+                                    </h4>
+                                </div>
+                                <form id="loginForm" name="loginForm" th:action="@{/login}" method="POST">
+                                    <div class="form-row">
+                                        <div class="col-md-12">
+                                            <div class="position-relative form-group">
+                                                <label for="email">Προσωπικό email</label>
+                                                <input name="email" id="email" placeholder="Email" type="email"
+                                                       class="form-control"></div>
+                                        </div>
+                                        <div th:if="${(param.error != null) and (param.error[0] == 'true')}">
+                                            <p class="text-danger" th:text="${error}">
+                                                Λάθος συνδυασμός email και κωδικού</p>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="position-relative form-group">
+                                                <label for="password">Κωδικός πρόσβασης</label>
+                                                <input name="password" id="password" placeholder="Κωδικός πρόσβασης"
+                                                       type="password" class="form-control"></div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="divider"></div>
+                                <h6 class="mb-0">Δεν έχετε λογαριασμό; <a th:href="@{/registration}" class="text-primary">Δημιουργία λογαριασμού</a></h6>
+                            </div>
+                            <div class="modal-footer clearfix">
+                                <div class="float-left"><a href="javascript:void(0);" class="btn-lg btn btn-link">Ξέχασα τον κωδικό μου</a></div>
+                                <div class="float-right">
+                                    <button id="submit_btn" class="btn btn-primary btn-lg">Είσοδος</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $('body').on('click', '.btn-primary', function (e) {
+            $('#loginForm').submit();
+        });
+    });
+</script>
+<th:block layout:replace="~{fragments/jsScripts :: end}"/>
+</body>
+</html>

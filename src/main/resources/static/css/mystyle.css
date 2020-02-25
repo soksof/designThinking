@@ -1,0 +1,11 @@
+div.header_logo-inv {
+    display:flex;
+    align-items:center;
+    transition:width;
+    height:37px;
+    width:200px;
+    background:url(assets/images/logo.png);
+    margin:0;
+    padding:0;
+}
+
