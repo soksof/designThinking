@@ -14,8 +14,8 @@
                         </i>
                     </div>
                     <div>User Dashboard
-                        <div class="page-title-subheading">Here you can interact your projects (active and archived) as well as view
-                            video resources (tutorials and best practices)
+                        <div class="page-title-subheading">Εδώ μπορείτε να βρείτε πληροφορίες για τα project σας (ενεργά και μή)
+                            καθώς και να δείτε εκπαιδευτικά video για τη μεθοδολογία του Design Thinking
                         </div>
                     </div>
                 </div>
@@ -89,38 +89,36 @@
                     <div class="col-lg-6">-->
 
                 <!--<button class="mb-2 mr-2 border-0 btn-transition btn btn-outline-focus">Start a new Project!-->
-                <button class="mb-2 mr-2 btn-transition btn btn-outline-focus">Start a new Project!
+                <button class="mb-2 mr-2 btn-transition btn btn-outline-focus">Ξεκινήστε ένα καινούργιο Project!
                 </button>
                 <div class="main-card mb-3 card">
-                    <div class="card-body"><h5 class="card-title">Active Projects</h5>
+                    <div class="card-body"><h5 class="card-title">Ενεργά Projects</h5>
                         <table name="projects" id="tableProjects" class="mb-0 table table-hover">
                             <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Role</th>
-                                <th>Status</th>
+                                <th>Όνομα</th>
+                                <th>Ρόλος</th>
+                                <th>Στάδιο</th>
                                 <th>Design Challenge</th>
-                                <th>Actions</th>
+                                <th>Ημ. Έναρξης</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Project 1</td>
-                                <td>Leader</td>
-                                <td>Field Research</td>
-                                <td>Improve the experience of visitors in Acropolis</td>
-                                <td>...</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Project 2</td>
-                                <td>Member</td>
-                                <td>Insights</td>
-                                <td>kajsdlkasjdlkasjdlasjdlkasdjlskad</td>
-                                <td>...</td>
-                            </tr>
+                                <tr th:each="prj : ${managedProjects}">
+                                    <td th:text="${prj.getName()}">Όνομα</td>
+                                    <td class="text-center"><div class="badge badge-warning">Manager</div></td>
+                                    <td class="text-center">Field Research</td>
+                                    <td th:text="${prj.getDescription()}">Design Challenge</td>
+                                    <td>1/1/2020</td>
+                                </tr>
+                                <tr th:each="prj : ${projects}">
+                                    <td th:text="${prj.getName()}">Όνομα</td>
+                                    <td class="text-center"><div class="badge badge-info">Member</div></td>
+                                    <td class="text-center">Insights</td>
+                                    <td th:text="${prj.getDescription()}">Design Challenge</td>
+                                    <td>1/1/2020</td>
+                                </tr>
+
                             </tbody>
                         </table>
                     </div>

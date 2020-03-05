@@ -16,19 +16,35 @@ public class User {
     @Transient
     private String passwordConfirm;
     private String profilePic;
-    @ManyToMany
-    private Set<UserRole> roles;
+    @ManyToOne
+    private UserRole role;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdOn;
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastLogin;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedOn;
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "members")
+    @ManyToMany
+//            (fetch = FetchType.LAZY,
+//            cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "members")
     private Set<Project> projects = new HashSet<>();
 
     public User() {
+    }
+
+    public User(String name, String lastName, String email, UserRole role) {
+        this.name = name;
+        this.lastName = lastName;
+        this.email = email;
+        this.role = role;
+    }
+
+    public User(String name, String lastName, String email, String pass, UserRole role) {
+        this.name = name;
+        this.lastName = lastName;
+        this.email = email;
+        this.role = role;
+        this.password=pass;
     }
 
     public long getId() {
@@ -79,12 +95,12 @@ public class User {
         this.profilePic = profilePic;
     }
 
-    public Set<UserRole> getRoles() {
-        return roles;
+    public UserRole getRole() {
+        return role;
     }
 
-    public void setRole(Set<UserRole> roles) {
-        this.roles = roles;
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 
     public Date getLastLogin() {
@@ -120,6 +136,10 @@ public class User {
 
     public void setProjects(Set<Project> projects) {
         this.projects = projects;
+    }
+
+    public void addProject(Project project){
+        this.projects.add(project);
     }
 
     public String getPasswordConfirm() {

@@ -31,17 +31,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
 //                .antMatchers("/resources/**", "/registration").permitAll()
-                .antMatchers("/login", "/registration").permitAll()
+                .antMatchers("/login", "/registration", "/passForgot").permitAll()
                 .antMatchers("/css/**", "/img/**", "/js/**").permitAll()
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login").failureUrl("/login?error=true")
-                .permitAll()
+                .defaultSuccessUrl("/dashboard")
+                .usernameParameter("email")
+                .passwordParameter("password")
                 .and()
                 .logout()
-                .permitAll();
+                .logoutUrl("/perform_logout")
+                //.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .logoutSuccessUrl("/login")
+                .and()
+                .exceptionHandling()
+                .accessDeniedPage("/error/403")
+                .and()
+                .csrf().disable();
     }
 
     @Bean

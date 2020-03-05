@@ -43,10 +43,12 @@
                                     </div>
                                 </form>
                                 <div class="divider"></div>
-                                <h6 class="mb-0">Δεν έχετε λογαριασμό; <a th:href="@{/registration}" class="text-primary">Δημιουργία λογαριασμού</a></h6>
+                                <h6 class="mb-0">Δεν έχετε λογαριασμό;
+                                    <a th:href="@{/registration}" class="text-primary">Δημιουργία λογαριασμού</a></h6>
                             </div>
                             <div class="modal-footer clearfix">
-                                <div class="float-left"><a href="javascript:void(0);" class="btn-lg btn btn-link">Ξέχασα τον κωδικό μου</a></div>
+                                <div class="float-left"><a th:href="@{/passForgot}" class="btn-lg btn btn-link">
+                                    Ξέχασα τον κωδικό μου</a></div>
                                 <div class="float-right">
                                     <button id="submit_btn" class="btn btn-primary btn-lg">Είσοδος</button>
                                 </div>

@@ -10,8 +10,6 @@ public class UserRole {
     private int id;
     @Column(unique = true)
     private String name;
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
 
     public UserRole() {
     }
@@ -46,13 +44,5 @@ public class UserRole {
 
     public String toString() {
         return this.name.toUpperCase();
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
     }
 }

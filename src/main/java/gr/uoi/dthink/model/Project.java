@@ -10,14 +10,16 @@ public class Project {
     @GeneratedValue
     private int id;
     private String name;
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String description;
     @ManyToOne
     private User manager;
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "project_users",
-            joinColumns = { @JoinColumn(name = "project_id") },
-            inverseJoinColumns = { @JoinColumn(name = "user_id") })
+    @ManyToMany
+//            (fetch = FetchType.LAZY,
+//            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//    @JoinTable(name = "project_users",
+//            joinColumns = { @JoinColumn(name = "project_id") },
+//            inverseJoinColumns = { @JoinColumn(name = "user_id") })
     private Set<User> members = new HashSet<>();
         /*@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<User> members = new ArrayList<>();*/
@@ -28,6 +30,20 @@ public class Project {
             inverseJoinColumns = { @JoinColumn(name = "extreme_user_id") })
     private Set<ExtremeUser> extremeUsers = new HashSet<>();
 
+
+    public Project() {
+    }
+
+    public Project(String name, String description){
+        this.name = name;
+        this.description = description;
+    }
+
+    public Project(String name, String description, User manager){
+        this.name = name;
+        this.description = description;
+        this.manager = manager;
+    }
     public int getId() {
         return id;
     }

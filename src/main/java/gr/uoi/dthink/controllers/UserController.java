@@ -1,5 +1,6 @@
 package gr.uoi.dthink.controllers;
 
+import gr.uoi.dthink.model.Project;
 import gr.uoi.dthink.model.User;
 import gr.uoi.dthink.services.SecurityService;
 import gr.uoi.dthink.services.UserService;
@@ -10,6 +11,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Controller
 public class UserController {
@@ -42,7 +48,7 @@ public class UserController {
         return "redirect:/index";
     }
 
-    @GetMapping("/login")
+    @RequestMapping("/login")
     public String login(Model model, String error, String logout) {
         if (error != null)
             model.addAttribute("error", "Αποτυχία εισαγωγής! Παρακαλούμε έλεγξε τα στοιχεία σου.");
@@ -53,7 +59,30 @@ public class UserController {
     }
 
     @GetMapping({"/", "/index"})
-    public String welcome(Model model) {
+    public String welcome() {
         return "index";
+    }
+
+    @GetMapping("/passForgot")
+    public String forgotPassword() {
+        return "passForgot";
+    }
+
+    @GetMapping("/dashboard")
+    public String getDashboard(Model model) {
+        Set<Project> userProjects = userService.findAllProjects();
+        List<Project> projects = new ArrayList<>();
+        List<Project> managedProjects = new ArrayList<>();
+
+        String email = userService.getLoggedInUserName();
+        for(Project project : userProjects){
+            if(project.getManager().getEmail().equals(email))
+                managedProjects.add(project);
+            else
+                projects.add(project);
+        }
+        model.addAttribute("managedProjects", managedProjects);
+        model.addAttribute("projects", projects);
+        return "user/dashboard";
     }
 }

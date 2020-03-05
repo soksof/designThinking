@@ -2,6 +2,7 @@ package gr.uoi.dthink.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,24 +16,15 @@ public class SecurityServiceImpl implements SecurityService{
     private final UserDetailsService userDetailsService;
     private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
 
-    public SecurityServiceImpl(AuthenticationManager authenticationManager, UserDetailsService userDetailsService) {
+    public SecurityServiceImpl(AuthenticationManager authenticationManager,
+                               @Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
     }
 
     @Override
-    public String findLoggedInUsername() {
-        Object userDetails = SecurityContextHolder.getContext().getAuthentication().getDetails();
-        if (userDetails instanceof UserDetails) {
-            return ((UserDetails)userDetails).getUsername();
-        }
-        return null;
-    }
-
-    @Override
     public void autoLogin(String email, String password) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-        System.out.println(">>>> "+userDetails);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
         authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         if (usernamePasswordAuthenticationToken.isAuthenticated()) {

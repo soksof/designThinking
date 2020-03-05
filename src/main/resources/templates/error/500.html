@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:with="http://www.thymeleaf.org/extras/with"
+      with:title="'Welcome to the Design Thinking Platform'">
+<th:block layout:insert="~{fragments/htmlHead}"/>
+
+<body>
+
+<div id="notfound">
+    <div class="notfound">
+        <div class="notfound-404">
+            <h1>500</h1>
+        </div>
+        <h2>Internal server error</h2>
+        <p>Κάτι συμβαίνει με τον διακομιστή μας, δοκιμάστε ξανά αργότερα.</p>
+        <a th:href="@{/}">Επιστροφή στην αρχική σελίδα</a>
+    </div>
+</div>
+</body>
+</html>
