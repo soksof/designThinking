@@ -8,6 +8,13 @@ import java.util.List;
  */
 @Entity
 public class Idea extends Resource {
-    List<Comment> comments;
-    List<Reaction> reactions;
+    private String content;
+    
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

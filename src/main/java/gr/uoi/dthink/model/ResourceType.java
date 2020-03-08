@@ -11,6 +11,14 @@ public class ResourceType {
     private int id;
     private String type;
 
+    public ResourceType(){
+
+    }
+
+    public ResourceType(String type){
+        this.type = type;
+    }
+
     public int getId() {
         return id;
     }

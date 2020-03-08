@@ -59,8 +59,8 @@ public class UserController {
     }
 
     @GetMapping({"/", "/index"})
-    public String welcome() {
-        return "index";
+    public String welcome(Model model) {
+        return this.getDashboard(model);
     }
 
     @GetMapping("/passForgot")
@@ -73,9 +73,9 @@ public class UserController {
         Set<Project> userProjects = userService.findAllProjects();
         List<Project> projects = new ArrayList<>();
         List<Project> managedProjects = new ArrayList<>();
-
         String email = userService.getLoggedInUserName();
         for(Project project : userProjects){
+            System.out.println(">>>"+project);
             if(project.getManager().getEmail().equals(email))
                 managedProjects.add(project);
             else

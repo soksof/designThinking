@@ -24,9 +24,10 @@ public class User {
     private Date lastLogin;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedOn;
-    @ManyToMany
-//            (fetch = FetchType.LAZY,
-//            cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "members")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "project_members",
+            joinColumns = { @JoinColumn(name = "project_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id") })
     private Set<Project> projects = new HashSet<>();
 
     public User() {

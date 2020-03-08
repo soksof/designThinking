@@ -14,8 +14,7 @@ public class ExtremeUser {
     @Column(unique = true)
     private String email;
     private String comments;
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "extremeUsers")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "extremeUsers")
     private Set<Project> projects = new HashSet<>();
 
     public ExtremeUser() {
@@ -60,6 +59,7 @@ public class ExtremeUser {
     public void setComments(String comments) {
         this.comments = comments;
     }
+
     public Set<Project> getProjects() {
         return projects;
     }

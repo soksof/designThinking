@@ -1,6 +1,7 @@
 package gr.uoi.dthink.model;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,22 +15,24 @@ public class Project {
     private String description;
     @ManyToOne
     private User manager;
-    @ManyToMany
-//            (fetch = FetchType.LAZY,
-//            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-//    @JoinTable(name = "project_users",
-//            joinColumns = { @JoinColumn(name = "project_id") },
-//            inverseJoinColumns = { @JoinColumn(name = "user_id") })
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "projects")
     private Set<User> members = new HashSet<>();
-        /*@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    private List<User> members = new ArrayList<>();*/
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "project_extreme_users",
             joinColumns = { @JoinColumn(name = "project_id") },
             inverseJoinColumns = { @JoinColumn(name = "extreme_user_id") })
     private Set<ExtremeUser> extremeUsers = new HashSet<>();
-
+    private Date startDate;
+    private Date dueDate;
+    private Date endDate;
+    @OneToOne
+    private Stage definitionStage;
+    @OneToOne
+    private Stage resourceCollectionStage;
+    @OneToOne
+    private Stage ideaCollectionStage;
+    @Enumerated(EnumType.ORDINAL)
+    private Status status;
 
     public Project() {
     }
@@ -90,5 +93,69 @@ public class Project {
 
     public void setExtremeUsers(Set<ExtremeUser> extremeUsers) {
         this.extremeUsers = extremeUsers;
+    }
+
+    public Set<User> getMembers() {
+        return members;
+    }
+
+    public void setMembers(Set<User> members) {
+        this.members = members;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public Stage getDefinitionStage() {
+        return definitionStage;
+    }
+
+    public void setDefinitionStage(Stage definitionStage) {
+        this.definitionStage = definitionStage;
+    }
+
+    public Stage getResourceCollectionStage() {
+        return resourceCollectionStage;
+    }
+
+    public void setResourceCollectionStage(Stage resourceCollectionStage) {
+        this.resourceCollectionStage = resourceCollectionStage;
+    }
+
+    public Stage getIdeaCollectionStage() {
+        return ideaCollectionStage;
+    }
+
+    public void setIdeaCollectionStage(Stage ideaCollectionStage) {
+        this.ideaCollectionStage = ideaCollectionStage;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

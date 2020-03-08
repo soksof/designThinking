@@ -40,7 +40,10 @@ public class UserServiceImpl implements UserService{
     @Override
     public Set<Project> findAllProjects() {
         User user = this.userRepository.findByEmail(getLoggedInUserName()).orElse(null);
+        System.out.println(">>>"+user);
+
         assert user != null;
+        System.out.println(">SS>S "+user.getProjects());
         return user.getProjects();
     }
 
