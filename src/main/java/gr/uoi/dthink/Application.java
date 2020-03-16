@@ -1,9 +1,6 @@
 package gr.uoi.dthink;
 
-import gr.uoi.dthink.model.Project;
-import gr.uoi.dthink.model.ResourceType;
-import gr.uoi.dthink.model.User;
-import gr.uoi.dthink.model.UserRole;
+import gr.uoi.dthink.model.*;
 import gr.uoi.dthink.repos.ProjectRepository;
 import gr.uoi.dthink.repos.ResourceTypeRepository;
 import gr.uoi.dthink.services.UserService;
@@ -13,6 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.Date;
 import java.util.stream.Stream;
 
 @SpringBootApplication
@@ -42,6 +40,11 @@ public class Application {
             Project project1 = new Project("Τεχνολογίες  επαυξημένης πραγματικότητας για επαγγελματίες",
                     "Η προσφορά μιας ολοκληρωμένης υπηρεσίας,όπου ο πελάτης θα μπορεί να παραγγείλει και  να  λάβει  εκτυπωμένα  τα  έντυπα  που  δημιούργησε  καθώς  και  την  εφαρμογή επαυξημένης πραγματικότητας που τα συνοδεύει. Η εφαρμογή θα προσφέρεται δωρεάν κάτω από το λογότυπο του έργου, είτε θα μπορεί να την αποκτήσει ο πελάτης με το αντίστοιχο κόστος.");
             Project project2 = new Project("Πρόσβαση στα υποκαταστήματα τράπεζας για όλους", "Μελέτη των αλλαγών που απαιτούνται στα υποκαταστήματα της τράπεζας για ευκολότερη πρόσβαση σε αυτά απο ΑΜΕΑ.");
+            project1.setStatus(Status.IDEA_COLLECTION);
+            project1.setStartDate(new Date("12/1/2020"));
+            project2.setStatus(Status.DEFINITION);
+            project2.setStartDate(new Date("15/2/2020"));
+
             project1 = pr.save(project1);
             project2 = pr.save(project2);
 

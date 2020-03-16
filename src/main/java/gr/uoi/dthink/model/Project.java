@@ -1,6 +1,7 @@
 package gr.uoi.dthink.model;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,6 +34,10 @@ public class Project {
     private Stage ideaCollectionStage;
     @Enumerated(EnumType.ORDINAL)
     private Status status;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdOn;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedOn;
 
     public Project() {
     }
@@ -107,6 +112,11 @@ public class Project {
         return startDate;
     }
 
+    public String getStartDateString(){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        return simpleDateFormat.format(getStartDate());
+    }
+
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
@@ -129,6 +139,16 @@ public class Project {
 
     public Stage getDefinitionStage() {
         return definitionStage;
+    }
+
+    public int getProgress(){
+        if(status.equals(Status.DEFINITION))
+            return 25;
+        else if(status.equals(Status.RESOURCE_COLLECTION))
+            return 50;
+        else if(status.equals(Status.IDEA_COLLECTION))
+            return 75;
+        return 95;
     }
 
     public void setDefinitionStage(Stage definitionStage) {
@@ -157,5 +177,24 @@ public class Project {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdOn = new Date();
+        updatedOn = createdOn;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedOn = new Date();
+    }
+
+    public Date getUpdatedOn() {
+        return updatedOn;
     }
 }

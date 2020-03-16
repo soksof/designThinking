@@ -68,8 +68,7 @@ public class UserController {
         return "passForgot";
     }
 
-    @GetMapping("/dashboard")
-    public String getDashboard(Model model) {
+    public Model addUserProjectsToModel(Model model){
         Set<Project> userProjects = userService.findAllProjects();
         List<Project> projects = new ArrayList<>();
         List<Project> managedProjects = new ArrayList<>();
@@ -83,6 +82,17 @@ public class UserController {
         }
         model.addAttribute("managedProjects", managedProjects);
         model.addAttribute("projects", projects);
+        return model;
+    }
+
+    @GetMapping("/dashboard")
+    public String getDashboard(Model model) {
+        model = addUserProjectsToModel(model);
         return "user/dashboard";
+    }
+
+    @GetMapping("/profile")
+    public String getProfile(Model model) {
+        return "user/profile";
     }
 }

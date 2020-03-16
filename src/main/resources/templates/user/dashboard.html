@@ -10,7 +10,7 @@
             <div class="page-title-wrapper">
                 <div class="page-title-heading">
                     <div class="page-title-icon">
-                        <i class="pe-7s-display1 icon-gradient bg-mean-fruit">
+                        <i class="pe-7s-note2 icon-gradient bg-mean-fruit">
                         </i>
                     </div>
                     <div>User Dashboard
@@ -75,7 +75,7 @@
             </li>
             <li class="nav-item">
                 <a role="tab" class="nav-link" id="tab-2" data-toggle="tab" href="#tab-content-2">
-                    <span>Resources</span>
+                    <span>Υλικό Εκπαίδευσης</span>
                 </a>
             </li>
         </ul>
@@ -92,31 +92,35 @@
                 <button class="mb-2 mr-2 btn-transition btn btn-outline-focus">Ξεκινήστε ένα καινούργιο Project!
                 </button>
                 <div class="main-card mb-3 card">
-                    <div class="card-body"><h5 class="card-title">Ενεργά Projects</h5>
+                    <div class="card-body"><h5 class="card-title">Ενεργα Projects</h5>
                         <table name="projects" id="tableProjects" class="mb-0 table table-hover">
                             <thead>
                             <tr>
-                                <th>Όνομα</th>
-                                <th>Ρόλος</th>
-                                <th>Στάδιο</th>
-                                <th>Design Challenge</th>
-                                <th>Ημ. Έναρξης</th>
+                                <th class="text-center">Όνομα</th>
+                                <th class="text-center">Ρόλος</th>
+                                <th class="text-center">Design Challenge</th>
+                                <th class="text-center">Στάδιο</th>
+                                <th class="text-center">Έναρξη</th>
                             </tr>
                             </thead>
                             <tbody>
                                 <tr th:each="prj : ${managedProjects}">
-                                    <td th:text="${prj.getName()}">Όνομα</td>
+                                    <td class="text-center" th:text="${prj.getName()}">Όνομα</td>
                                     <td class="text-center"><div class="badge badge-warning">Manager</div></td>
-                                    <td class="text-center">Field Research</td>
                                     <td th:text="${prj.getDescription()}">Design Challenge</td>
-                                    <td>1/1/2020</td>
+                                    <td class="text-center"><div class="badge badge-pill badge-danger"
+                                                                 th:text="${prj.getStatus()}">Field Research</div>
+                                    </td>
+                                    <td class="text-center" th:text="${prj.getStartDateString()}">1/1/2020</td>
                                 </tr>
                                 <tr th:each="prj : ${projects}">
-                                    <td th:text="${prj.getName()}">Όνομα</td>
+                                    <td class="text-center" th:text="${prj.getName()}">Όνομα</td>
                                     <td class="text-center"><div class="badge badge-info">Member</div></td>
-                                    <td class="text-center">Insights</td>
                                     <td th:text="${prj.getDescription()}">Design Challenge</td>
-                                    <td>1/1/2020</td>
+                                    <td class="text-center"><div class="badge badge-pill badge-danger"
+                                                                 th:text="${prj.getStatus()}">Field Research</div>
+                                    </td>
+                                    <td class="text-center" th:text="${prj.getStartDateString()}">1/1/2020</td>
                                 </tr>
 
                             </tbody>

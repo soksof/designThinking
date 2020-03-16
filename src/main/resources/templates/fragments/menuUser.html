@@ -1,4 +1,5 @@
-<div class="app-sidebar sidebar-shadow" xmlns:th="http://www.thymeleaf.org">
+<div class="app-sidebar sidebar-shadow"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
+     xmlns:th="http://www.thymeleaf.org">
 <!--<div class="app-sidebar sidebar-shadow bg-focus sidebar-text-light" xmlns:th="http://www.thymeleaf.org">-->
 <div class="app-header__logo">
     <div class="logo-src"></div>
@@ -31,49 +32,56 @@
     </span>
 </div>
 <div class="scrollbar-sidebar">
+    <th:block th:with='role=${#strings.toLowerCase(#authentication.principal.authorities[0]).replace("role_", "")}'>
     <div class="app-sidebar__inner">
         <ul class="vertical-nav-menu">
-            <li class="app-sidebar__heading">Dashboards</li>
+<!--            <li class="app-sidebar__heading">Προσωπικές Σελίδες</li>-->
             <li>
-                <a href="index.html" class="mm-active">
-                    <i class="metismenu-icon pe-7s-rocket"></i>
-                    Dashboard Example 1
-                </a>
+<!--                <a th:href="@{/{r}/dashboard(r=${role})}" class="mm-active">-->
+                <a th:href="${'dashboard'}">
+                    <i class="metismenu-icon pe-7s-note2"></i>Dashboard</a>
             </li>
-            <li class="app-sidebar__heading">Menu Option A'</li>
+<!--            <li class="app-sidebar__heading">Menu Option A'</li>-->
             <li>
                 <a href="#">
-                    <i class="metismenu-icon pe-7s-diamond"></i>Menu Item 1
+                    <i class="metismenu-icon pe-7s-paper-plane"></i>Projects
                     <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
                 </a>
                 <ul>
                     <li>
-                        <a href="#">
-                            <i class="metismenu-icon"></i>Option 1
+                        <a th:href="${'newProject'}">
+                            <i class="metismenu-icon"></i>Νέο Project
                         </a>
                     </li>
                     <li>
-                        <a href="#">
-                            <i class="metismenu-icon"></i>Option 2
+                        <a th:href="${'projectList'}">
+                            <i class="metismenu-icon"></i>Όλα τα Project
                         </a>
                     </li>
                 </ul>
             </li>
             <li>
-                <a href="#">
-                    <i class="metismenu-icon pe-7s-display2"></i>Menu Item 2
-                </a>
+                <a th:href="${'profile'}">
+                    <i class="metismenu-icon pe-7s-id"></i>Προφίλ Χρήστη</a>
             </li>
-            <li class="app-sidebar__heading">Menu Option B'</li>
+<!--            <li class="app-sidebar__heading">Menu Option B'</li>-->
             <li>
                 <a href="#">
-                    <i class="metismenu-icon pe-7s-mouse"></i>Menu Item 1
+                    <i class="metismenu-icon pe-7s-display1"></i>Υλικό
+                    <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
                 </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="metismenu-icon pe-7s-eyedropper"></i>Menu Item 2
-                </a>
+                <ul>
+                    <li>
+                        <a th:href="${'projectList'}">
+                            <i class="metismenu-icon"></i>Προσθήκη νέου υλικού
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="${'newProject'}">
+                            <i class="metismenu-icon"></i>Λίστα Υλικού Εκπαίδευσης
+                        </a>
+                    </li>
+                </ul>
             </li>
         </ul>
     </div>
