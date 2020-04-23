@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -39,11 +40,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Set<Project> findAllProjects() {
-        User user = this.userRepository.findByEmail(getLoggedInUserName()).orElse(null);
-        System.out.println(">>>"+user);
-
+        User user = this.getLoggedInUser();
         assert user != null;
-        System.out.println(">SS>S "+user.getProjects());
         return user.getProjects();
     }
 
@@ -67,12 +65,42 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public User getLoggedInUser(){
+        return this.findByEmail(this.getLoggedInUserName());
+    }
+
+    @Override
     public User save(User user) {
+        userRepository.save(user);
+        return user;
+    }
+
+    @Override
+    public User initSave(User user) {
         user.setProfilePic("default.png");
         if(user.getRole()==null)
             user.setRole(userRoleRepository.findByName("USER"));
         user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return user;
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public List<User> findAllButMe() {
+        int index=0;
+        long id = this.getLoggedInUser().getId();
+        List<User> users = this.findAll();
+        for(User user: users){
+            if(user.getId()==id)
+                break;
+            index++;
+        }
+        users.remove(index);
+        return users;
     }
 }

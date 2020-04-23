@@ -1,5 +1,7 @@
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:with="http://www.thymeleaf.org/extras/with"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
       layout:decorate="~{layout}"
       with:title="My Dashboard">
 <th:block layout:fragment="content">
@@ -83,17 +85,20 @@
 
         <!-- START OF TABS CONTENT -->
         <div class="tab-content">
+            <th:block th:with='role=${#strings.toLowerCase(#authentication.principal.authorities[0]).replace("role_", "")}'>
             <div class="tab-pane tabs-animation fade show active" id="tab-content-1" role="tabpanel">
                 <!-- ROW OF CONTENT -->
                 <!--<div class="row">
                     <div class="col-lg-6">-->
 
                 <!--<button class="mb-2 mr-2 border-0 btn-transition btn btn-outline-focus">Start a new Project!-->
-                <button class="mb-2 mr-2 btn-transition btn btn-outline-focus">Ξεκινήστε ένα καινούργιο Project!
-                </button>
+                <a th:if="${role == 'admin'}" th:href="${'admin/project/new'}">
+                    <button class="mb-2 mr-2 btn-transition btn btn-outline-focus">Ξεκινήστε ένα καινούργιο Project!
+                    </button>
+                </a>
                 <div class="main-card mb-3 card">
                     <div class="card-body"><h5 class="card-title">Ενεργα Projects</h5>
-                        <table name="projects" id="tableProjects" class="mb-0 table table-hover">
+                        <table name="projects" id="tableProjects" class="mb-0 table table-borderless table-striped table-hover">
                             <thead>
                             <tr>
                                 <th class="text-center">Όνομα</th>
@@ -105,19 +110,24 @@
                             </thead>
                             <tbody>
                                 <tr th:each="prj : ${managedProjects}">
-                                    <td class="text-center" th:text="${prj.getName()}">Όνομα</td>
-                                    <td class="text-center"><div class="badge badge-warning">Manager</div></td>
+                                    <td>
+                                        <a th:text="${prj.getName()}" th:href="@{/project/view/{id}{id}(id=${prj.getId()})}">
+                                            Όνομα</a>
+                                    </td>                                    <td class="text-center"><div class="badge badge-warning">Manager</div></td>
                                     <td th:text="${prj.getDescription()}">Design Challenge</td>
-                                    <td class="text-center"><div class="badge badge-pill badge-danger"
+                                    <td class="text-center"><div th:class="'badge badge-pill badge-' + ${prj.getStatus().getColor()}"
                                                                  th:text="${prj.getStatus()}">Field Research</div>
                                     </td>
                                     <td class="text-center" th:text="${prj.getStartDateString()}">1/1/2020</td>
                                 </tr>
                                 <tr th:each="prj : ${projects}">
-                                    <td class="text-center" th:text="${prj.getName()}">Όνομα</td>
+                                    <td>
+                                        <a th:text="${prj.getName()}" th:href="@{/project/view/{id}{id}(id=${prj.getId()})}">
+                                            Όνομα</a>
+                                    </td>
                                     <td class="text-center"><div class="badge badge-info">Member</div></td>
                                     <td th:text="${prj.getDescription()}">Design Challenge</td>
-                                    <td class="text-center"><div class="badge badge-pill badge-danger"
+                                    <td class="text-center"><div th:class="'badge badge-pill badge-' + ${prj.getStatus().getColor()}"
                                                                  th:text="${prj.getStatus()}">Field Research</div>
                                     </td>
                                     <td class="text-center" th:text="${prj.getStartDateString()}">1/1/2020</td>

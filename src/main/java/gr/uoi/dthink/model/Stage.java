@@ -1,8 +1,6 @@
 package gr.uoi.dthink.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -10,10 +8,20 @@ public class Stage {
     @Id
     @GeneratedValue
     private int id;
-    private String description;
+    @Enumerated(EnumType.ORDINAL)
+    private Status status;
     private Date startDate;
     private Date endDate;
     private Date dueDate;
+
+    public Stage(){
+        this.setStartDate(new Date());
+    }
+
+    public Stage(Status status){
+        this.setStartDate(new Date());
+        this.status = status;
+    }
 
     public int getId() {
         return id;
@@ -23,12 +31,12 @@ public class Stage {
         this.id = id;
     }
 
-    public String getDescription() {
-        return description;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public Date getStartDate() {
@@ -53,5 +61,17 @@ public class Stage {
 
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public int getProgress(){
+        if(status.equals(Status.CHALLENGE_DEFINITION))
+            return 10;
+        else if(status.equals(Status.RESOURCE_COLLECTION))
+            return 25;
+        else if(status.equals(Status.FINDINGS_COLLECTION))
+            return 50;
+        else if(status.equals(Status.IDEA_CREATION))
+            return 75;
+        return 99;
     }
 }

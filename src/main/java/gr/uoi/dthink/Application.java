@@ -3,6 +3,7 @@ package gr.uoi.dthink;
 import gr.uoi.dthink.model.*;
 import gr.uoi.dthink.repos.ProjectRepository;
 import gr.uoi.dthink.repos.ResourceTypeRepository;
+import gr.uoi.dthink.repos.StageRepository;
 import gr.uoi.dthink.services.UserService;
 import gr.uoi.dthink.repos.UserRoleRepository;
 import org.springframework.boot.ApplicationRunner;
@@ -21,7 +22,8 @@ public class Application {
     }
 
     @Bean
-    ApplicationRunner init(UserRoleRepository urr, UserService us, ProjectRepository pr, ResourceTypeRepository rtr) {
+    ApplicationRunner init(UserRoleRepository urr, UserService us, ProjectRepository pr, ResourceTypeRepository rtr,
+                           StageRepository stageRepository) {
         return args -> {
             //user Roles
             Stream.of("USER", "ADMIN", "GUEST").forEach(roleName -> {
@@ -36,13 +38,20 @@ public class Application {
                 rtr.save(rType);
             });
 
+
+
             //Projects
             Project project1 = new Project("Τεχνολογίες  επαυξημένης πραγματικότητας για επαγγελματίες",
                     "Η προσφορά μιας ολοκληρωμένης υπηρεσίας,όπου ο πελάτης θα μπορεί να παραγγείλει και  να  λάβει  εκτυπωμένα  τα  έντυπα  που  δημιούργησε  καθώς  και  την  εφαρμογή επαυξημένης πραγματικότητας που τα συνοδεύει. Η εφαρμογή θα προσφέρεται δωρεάν κάτω από το λογότυπο του έργου, είτε θα μπορεί να την αποκτήσει ο πελάτης με το αντίστοιχο κόστος.");
             Project project2 = new Project("Πρόσβαση στα υποκαταστήματα τράπεζας για όλους", "Μελέτη των αλλαγών που απαιτούνται στα υποκαταστήματα της τράπεζας για ευκολότερη πρόσβαση σε αυτά απο ΑΜΕΑ.");
-            project1.setStatus(Status.IDEA_COLLECTION);
+            Stage stage = new Stage(Status.IDEA_CREATION);
+            stageRepository.save(stage);
+            project1.setCurrentStage(stage);
             project1.setStartDate(new Date("12/1/2020"));
-            project2.setStatus(Status.DEFINITION);
+
+            stage = new Stage(Status.CHALLENGE_DEFINITION);
+            stageRepository.save(stage);
+            project2.setCurrentStage(stage);
             project2.setStartDate(new Date("15/2/2020"));
 
             project1 = pr.save(project1);
@@ -57,9 +66,9 @@ public class Application {
             vPapa.addProject(project1);
             vPapa.addProject(project2);
             chris.addProject(project2);
-            sok = us.save(sok);
-            vPapa = us.save(vPapa);
-            us.save(chris);
+            sok = us.initSave(sok);
+            vPapa = us.initSave(vPapa);
+            us.initSave(chris);
 
             project1.setManager(sok);
             project2.setManager(vPapa);

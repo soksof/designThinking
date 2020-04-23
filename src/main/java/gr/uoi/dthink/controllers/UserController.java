@@ -70,11 +70,11 @@ public class UserController {
 
     public Model addUserProjectsToModel(Model model){
         Set<Project> userProjects = userService.findAllProjects();
+
         List<Project> projects = new ArrayList<>();
         List<Project> managedProjects = new ArrayList<>();
         String email = userService.getLoggedInUserName();
         for(Project project : userProjects){
-            System.out.println(">>>"+project);
             if(project.getManager().getEmail().equals(email))
                 managedProjects.add(project);
             else

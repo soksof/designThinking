@@ -26,8 +26,8 @@ public class User {
     private Date updatedOn;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "project_members",
-            joinColumns = { @JoinColumn(name = "project_id") },
-            inverseJoinColumns = { @JoinColumn(name = "user_id") })
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "project_id") })
     private Set<Project> projects = new HashSet<>();
 
     public User() {
@@ -70,6 +70,10 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getFullName(){
+        return name+" "+lastName;
     }
 
     public String getEmail() {

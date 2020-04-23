@@ -8,4 +8,10 @@ div.header_logo-inv {
     margin:0;
     padding:0;
 }
+.error{
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    color: #d92550;
+}
 

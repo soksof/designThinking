@@ -38,7 +38,7 @@
 <!--            <li class="app-sidebar__heading">Προσωπικές Σελίδες</li>-->
             <li>
 <!--                <a th:href="@{/{r}/dashboard(r=${role})}" class="mm-active">-->
-                <a th:href="${'dashboard'}">
+                <a th:href="@{'/dashboard'}">
                     <i class="metismenu-icon pe-7s-note2"></i>Dashboard</a>
             </li>
 <!--            <li class="app-sidebar__heading">Menu Option A'</li>-->
@@ -49,19 +49,19 @@
                 </a>
                 <ul>
                     <li>
-                        <a th:href="${'newProject'}">
+                        <a th:if="${role == 'admin'}"  th:href="@{'/admin/project/new'}">
                             <i class="metismenu-icon"></i>Νέο Project
                         </a>
                     </li>
                     <li>
-                        <a th:href="${'projectList'}">
+                        <a th:href="@{'/project/all'}">
                             <i class="metismenu-icon"></i>Όλα τα Project
                         </a>
                     </li>
                 </ul>
             </li>
             <li>
-                <a th:href="${'profile'}">
+                <a th:href="@{'/profile'}">
                     <i class="metismenu-icon pe-7s-id"></i>Προφίλ Χρήστη</a>
             </li>
 <!--            <li class="app-sidebar__heading">Menu Option B'</li>-->
@@ -72,12 +72,12 @@
                 </a>
                 <ul>
                     <li>
-                        <a th:href="${'projectList'}">
+                        <a th:href="@{'/projectList'}">
                             <i class="metismenu-icon"></i>Προσθήκη νέου υλικού
                         </a>
                     </li>
                     <li>
-                        <a th:href="${'newProject'}">
+                        <a th:href="@{'/newProject'}">
                             <i class="metismenu-icon"></i>Λίστα Υλικού Εκπαίδευσης
                         </a>
                     </li>
@@ -85,5 +85,6 @@
             </li>
         </ul>
     </div>
+    </th:block>
 </div>
 </div>

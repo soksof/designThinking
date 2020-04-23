@@ -1,0 +1,125 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:with="http://www.thymeleaf.org/extras/with"
+      layout:decorate="~{layout}"
+      with:title="Νέο project">
+<th:block layout:fragment="content">
+
+    <div class="app-main__inner">
+        <!-- MAIN CONTENT TITLE -->
+        <div class="app-page-title">
+            <div class="page-title-wrapper">
+                <div class="page-title-heading">
+                    <div class="page-title-icon">
+                        <i class="pe-7s-paper-plane icon-gradient bg-mean-fruit">
+                        </i>
+                    </div>
+                    <div>Νέο project
+                        <div class="page-title-subheading">Εδώ μπορείτε να δημιουργήσετε ένα καινούργιο project
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END OF MAIN CONTENT TITLE -->
+
+        <div class="main-card mb-3 card">
+            <div class="card-body">
+                <form action="#" th:action="@{/admin/project/new}" th:object="${projectNew}" method="post"
+                      class="needs-validation" novalidate>
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <div class="position-relative form-group"><label for="name">Όνομα</label>
+                                <input name="name" id="name" th:field="*{name}" placeholder="Ονομασία project"
+                                       type="text" class="form-control">
+                                <em id="nameError" class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                                    name ERROR</em>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="position-relative form-group">
+                        <label for="description">Περιγραφή</label>
+                        <textarea name="description" id="description" class="form-control"></textarea>
+                        <em id="descriptionError" class="error" th:if="${#fields.hasErrors('description')}"
+                            th:errors="*{description}">
+                            description ERROR</em>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="position-relative form-group">
+                                    <div class="card-body">
+                                        <label for="startDate">Ημερομηνία Έναρξης</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend datepicker-trigger">
+                                                <div class="input-group-text">
+                                                    <i class="fa fa-calendar-alt"></i>
+                                                </div>
+                                            </div>
+                                            <input type="text" name="startDate" id="startDate" class="datepicker-my form-control"
+                                                   data-toggle="datepicker" th:field="*{startDate}">
+                                            <em id="startDateError" class="error"
+                                                th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}">
+                                                start date ERROR</em>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="position-relative form-group">
+                                    <div class="card-body">
+                                        <label for="endDate">Ημερομηνία Λήξης</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend datepicker-trigger">
+                                                <div class="input-group-text">
+                                                    <i class="fa fa-calendar-alt"></i>
+                                                </div>
+                                            </div>
+                                            <input type="text" name="endDate" id="endDate" class="datepicker-my form-control"
+                                                   data-toggle="datepicker" th:field="*{endDate}">
+                                            <em id="endDateError" class="error"
+                                                th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}">
+                                                end date ERROR</em>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-4">
+                        <label for="members">Μέλη Ομάδας
+                        <select class="js-example-basic-single" name="members" id="members" multiple="multiple">
+                            <option th:each="user : ${users}"
+                                    th:value="${user.getId()}"
+                                    th:text="${user.getFullName()}">
+                            </option>
+                        </select>
+                        <em id="membersError" class="error" th:if="${#fields.hasErrors('members')}"
+                            th:errors="*{members}">
+                            members ERROR</em>
+                        </label>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="clearfix">
+                        <button type="submit" id="next-btn"
+                                class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">
+                            Δημιουργία</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('.js-example-basic-single').select2();
+        });
+    </script>
+</th:block>
+</html>

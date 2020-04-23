@@ -23,7 +23,7 @@
         <!-- END OF MAIN CONTENT TITLE -->
         <div class="main-card mb-3 card">
             <div class="card-body"><!--<h5 class="card-title">Ενεργα Projects</h5>-->
-                <table name="projects" id="tableProjects" class="mb-0 table table-hover">
+                <table name="projects" id="tableProjects" class="mb-0 table table-borderless table-striped table-hover">
                     <thead>
                     <tr>
                         <th class="text-center">Όνομα</th>
@@ -36,10 +36,13 @@
                     </thead>
                     <tbody>
                     <tr th:each="prj : ${managedProjects}">
-                        <td th:text="${prj.getName()}">Όνομα</td>
+                        <td>
+                            <a th:text="${prj.getName()}" th:href="@{/project/view/{id}{id}(id=${prj.getId()})}">
+                                Όνομα</a>
+                        </td>
                         <td class="text-center"><div class="badge badge-warning">Manager</div></td>
                         <td th:text="${prj.getDescription()}">Design Challenge</td>
-                        <td class="text-center"><div class="badge badge-pill badge-danger"
+                        <td class="text-center"><div th:class="'badge badge-pill badge-' + ${prj.getStatus().getColor()}"
                                                      th:text="${prj.getStatus()}">Field Research</div>
                         </td>
                         <td th:text="${prj.getStartDateString()}">1/1/2020</td>
@@ -67,10 +70,13 @@
                         </td>
                     </tr>
                     <tr th:each="prj : ${projects}">
-                        <td th:text="${prj.getName()}">Όνομα</td>
+                        <td>
+                            <a th:text="${prj.getName()}" th:href="@{/project/view/{id}{id}(id=${prj.getId()})}">
+                                Όνομα</a>
+                        </td>
                         <td class="text-center"><div class="badge badge-info">Member</div></td>
                         <td th:text="${prj.getDescription()}">Design Challenge</td>
-                        <td class="text-center"><div class="badge badge-pill badge-danger"
+                        <td class="text-center"><div th:class="'badge badge-pill badge-' + ${prj.getStatus().getColor()}"
                                                      th:text="${prj.getStatus()}">Insights</div>
                         </td>
                         <td th:text="${prj.getStartDateString()}">1/1/2020</td>

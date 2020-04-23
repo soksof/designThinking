@@ -1,17 +1,21 @@
 package gr.uoi.dthink.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Project {
     @Id
     @GeneratedValue
     private int id;
+    @NotEmpty(message="Το όνομα είναι κενό!")
     private String name;
+    @NotEmpty(message="Η περιγραφή είναι κενή!")
     @Column(columnDefinition = "MEDIUMTEXT")
     private String description;
     @ManyToOne
@@ -23,17 +27,31 @@ public class Project {
             joinColumns = { @JoinColumn(name = "project_id") },
             inverseJoinColumns = { @JoinColumn(name = "extreme_user_id") })
     private Set<ExtremeUser> extremeUsers = new HashSet<>();
+    @NotNull(message="Η ημερομηνία έναρξης είναι κενή!")
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date startDate;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date dueDate;
+//    @NotNull(message="Η ημερομηνία λήξης κενή!")
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date endDate;
     @OneToOne
-    private Stage definitionStage;
+    private Stage challengeDefinition; //Καθορισμός Πρόκλησης
     @OneToOne
-    private Stage resourceCollectionStage;
+    private Stage resourceCollection; //Παρατήρηση Χρηστών
     @OneToOne
-    private Stage ideaCollectionStage;
-    @Enumerated(EnumType.ORDINAL)
-    private Status status;
+    private Stage findingsCollection; //Διαπιστώσεις
+    @OneToOne
+    private Stage ideaCreation; //Δημιουργία ιδεών
+    @OneToOne
+    private Stage prototypeCreation; //Δημιουργία Πρωτότυπου
+    @OneToOne
+    private Stage completedProject; //Ολοκλήρωση
+    @OneToOne
+    private Stage currentStage;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdOn;
     @Temporal(TemporalType.TIMESTAMP)
@@ -45,6 +63,10 @@ public class Project {
     public Project(String name, String description){
         this.name = name;
         this.description = description;
+    }
+
+    public Project(User manager){
+        this.manager = manager;
     }
 
     public Project(String name, String description, User manager){
@@ -108,6 +130,10 @@ public class Project {
         this.members = members;
     }
 
+    public void addMember(User member){
+        this.members.add(member);
+    }
+
     public Date getStartDate() {
         return startDate;
     }
@@ -137,46 +163,56 @@ public class Project {
         this.endDate = endDate;
     }
 
-    public Stage getDefinitionStage() {
-        return definitionStage;
+    public Stage getChallengeDefinition() {
+        return challengeDefinition;
     }
 
     public int getProgress(){
-        if(status.equals(Status.DEFINITION))
-            return 25;
-        else if(status.equals(Status.RESOURCE_COLLECTION))
-            return 50;
-        else if(status.equals(Status.IDEA_COLLECTION))
-            return 75;
-        return 95;
+        return this.currentStage.getProgress();
     }
 
-    public void setDefinitionStage(Stage definitionStage) {
-        this.definitionStage = definitionStage;
+    public void setChallengeDefinition(Stage challengeDefinition) {
+        this.challengeDefinition = challengeDefinition;
     }
 
-    public Stage getResourceCollectionStage() {
-        return resourceCollectionStage;
+    public Stage getResourceCollection() {
+        return resourceCollection;
     }
 
-    public void setResourceCollectionStage(Stage resourceCollectionStage) {
-        this.resourceCollectionStage = resourceCollectionStage;
+    public void setResourceCollection(Stage resourceCollection) {
+        this.resourceCollection = resourceCollection;
     }
 
-    public Stage getIdeaCollectionStage() {
-        return ideaCollectionStage;
+    public Stage getIdeaCreation() {
+        return ideaCreation;
     }
 
-    public void setIdeaCollectionStage(Stage ideaCollectionStage) {
-        this.ideaCollectionStage = ideaCollectionStage;
+    public void setIdeaCreation(Stage ideaCreation) {
+        this.ideaCreation = ideaCreation;
     }
 
-    public Status getStatus() {
-        return status;
+    public Stage getFindingsCollection() {
+        return findingsCollection;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setFindingsCollection(Stage findingsCollection) {
+        this.findingsCollection = findingsCollection;
+    }
+
+    public Stage getPrototypeCreation() {
+        return prototypeCreation;
+    }
+
+    public void setPrototypeCreation(Stage prototypeCreation) {
+        this.prototypeCreation = prototypeCreation;
+    }
+
+    public Stage getCompletedProject() {
+        return completedProject;
+    }
+
+    public void setCompletedProject(Stage completedProject) {
+        this.completedProject = completedProject;
     }
 
     public Date getCreatedOn() {
@@ -196,5 +232,17 @@ public class Project {
 
     public Date getUpdatedOn() {
         return updatedOn;
+    }
+
+    public Stage getCurrentStage() {
+        return currentStage;
+    }
+
+    public void setCurrentStage(Stage currentStage) {
+        this.currentStage = currentStage;
+    }
+
+    public Status getStatus(){
+        return this.getCurrentStage().getStatus();
     }
 }
