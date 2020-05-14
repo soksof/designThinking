@@ -1,0 +1,29 @@
+<div xmlns:th="http://www.thymeleaf.org">
+<div th:each="member : ${project.getMembers()}">
+    <div class="modal fade bd-example-modal-sm" data-backdrop="false"
+         tabindex="-1" role="dialog" th:id="${'modal_'+member.getId()}"
+         aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">
+                        Διαγραφή Μέλους</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Είστε σίγουροι πως θέλετε να διαγράψετε το μέλος από την ομάδα εργασίας;</p>
+                    <p>Το μέλος θα αφαιρεθεί μόνο από το project αυτό και όχι από την πλατφόρμα.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Άκυρο</button>
+                    <a th:href="@{/admin/project/{pid}/member/remove/{id}(pid=${project.getId()}, id=${member.getId()})}">
+                        <button type="button" class="btn btn-danger">Διαγραφή</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

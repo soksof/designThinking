@@ -53,17 +53,40 @@ public class Application {
                     "Η προσφορά μιας ολοκληρωμένης υπηρεσίας,όπου ο πελάτης θα μπορεί να παραγγείλει και  να  λάβει  εκτυπωμένα  τα  έντυπα  που  δημιούργησε  καθώς  και  την  εφαρμογή επαυξημένης πραγματικότητας που τα συνοδεύει. Η εφαρμογή θα προσφέρεται δωρεάν κάτω από το λογότυπο του έργου, είτε θα μπορεί να την αποκτήσει ο πελάτης με το αντίστοιχο κόστος.");
             Project project2 = new Project("Πρόσβαση στα υποκαταστήματα τράπεζας για όλους", "Μελέτη των αλλαγών που απαιτούνται στα υποκαταστήματα της τράπεζας για ευκολότερη πρόσβαση σε αυτά απο ΑΜΕΑ.");
             project1.setStartDate(parseDate("12/01/2020"));
-            Stage stage = new Stage(Status.IDEA_CREATION);
-            stage.setStartDate(parseDate("15/04/2020"));
-            stage.setDueDate(parseDate("15/04/2020"));
+
+            Stage stage = new Stage(Status.CHALLENGE_DEFINITION);
+            stage.setStartDate(project1.getStartDate());
+            stage.setEndDate(parseDate("17/01/2020"));
+            stage.setDueDate(parseDate("17/01/2020"));
+            stageRepository.save(stage);
+            project1.setChallengeDefinition(stage);
+
+            stage = new Stage(Status.RESOURCE_COLLECTION);
+            stage.setStartDate(parseDate("18/01/2020"));
+            stage.setEndDate(parseDate("15/02/2020"));
+            stage.setDueDate(parseDate("18/02/2020"));
+            stageRepository.save(stage);
+            project1.setResourceCollection(stage);
+
+            stage = new Stage(Status.FINDINGS_COLLECTION);
+            stage.setStartDate(parseDate("16/02/2020"));
+            stage.setEndDate(parseDate("20/03/2020"));
+            stage.setDueDate(parseDate("16/03/2020"));
+            stageRepository.save(stage);
+            project1.setFindingsCollection(stage);
+
+            stage = new Stage(Status.IDEA_CREATION);
+            stage.setStartDate(parseDate("15/05/2020"));
+            stage.setDueDate(parseDate("17/05/2020"));
             stageRepository.save(stage);
             project1.setIdeaCreation(stage);
+
             project1.setCurrentStage(stage);
 
-            project2.setStartDate(parseDate("15/02/2020"));
+            project2.setStartDate(parseDate("15/04/2020"));
             stage = new Stage(Status.CHALLENGE_DEFINITION);
             stage.setStartDate(project2.getStartDate());
-            stage.setDueDate(parseDate("17/02/2020"));
+            stage.setDueDate(parseDate("17/04/2020"));
             stageRepository.save(stage);
             project2.setChallengeDefinition(stage);
             project2.setCurrentStage(stage);

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
 
 
 // TODO: Add logger with all the actions
@@ -83,7 +82,7 @@ public class ProjectController {
         Project project = projectService.findById(projectId);
         if(members != null) {
             for (int i = 0; i < members.length; i++) {
-                User user = userService.findById(members[0]);
+                User user = userService.findById(members[i]);
                 System.out.println("Adding user "+user);
                 project.addMember(user);
                 projectService.save(project);

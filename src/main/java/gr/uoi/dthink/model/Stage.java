@@ -76,6 +76,8 @@ public class Stage {
         Date today = new Date();
         if(this.getDueDate()==null)
             return false;
+        if(this.getEndDate()!=null)
+            return this.getDueDate().compareTo(this.getEndDate()) < 0;
         return this.getDueDate().compareTo(today) < 0;
     }
 
