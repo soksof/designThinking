@@ -11,6 +11,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.stream.Stream;
 
@@ -19,6 +21,14 @@ public class Application {
 
     public static void main(String... args) {
         SpringApplication.run(Application.class, args);
+    }
+
+    public static Date parseDate(String date) {
+        try {
+            return new SimpleDateFormat("dd/MM/yyyy").parse(date);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 
     @Bean
@@ -38,21 +48,25 @@ public class Application {
                 rtr.save(rType);
             });
 
-
-
             //Projects
             Project project1 = new Project("Τεχνολογίες  επαυξημένης πραγματικότητας για επαγγελματίες",
                     "Η προσφορά μιας ολοκληρωμένης υπηρεσίας,όπου ο πελάτης θα μπορεί να παραγγείλει και  να  λάβει  εκτυπωμένα  τα  έντυπα  που  δημιούργησε  καθώς  και  την  εφαρμογή επαυξημένης πραγματικότητας που τα συνοδεύει. Η εφαρμογή θα προσφέρεται δωρεάν κάτω από το λογότυπο του έργου, είτε θα μπορεί να την αποκτήσει ο πελάτης με το αντίστοιχο κόστος.");
             Project project2 = new Project("Πρόσβαση στα υποκαταστήματα τράπεζας για όλους", "Μελέτη των αλλαγών που απαιτούνται στα υποκαταστήματα της τράπεζας για ευκολότερη πρόσβαση σε αυτά απο ΑΜΕΑ.");
+            project1.setStartDate(parseDate("12/01/2020"));
             Stage stage = new Stage(Status.IDEA_CREATION);
+            stage.setStartDate(parseDate("15/04/2020"));
+            stage.setDueDate(parseDate("15/04/2020"));
             stageRepository.save(stage);
+            project1.setIdeaCreation(stage);
             project1.setCurrentStage(stage);
-            project1.setStartDate(new Date("12/1/2020"));
 
+            project2.setStartDate(parseDate("15/02/2020"));
             stage = new Stage(Status.CHALLENGE_DEFINITION);
+            stage.setStartDate(project2.getStartDate());
+            stage.setDueDate(parseDate("17/02/2020"));
             stageRepository.save(stage);
+            project2.setChallengeDefinition(stage);
             project2.setCurrentStage(stage);
-            project2.setStartDate(new Date("15/2/2020"));
 
             project1 = pr.save(project1);
             project2 = pr.save(project2);

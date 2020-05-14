@@ -37,7 +37,7 @@
                     <tbody>
                     <tr th:each="prj : ${managedProjects}">
                         <td>
-                            <a th:text="${prj.getName()}" th:href="@{/project/view/{id}{id}(id=${prj.getId()})}">
+                            <a th:text="${prj.getName()}" th:href="@{/project/view/{id}(id=${prj.getId()})}">
                                 Όνομα</a>
                         </td>
                         <td class="text-center"><div class="badge badge-warning">Manager</div></td>
@@ -71,7 +71,7 @@
                     </tr>
                     <tr th:each="prj : ${projects}">
                         <td>
-                            <a th:text="${prj.getName()}" th:href="@{/project/view/{id}{id}(id=${prj.getId()})}">
+                            <a th:text="${prj.getName()}" th:href="@{/project/view/{id}(id=${prj.getId()})}">
                                 Όνομα</a>
                         </td>
                         <td class="text-center"><div class="badge badge-info">Member</div></td>

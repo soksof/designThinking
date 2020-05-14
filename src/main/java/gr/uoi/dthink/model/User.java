@@ -147,6 +147,10 @@ public class User {
         this.projects.add(project);
     }
 
+    public void removeProject(Project project){
+        this.projects.remove(project);
+    }
+
     public String getPasswordConfirm() {
         return passwordConfirm;
     }

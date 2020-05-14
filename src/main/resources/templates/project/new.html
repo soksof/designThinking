@@ -94,7 +94,8 @@
                     <div class="form-row">
                         <div class="col-md-4">
                         <label for="members">Μέλη Ομάδας
-                        <select class="js-example-basic-single" name="members" id="members" multiple="multiple">
+                        <select class="js-example-basic-single" name="members" id="members" th:field="*{members}"
+                                multiple="multiple">
                             <option th:each="user : ${users}"
                                     th:value="${user.getId()}"
                                     th:text="${user.getFullName()}">
@@ -108,8 +109,9 @@
                     </div>
                     <div class="divider"></div>
                     <div class="clearfix">
-                        <button type="submit" id="next-btn"
-                                class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">
+                        <button type="submit" id="createProject"
+                                class="btn-shadow btn-wide float-right btn-hover-shine btn btn-primary">
+<!--                                class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">-->
                             Δημιουργία</button>
                     </div>
                 </form>
@@ -118,6 +120,7 @@
     </div>
     <script>
         $(document).ready(function () {
+            $('#endDate').datepicker({autoclose:true});
             $('.js-example-basic-single').select2();
         });
     </script>

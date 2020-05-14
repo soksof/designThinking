@@ -19,4 +19,6 @@ public interface UserService {
     User save(User user);
     List<User> findAll();
     List<User> findAllButMe();
+    List<User> findAllButMembers(Project project);
+    User findById(long id);
 }

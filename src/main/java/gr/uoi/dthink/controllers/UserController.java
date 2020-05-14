@@ -80,6 +80,8 @@ public class UserController {
             else
                 projects.add(project);
         }
+        System.out.println("1) "+managedProjects.size());
+        System.out.println("2) "+projects.size());
         model.addAttribute("managedProjects", managedProjects);
         model.addAttribute("projects", projects);
         return model;

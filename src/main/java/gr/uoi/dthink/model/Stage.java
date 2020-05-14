@@ -1,6 +1,9 @@
 package gr.uoi.dthink.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
@@ -10,8 +13,14 @@ public class Stage {
     private int id;
     @Enumerated(EnumType.ORDINAL)
     private Status status;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date startDate;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date endDate;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date dueDate;
 
     public Stage(){
@@ -43,12 +52,31 @@ public class Stage {
         return startDate;
     }
 
+    public String getStartDateString(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+        return dateFormat.format(this.getStartDate());
+    }
+
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
     public Date getEndDate() {
         return endDate;
+    }
+
+    public String getEndDateString(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+        if(this.getEndDate()==null)
+            return "τώρα";
+        return dateFormat.format(this.getEndDate());
+    }
+
+    public boolean isLate() {
+        Date today = new Date();
+        if(this.getDueDate()==null)
+            return false;
+        return this.getDueDate().compareTo(today) < 0;
     }
 
     public void setEndDate(Date endDate) {

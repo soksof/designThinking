@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -102,5 +103,21 @@ public class UserServiceImpl implements UserService{
         }
         users.remove(index);
         return users;
+    }
+
+    @Override
+    public List<User> findAllButMembers(Project project) {
+        List<User> allUsers = this.findAll();
+        List<User> users = new ArrayList<>();
+        Set<User> member = project.getMembers();
+        for(User user: allUsers)
+            if(!member.contains(user))
+                users.add(user);
+        return users;
+    }
+
+    @Override
+    public User findById(long id) {
+        return userRepository.findById(id).orElse(null);
     }
 }

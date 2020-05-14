@@ -134,6 +134,10 @@ public class Project {
         this.members.add(member);
     }
 
+    public void removeMember(User member){
+        this.members.remove(member);
+    }
+
     public Date getStartDate() {
         return startDate;
     }
@@ -223,6 +227,23 @@ public class Project {
     protected void onCreate() {
         createdOn = new Date();
         updatedOn = createdOn;
+    }
+
+    public List<Stage> getStagesList(){
+        List<Stage> stageList = new ArrayList<>();
+        if(this.getChallengeDefinition()!=null)
+            stageList.add(this.getChallengeDefinition());
+        if(this.getResourceCollection()!=null)
+            stageList.add(this.getResourceCollection());
+        if(this.getFindingsCollection()!=null)
+            stageList.add(this.getFindingsCollection());
+        if(this.getIdeaCreation()!=null)
+            stageList.add(this.getIdeaCreation());
+        if(this.getPrototypeCreation()!=null)
+            stageList.add(this.getPrototypeCreation());
+        if(this.getCompletedProject()!=null)
+            stageList.add(this.getCompletedProject());
+        return stageList;
     }
 
     @PreUpdate

@@ -12,15 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 
+// TODO: Add logger with all the actions
 @Controller
 public class ProjectController {
     UserController userController;
@@ -42,7 +41,26 @@ public class ProjectController {
         if (project == null)
             return "error/404";
         model.addAttribute("project", project);
-        return "project/dashboard";
+        boolean isManager = userService.getLoggedInUser().getId() == project.getManager().getId();
+        model.addAttribute("isManager", isManager);
+        List<User> users = userService.findAllButMembers(project);
+        model.addAttribute("usersNotInProject", users);
+        String status = project.getCurrentStage().getStatus().getView();
+        return "project/views/"+status;
+    }
+
+    @GetMapping("/admin/project/{pid}/member/remove/{id}")
+    public String viewProject(@PathVariable("pid") int projectId, @PathVariable("id") long userId, Model model) {
+        Project project = this.projectService.findById(projectId);
+        User user = this.userService.findById(userId);
+        if (project == null || user == null)
+            return "error/404";
+        project.removeMember(user);
+        projectService.save(project);
+        user.removeProject(project);
+        userService.save(user);
+        model.addAttribute("project", project);
+        return "redirect:/project/view/"+project.getId();
     }
 
     @GetMapping("/project/all")
@@ -57,6 +75,23 @@ public class ProjectController {
         List<User> users = userService.findAllButMe();
         model.addAttribute("users", users);
         return "project/new";
+    }
+
+    @PostMapping("/admin/project/{id}/addMembers")
+    public String addMembers(@PathVariable("id") int projectId, Model model,
+                             @RequestParam(value = "members" , required = false) int[] members) {
+        Project project = projectService.findById(projectId);
+        if(members != null) {
+            for (int i = 0; i < members.length; i++) {
+                User user = userService.findById(members[0]);
+                System.out.println("Adding user "+user);
+                project.addMember(user);
+                projectService.save(project);
+                user.addProject(project);
+                userService.save(user);
+            }
+        }
+        return "redirect:/project/view/" + project.getId();
     }
 
     @GetMapping("/admin/update/project/{id}")
@@ -102,10 +137,19 @@ public class ProjectController {
             User thisUser = userService.getLoggedInUser();
             projectNew.setManager(thisUser);
             projectNew.addMember(thisUser);
+            //Adding all the users selected in the form
+            for(User member: projectNew.getMembers()){
+                projectNew.addMember(member);
+            }
             Stage stage = new Stage(Status.CHALLENGE_DEFINITION);
             stageService.save(stage);
+            projectNew.setChallengeDefinition(stage);
             projectNew.setCurrentStage(stage);
             projectService.save(projectNew);
+            for(User member: projectNew.getMembers()){
+                member.addProject(projectNew);
+                userService.save(member);
+            }
             thisUser.addProject(projectNew);
             userService.save(thisUser);
             return "redirect:/project/view/" + projectNew.getId();
