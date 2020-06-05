@@ -20,13 +20,11 @@ public class Project {
     private String description;
     @ManyToOne
     private User manager;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
+            mappedBy = "project")
+    Set<ExtremeUserCategory> categories;
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "projects")
     private Set<User> members = new HashSet<>();
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "project_extreme_users",
-            joinColumns = { @JoinColumn(name = "project_id") },
-            inverseJoinColumns = { @JoinColumn(name = "extreme_user_id") })
-    private Set<ExtremeUser> extremeUsers = new HashSet<>();
     @NotNull(message="Η ημερομηνία έναρξης είναι κενή!")
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -112,14 +110,6 @@ public class Project {
 
     public void setUsers(Set<User> users) {
         this.members = users;
-    }
-
-    public Set<ExtremeUser> getExtremeUsers() {
-        return extremeUsers;
-    }
-
-    public void setExtremeUsers(Set<ExtremeUser> extremeUsers) {
-        this.extremeUsers = extremeUsers;
     }
 
     public Set<User> getMembers() {
@@ -265,5 +255,13 @@ public class Project {
 
     public Status getStatus(){
         return this.getCurrentStage().getStatus();
+    }
+
+    public Set<ExtremeUserCategory> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<ExtremeUserCategory> categories) {
+        this.categories = categories;
     }
 }

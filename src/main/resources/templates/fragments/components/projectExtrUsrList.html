@@ -1,0 +1,64 @@
+<div class="col-sm-12 col-lg-6 col-xl-5" xmlns:th="http://www.thymeleaf.org">
+    <div class="card-hover-shadow-2x mb-3 card">
+        <div class="card-header-tab card-header">
+            <div class="card-header-title font-size-lg text-capitalize font-weight-normal">
+                <i class="header-icon pe-7s-users icon-gradient bg-malibu-beach"> </i>Ακραίοι Χρήστες
+            </div>
+            <div class="btn-actions-pane-right text-capitalize actions-icon-btn">
+                <div class="btn-group dropdown">
+                    <button type="button" onclick="hideDiv('extrUsrDIV')" aria-haspopup="true"
+                            aria-expanded="false" class="btn-icon btn-icon-only btn btn-link">
+                        <i class="pe-7s-menu btn-icon-wrapper"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="extrUsrDIV">
+            <div class="scroll-area-md">
+                <div class="scrollbar-container">
+                    <div class="p-2">
+                        <ul th:each="member : ${project.getMembers()}"
+                            class="todo-list-wrapper list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="todo-indicator bg-success"></div>
+                                <div class="widget-content p-0">
+                                    <div class="widget-content-wrapper">
+                                        <div class="widget-content-left mr-2">
+                                            <div class="widget-content-wrapper">
+                                                <img class="rounded-circle" alt="" width="30"
+                                                     th:src="@{/img/avatars/{img}(img=${member.getProfilePic()})}">
+                                            </div>
+                                        </div>
+                                        <div class="widget-content-left flex2">
+                                            <div th:text="${member.getFullName()}" class="widget-heading">
+                                                Name
+                                            </div>
+                                            <div th:text="${member.getEmail()}" class="widget-subheading">
+                                                email
+                                            </div>
+                                        </div>
+                                        <div class="widget-content-right widget-content-actions">
+                                            <div th:if="${project.getManager().getId()==member.getId()}"
+                                                 class="badge badge-warning mr-2">Manager</div>
+                                            <button class="border-0 btn-transition btn btn-outline-danger"
+                                                    th:if="${project.getManager().getId()!=member.getId()
+                                                    and isManager == true}"
+                                                    data-toggle="modal"
+                                                    th:data-target="${'#modal_'+member.getId()}">
+                                                <i class="fa fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${isManager == true}" class="d-block text-center card-footer">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#addExtrUsrModal">
+                    Προσθήκη Ακραίου Χρήστη</button>
+            </div>
+        </div>
+    </div>
+</div>

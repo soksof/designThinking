@@ -49,7 +49,7 @@ public class ProjectController {
     }
 
     @GetMapping("/admin/project/{pid}/member/remove/{id}")
-    public String viewProject(@PathVariable("pid") int projectId, @PathVariable("id") long userId, Model model) {
+    public String removeMember(@PathVariable("pid") int projectId, @PathVariable("id") long userId) {
         Project project = this.projectService.findById(projectId);
         User user = this.userService.findById(userId);
         if (project == null || user == null)
@@ -58,7 +58,16 @@ public class ProjectController {
         projectService.save(project);
         user.removeProject(project);
         userService.save(user);
-        model.addAttribute("project", project);
+        return "redirect:/project/view/"+project.getId();
+    }
+
+
+    @GetMapping("/admin/project/{pid}/nextStage")
+    public String nextStage(@PathVariable("pid") int projectId) {
+        Project project = this.projectService.findById(projectId);
+        if (project == null)
+            return "error/404";
+        projectService.nextStage(project);
         return "redirect:/project/view/"+project.getId();
     }
 
@@ -77,13 +86,16 @@ public class ProjectController {
     }
 
     @PostMapping("/admin/project/{id}/addMembers")
-    public String addMembers(@PathVariable("id") int projectId, Model model,
+    public String addMembers(@PathVariable("id") int projectId,
                              @RequestParam(value = "members" , required = false) int[] members) {
         Project project = projectService.findById(projectId);
+        if (project == null)
+            return "error/404";
+
         if(members != null) {
-            for (int i = 0; i < members.length; i++) {
-                User user = userService.findById(members[i]);
-                System.out.println("Adding user "+user);
+            for(int member : members) {
+                User user = userService.findById(member);
+                System.out.println("Adding user " + user);
                 project.addMember(user);
                 projectService.save(project);
                 user.addProject(project);
@@ -103,7 +115,7 @@ public class ProjectController {
     }
 
     @GetMapping("/admin/delete/project/{id}")
-    public String deleteProject(@PathVariable("id") int projectId, Model model) {
+    public String deleteProject(@PathVariable("id") int projectId) {
         Project project = this.projectService.findById(projectId);
         this.projectService.delete(project);
         return "redirect:/dashboard";
@@ -111,7 +123,7 @@ public class ProjectController {
 
     @Transactional
     @PostMapping("/admin/project/update")
-    public String updateproject(@ModelAttribute("proj") @Valid Project proj, BindingResult bindingRes,
+    public String updateProject(@ModelAttribute("proj") @Valid Project proj, BindingResult bindingRes,
                               Model model) {
         if(!bindingRes.hasErrors()) {
             projectService.save(proj);
@@ -130,7 +142,7 @@ public class ProjectController {
 
     @Transactional
     @PostMapping("/admin/project/new")
-    public String saveproject(@ModelAttribute("projectNew") @Valid Project projectNew, BindingResult bindingRes,
+    public String saveProject(@ModelAttribute("projectNew") @Valid Project projectNew, BindingResult bindingRes,
                               Model model) {
         if (!bindingRes.hasErrors()) {
             User thisUser = userService.getLoggedInUser();

@@ -1,8 +1,6 @@
 package gr.uoi.dthink.model;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 public class ExtremeUser {
@@ -13,9 +11,9 @@ public class ExtremeUser {
     private String lastName;
     @Column(unique = true)
     private String email;
-    private String comments;
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "extremeUsers")
-    private Set<Project> projects = new HashSet<>();
+    private String notes;
+    @ManyToOne
+    private ExtremeUserCategory category;
 
     public ExtremeUser() {
     }
@@ -52,19 +50,19 @@ public class ExtremeUser {
         this.email = email;
     }
 
-    public String getComments() {
-        return comments;
+    public String getNotes() {
+        return notes;
     }
 
-    public void setComments(String comments) {
-        this.comments = comments;
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
-    public Set<Project> getProjects() {
-        return projects;
+    public ExtremeUserCategory getCategory() {
+        return category;
     }
 
-    public void setProjects(Set<Project> projects) {
-        this.projects = projects;
+    public void setCategory(ExtremeUserCategory category) {
+        this.category = category;
     }
 }

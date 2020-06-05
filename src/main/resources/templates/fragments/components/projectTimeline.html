@@ -1,0 +1,49 @@
+<div class="col-md-12 col-lg-6 col-xl-5" xmlns:th="http://www.thymeleaf.org">
+    <div class="card-hover-shadow-2x mb-3 card">
+        <div class="card-header-tab card-header">
+            <div class="card-header-title font-size-lg text-capitalize font-weight-normal">
+                <i class="header-icon pe-7s-date icon-gradient bg-amy-crisp"> </i>
+                Project Timeline
+            </div>
+            <div class="btn-actions-pane-right text-capitalize actions-icon-btn">
+                <div class="btn-group dropdown">
+                    <button type="button" onclick="hideDiv('timelineDIV')" aria-haspopup="true"
+                            aria-expanded="false" class="btn-icon btn-icon-only btn btn-link">
+                        <i class="pe-7s-menu btn-icon-wrapper"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="timelineDIV">
+            <div class="scroll-area-md">
+                <div class="scrollbar-container">
+                    <div class="p-4">
+                        <div class="vertical-time-simple vertical-without-time vertical-timeline
+                                vertical-timeline--animate vertical-timeline--one-column">
+                            <div class="vertical-timeline-item dot-warning vertical-timeline-element"
+                                 th:each="stage : ${project.getStagesList()}">
+                                <div>
+                                    <span class="vertical-timeline-element-icon bounce-in"></span>
+                                    <div class="vertical-timeline-element-content bounce-in">
+                                        <div>
+                                            <span th:text="${stage.getStatus().toString()}">Status</span>
+                                            <span th:text="${stage.getStartDateString()}" class="text-success">PM</span>
+                                            -
+                                            <span th:text="${stage.getEndDateString()}" class="text-warning">PM</span>
+                                            <div th:if="${stage.isLate()}" class="badge badge-danger ml-2">LATE</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${isManager == true}" class="d-block text-center card-footer">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#nextStageModal">
+                    Ολοκλήρωση φάσης
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -56,7 +56,7 @@
                                                     <i class="fa fa-calendar-alt"></i>
                                                 </div>
                                             </div>
-                                            <input type="text" name="startDate" id="startDate" class="datepicker-my form-control"
+                                            <input type="text" name="startDate" id="startDate" class="datepicker form-control"
                                                    data-toggle="datepicker" th:field="*{startDate}">
                                             <em id="startDateError" class="error"
                                                 th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}">
@@ -77,7 +77,7 @@
                                                     <i class="fa fa-calendar-alt"></i>
                                                 </div>
                                             </div>
-                                            <input type="text" name="endDate" id="endDate" class="datepicker-my form-control"
+                                            <input type="text" name="endDate" id="endDate" class="datepicker form-control"
                                                    data-toggle="datepicker" th:field="*{endDate}">
                                             <em id="endDateError" class="error"
                                                 th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}">
@@ -120,7 +120,6 @@
     </div>
     <script>
         $(document).ready(function () {
-            $('#endDate').datepicker({autoclose:true});
             $('.js-example-basic-single').select2();
         });
     </script>
