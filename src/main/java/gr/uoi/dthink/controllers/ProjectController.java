@@ -1,12 +1,7 @@
 package gr.uoi.dthink.controllers;
 
-import gr.uoi.dthink.model.Project;
-import gr.uoi.dthink.model.Stage;
-import gr.uoi.dthink.model.Status;
-import gr.uoi.dthink.model.User;
-import gr.uoi.dthink.services.ProjectService;
-import gr.uoi.dthink.services.StageService;
-import gr.uoi.dthink.services.UserService;
+import gr.uoi.dthink.model.*;
+import gr.uoi.dthink.services.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -25,13 +20,18 @@ public class ProjectController {
     UserService userService;
     ProjectService projectService;
     StageService stageService;
+    ExtremeUserService extremeUserService;
+    ExtremeUserCategoryService extremeUserCategoryService;
 
     public ProjectController(UserController userController, UserService userService, ProjectService projectService,
-                             StageService stageService) {
+                             StageService stageService, ExtremeUserService extremeUserService,
+                             ExtremeUserCategoryService extremeUserCategoryService) {
         this.userController = userController;
         this.userService = userService;
         this.projectService = projectService;
         this.stageService = stageService;
+        this.extremeUserService = extremeUserService;
+        this.extremeUserCategoryService = extremeUserCategoryService;
     }
 
     @GetMapping("/project/view/{id}")
@@ -83,6 +83,23 @@ public class ProjectController {
         List<User> users = userService.findAllButMe();
         model.addAttribute("users", users);
         return "project/new";
+    }
+
+    @PostMapping("/admin/project/{id}/addCategory")
+    public String addCategory(@PathVariable("id") int projectId,
+                              @RequestParam(value = "category" , required = false)ExtremeUserCategory category) {
+        Project project = projectService.findById(projectId);
+        if (project == null)
+            return "error/404";
+
+        if(category != null) {
+            category.setProject(project);
+            System.out.println("Adding extreme user category " + category);
+            this.extremeUserCategoryService.save(category);
+            project.addCategory(category);
+            projectService.save(project);
+        }
+        return "redirect:/project/view/" + project.getId();
     }
 
     @PostMapping("/admin/project/{id}/addMembers")

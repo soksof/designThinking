@@ -13,7 +13,7 @@ public class ExtremeUser {
     private String email;
     private String notes;
     @ManyToOne
-    private ExtremeUserCategory category;
+    private ExtremeUserCategory extremeUserCategory;
 
     public ExtremeUser() {
     }
@@ -59,10 +59,10 @@ public class ExtremeUser {
     }
 
     public ExtremeUserCategory getCategory() {
-        return category;
+        return extremeUserCategory;
     }
 
-    public void setCategory(ExtremeUserCategory category) {
-        this.category = category;
+    public void setCategory(ExtremeUserCategory extremeUserCategory) {
+        this.extremeUserCategory = extremeUserCategory;
     }
 }

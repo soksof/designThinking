@@ -264,4 +264,8 @@ public class Project {
     public void setCategories(Set<ExtremeUserCategory> categories) {
         this.categories = categories;
     }
+
+    public void addCategory(ExtremeUserCategory extremeUserCategory){
+        this.categories.add(extremeUserCategory);
+    }
 }

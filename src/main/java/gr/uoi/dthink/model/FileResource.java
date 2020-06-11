@@ -12,7 +12,7 @@ public class FileResource extends Resource{
     @ManyToOne
     private ResourceType type;
     @ManyToOne
-    private ExtremeUser extremeUser;
+    private ExtremeUserCategory extremeUserCategory;
 
     public String getContent() {
         return content;
@@ -30,12 +30,12 @@ public class FileResource extends Resource{
         this.type = type;
     }
 
-    public ExtremeUser getExtemeUser() {
-        return extremeUser;
+    public ExtremeUserCategory getExtremeUserCategory() {
+        return extremeUserCategory;
     }
 
-    public void setExtemeUser(ExtremeUser extremeUser) {
-        this.extremeUser = extremeUser;
+    public void setExtremeUserCategory(ExtremeUserCategory extremeUserCategory) {
+        this.extremeUserCategory = extremeUserCategory;
     }
 
     public String getDescription() {
