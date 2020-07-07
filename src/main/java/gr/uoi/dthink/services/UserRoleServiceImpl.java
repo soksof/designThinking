@@ -4,6 +4,8 @@ import gr.uoi.dthink.model.UserRole;
 import gr.uoi.dthink.repos.UserRoleRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserRoleServiceImpl implements UserRoleService{
     private final UserRoleRepository userRoleRepository;
@@ -15,5 +17,10 @@ public class UserRoleServiceImpl implements UserRoleService{
     @Override
     public UserRole findByName(String role) {
         return userRoleRepository.findByName(role);
+    }
+
+    @Override
+    public List<UserRole> findAll() {
+        return userRoleRepository.findAll();
     }
 }

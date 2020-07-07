@@ -17,10 +17,18 @@
                         <div class="page-title-subheading"><span th:text="${project.getDescription()}"></span></div>
                     </div>
                 </div>
+                <div class="page-title-actions">
+                    <button type="button" data-toggle="tooltip modal" data-target="#addFindingModal" title="" data-placement="bottom"
+                            class="btn-shadow mr-3 btn btn-alternate" data-original-title="Νέα διαπίστωση">
+                        <i class="fa fa-lightbulb"></i>
+                    </button>
+                </div>
             </div>
         </div>
         <!-- END OF MAIN CONTENT TITLE -->
         <div class="row">
+            <!-- Findings List component -->
+            <th:block layout:insert="~{fragments/components/projectFindingsList}"/>
             <!-- Member List component -->
             <th:block layout:insert="~{fragments/components/projectMemberList}"/>
             <!-- project timeline component -->

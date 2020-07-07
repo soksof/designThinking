@@ -49,7 +49,7 @@
                 </a>
                 <ul>
                     <li>
-                        <a th:if="${role == 'admin'}"  th:href="@{'/admin/project/new'}">
+                        <a th:if="${role == 'admin'}" th:href="@{'/admin/project/new'}">
                             <i class="metismenu-icon"></i>Νέο Project
                         </a>
                     </li>
@@ -64,14 +64,35 @@
                 <a th:href="@{'/profile'}">
                     <i class="metismenu-icon pe-7s-id"></i>Προφίλ Χρήστη</a>
             </li>
-<!--            <li class="app-sidebar__heading">Menu Option B'</li>-->
+
+            <li>
+                <a href="#" th:if="${role == 'admin'}">
+                    <i class="metismenu-icon pe-7s-users"></i>Διαχείριση Χρηστών
+                    <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                </a>
+                <ul>
+                    <li>
+                        <a th:href="@{'/admin/user/new'}">
+                            <i class="metismenu-icon"></i>Προσθήκη νέου χρήστη
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{'/admin/user/all'}">
+                            <i class="metismenu-icon"></i>Λίστα χρηστών
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+            <!--            <li class="app-sidebar__heading">Menu Option B'</li>-->
             <li>
                 <a href="#">
                     <i class="metismenu-icon pe-7s-display1"></i>Υλικό
                     <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
                 </a>
                 <ul>
-                    <li>
+                    <li th:if="${role == 'admin'}">
                         <a th:href="@{'/projectList'}">
                             <i class="metismenu-icon"></i>Προσθήκη νέου υλικού
                         </a>

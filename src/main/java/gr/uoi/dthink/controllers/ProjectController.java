@@ -125,6 +125,9 @@ public class ProjectController {
     @GetMapping("/admin/update/project/{id}")
     public String updateProject(@PathVariable("id") int projectId, Model model) {
         Project project = this.projectService.findById(projectId);
+        if (project == null)
+            return "error/404";
+
         model.addAttribute("proj", project);
         List<User> users = userService.findAllButMe();
         model.addAttribute("users", users);

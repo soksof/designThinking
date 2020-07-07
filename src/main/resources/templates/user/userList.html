@@ -1,0 +1,57 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:with="http://www.thymeleaf.org/extras/with"
+      layout:decorate="~{layout}"
+      with:title="Λίστα χρηστών">
+<th:block layout:fragment="content">
+
+    <div class="app-main__inner">
+        <!-- MAIN CONTENT TITLE -->
+        <div class="app-page-title">
+            <div class="page-title-wrapper">
+                <div class="page-title-heading">
+                    <div class="page-title-icon">
+                        <i class="pe-7s-albums icon-gradient bg-mean-fruit">
+                        </i>
+                    </div>
+                    <div>Λίστα Χρηστών
+                        <div class="page-title-subheading">Εδώ μπορείτε να δείτε μια λίστα με όλους τους χρήστες
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END OF MAIN CONTENT TITLE -->
+        <div class="main-card mb-3 card">
+            <div class="card-body">
+                <table name="users" id="tableUsers" class="mb-0 table table-borderless table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th class="text-center">Email</th>
+                        <th class="text-center">Όνομα</th>
+                        <th class="text-center">Επώνυμο</th>
+                        <th class="text-center">Ρόλος</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${users}">
+                        <td>
+                            <a th:text="${user.getEmail()}" th:href="@{/admin/user/view/{id}(id=${user.getId()})}">
+                                e-mail</a>
+                        </td>
+                        <td th:text="${user.getName()}">Όνομα></td>
+                        <td th:text="${user.getLastName()}">Επώνυμο</td>
+                        <th:block th:with='role=${#strings.toLowerCase(user.getRole())}'>
+                        <td class="text-center">
+                            <div th:if="${role == 'user'}" class="badge badge-info">Συμβουλος</div>
+                            <div th:if="${role == 'admin'}" class="badge badge-warning">Διαχειριστης</div>
+                        </td>
+                        </th:block>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+</html>

@@ -95,8 +95,8 @@ public class Application {
             project2 = pr.save(project2);
 
             //users
-            User sok = new User("Σωκράτης", "Σοφιανόπουλος", "s_sofian@ilsp.gr", "12345678", urr.findByName("ADMIN"));
-            User vPapa = new User("Βασίλης", "Παπαβασιλείου", "vpapa@ilsp.gr", "12345678", urr.findByName("ADMIN"));
+            User sok = new User("Σωκράτης", "Σοφιανόπουλος", "sokratis@dthink.gr", "12345678", urr.findByName("ADMIN"));
+            User vPapa = new User("Βασίλης", "Παπαβασιλείου", "vassilis@dthink.gr", "12345678", urr.findByName("ADMIN"));
             User chris = new User("Χριστόφορος", "Νίκου", "cnikou@cse.uoi.gr", "12345678", urr.findByName("USER"));
             sok.addProject(project1);
             sok.addProject(project2);

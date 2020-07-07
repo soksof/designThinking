@@ -1,0 +1,110 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:with="http://www.thymeleaf.org/extras/with"
+      layout:decorate="~{layout}"
+      with:title="Δημιουργία νέου χρήστη">
+<th:block layout:fragment="content">
+
+    <div class="app-main__inner">
+        <!-- MAIN CONTENT TITLE -->
+        <div class="app-page-title">
+            <div class="page-title-wrapper">
+                <div class="page-title-heading">
+                    <div class="page-title-icon">
+                        <i class="pe-7s-add-user icon-gradient bg-mean-fruit">
+                        </i>
+                    </div>
+                    <div>Νέος χρήστης
+                        <div class="page-title-subheading">Παρακαλώ συμπληρώστε τα παρακάτω πεδία
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END OF MAIN CONTENT TITLE -->
+
+        <div class="main-card mb-3 card">
+            <div class="card-body">
+                <form action="#" th:action="@{/admin/user/new}" th:object="${userNew}" method="post"
+                      class="needs-validation" novalidate>
+                    <div class="form-row">
+                        <div class="col-md-3">
+                            <div class="position-relative form-group"><label for="name">Όνομα</label>
+                                <input name="name" id="name" th:field="*{name}" placeholder="Όνομα χρήστη"
+                                       type="text" class="form-control">
+                                <em id="nameError" class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                                    name ERROR</em>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="position-relative form-group"><label for="lastName">Επώνυμο</label>
+                                <input name="lastName" id="lastName" th:field="*{lastName}" placeholder="Επώνυμο χρήστη"
+                                       type="text" class="form-control">
+                                <em id="lastNameError" class="error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">
+                                    lastName ERROR</em>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-3">
+                            <div class="position-relative form-group"><label for="email">Email</label>
+                                <input name="email" id="email" th:field="*{email}" placeholder="Email χρήστη"
+                                       type="text" class="form-control">
+                                <em id="emailError" class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+                                    email ERROR</em>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="position-relative form-group"><label for="role">Ρόλος στην πλατφόρμα</label>
+                                <select class="form-control js-example-basic-single " id="role" name="role"
+                                        th:field="*{role}">
+                                    <option value="" selected></option>
+                                    <option th:each="role : ${userRoles}"
+                                            th:value="${role.getId()}"
+                                            th:text="${role.getName()}">
+                                    </option>
+                                </select>
+                                <em id="roleError" class="error" th:if="${#fields.hasErrors('role')}" th:errors="*{role}">
+                                    Role ERROR</em>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-3">
+                            <div class="position-relative form-group"><label for="password">Κωδικός</label>
+                                <input name="password" id="password" th:field="*{password}"
+                                       type="password" class="form-control">
+                                <em id="passwordError" class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                                    password ERROR</em>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-3">
+                            <div class="position-relative form-group"><label for="passwordConfirm">Επανάληψη Κωδικού</label>
+                                <input name="passwordConfirm" id="passwordConfirm" th:field="*{passwordConfirm}"
+                                       type="password" class="form-control">
+                                <em id="passwordConfirmError" class="error" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}">
+                                    password Confirm ERROR</em>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="clearfix">
+                        <button type="submit" id="createUser"
+                                class="btn-shadow btn-wide btn-hover-shine btn btn-primary">
+                            Δημιουργία χρήστη</button>
+                        <button type="button" id="cancel"
+                                class="btn-shadow btn-wide float-right btn-hover-shine btn btn-secondary">
+                            Άκυρο</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('.js-example-basic-single').select2();
+        });
+    </script>
+</th:block>
+</html>
