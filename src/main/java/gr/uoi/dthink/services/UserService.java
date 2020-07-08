@@ -17,6 +17,7 @@ public interface UserService {
     Set<Project> findAllProjects();
     User initSave(User user);
     User save(User user);
+    User update(User user);
     List<User> findAll();
     List<User> findAllButMe();
     List<User> findAllButMembers(Project project);

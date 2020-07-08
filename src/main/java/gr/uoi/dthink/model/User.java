@@ -1,6 +1,9 @@
 package gr.uoi.dthink.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.*;
 
 @Entity
@@ -8,14 +11,19 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotEmpty(message="Το όνομα χρήστη είναι κενό!")
     private String name;
+    @NotEmpty(message="Το επώνυμο είναι κενό!")
     private String lastName;
     @Column(unique = true)
+    @NotEmpty(message="Το email χρήστη είναι κενό!")
     private String email;
+    @Size(min = 8, max = 30, message="Ο κωδικός πρέπει να αποτελείται από 8 έως και 30 χαρακτήρες")
     private String password;
     @Transient
     private String passwordConfirm;
     private String profilePic;
+    @NotNull(message="Ο ρόλος του χρήστη είναι κενός!")
     @ManyToOne
     private UserRole role;
     @Temporal(TemporalType.TIMESTAMP)

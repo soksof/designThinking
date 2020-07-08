@@ -55,8 +55,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="position-relative form-group"><label for="role">Ρόλος στην πλατφόρμα</label>
-                                <select class="form-control js-example-basic-single " id="role" name="role"
-                                        th:field="*{role}">
+                                <select class="mb-2 form-control" id="role" name="role" th:field="*{role}">
                                     <option value="" selected></option>
                                     <option th:each="role : ${userRoles}"
                                             th:value="${role.getId()}"

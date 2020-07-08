@@ -38,12 +38,11 @@
                     </div>
                     <div class="position-relative form-group">
                         <label for="description">Περιγραφή</label>
-                        <textarea name="description" id="description" class="form-control"></textarea>
+                        <textarea name="description" id="description" class="form-control" th:field="*{description}"></textarea>
                         <em id="descriptionError" class="error" th:if="${#fields.hasErrors('description')}"
                             th:errors="*{description}">
                             description ERROR</em>
                     </div>
-
                     <div class="form-row">
                         <div class="col-md-4">
                             <div class="input-group">
@@ -94,7 +93,7 @@
                     <div class="form-row">
                         <div class="col-md-4">
                         <label for="members">Μέλη Ομάδας
-                        <select class="js-example-basic-single" name="members" id="members" th:field="*{members}"
+                        <select class="mb-2 form-control js-example-basic-single" name="members" id="members" th:field="*{members}"
                                 multiple="multiple">
                             <option th:each="user : ${users}"
                                     th:value="${user.getId()}"
