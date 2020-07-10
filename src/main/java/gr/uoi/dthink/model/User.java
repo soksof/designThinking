@@ -18,7 +18,7 @@ public class User {
     @Column(unique = true)
     @NotEmpty(message="Το email χρήστη είναι κενό!")
     private String email;
-    @Size(min = 8, max = 30, message="Ο κωδικός πρέπει να αποτελείται από 8 έως και 30 χαρακτήρες")
+    @Size(min = 8, message="Ο κωδικός πρέπει να αποτελείται από τουλάχιστον 8 χαρακτήρες")
     private String password;
     @Transient
     private String passwordConfirm;
