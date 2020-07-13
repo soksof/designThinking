@@ -2,11 +2,7 @@ package gr.uoi.dthink.model;
 
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -47,12 +43,23 @@ public class Resource {
         return createdOn;
     }
 
+    @PrePersist
+    protected void onCreate() {
+        this.setCreatedOn(new Date());
+        this.setUpdatedOn(this.getCreatedOn());
+    }
+
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
     }
 
     public Date getUpdatedOn() {
         return updatedOn;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        setUpdatedOn(new Date());
     }
 
     public void setUpdatedOn(Date updatedOn) {

@@ -10,46 +10,142 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="card-hover-shadow-2x mb-3 card">
-                    <div class="scroll-area-md">
-                        <div class="scrollbar-container">
-                            <div class="p-2">
-                                <ul class="todo-list-wrapper list-group list-group-flush">
-                                    <li th:each="member : ${usersNotInProject}" class="list-group-item">
-                                        <div class="todo-indicator bg-success"></div>
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-wrapper">
-                                                <div class="widget-content-left mr-2">
-                                                    <div class="custom-checkbox custom-control">
-                                                        <input type="checkbox" name="members"
-                                                               th:id="${'cb'+member.getId()}"
-                                                               th:value="${member.getId()}" class="custom-control-input">
-                                                        <label class="custom-control-label" th:for="${'cb'+member.getId()}">&nbsp;</label>
-                                                    </div>
-                                                </div>
-                                                <div class="widget-content-left mr-3">
-                                                    <div class="widget-content-left">
-                                                        <img class="rounded" alt="" width="30"
-                                                             th:src="@{/img/avatars/{img}(img=${member.getProfilePic()})}">
-                                                    </div>
-                                                </div>
-                                                <div class="widget-content-left flex2">
-                                                    <div th:text="${member.getFullName()}" class="widget-heading">
-                                                        Name
-                                                    </div>
-                                                    <div th:text="${member.getEmail()}" class="widget-subheading">
-                                                        email
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-
+                <form action="#" th:action="@{/project/resource/new}" th:object="${fileResourceNew}" method="post"
+                      class="needs-validation" novalidate>
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <div class="position-relative form-group"><label for="title">Τίτλος</label>
+                                <input name="title" id="title" th:field="*{title}" placeholder="Τίτλος resouce"
+                                       type="text" class="form-control">
+                                <em id="titleError" class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">
+                                    title ERROR</em>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="position-relative form-group">
+                        <label for="description">Περιγραφή</label>
+                        <textarea name="description" id="description" class="form-control" th:field="*{description}"></textarea>
+                        <em id="descriptionError" class="error" th:if="${#fields.hasErrors('description')}"
+                            th:errors="*{description}">
+                            description ERROR</em>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="position-relative form-group">
+                                    <div class="card-body">
+                                        <label for="startDate">Ημερομηνία Έναρξης</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend datepicker-trigger">
+                                                <div class="input-group-text">
+                                                    <i class="fa fa-calendar-alt"></i>
+                                                </div>
+                                            </div>
+                                            <input type="text" name="startDate" id="startDate" class="datepicker form-control"
+                                                   data-toggle="datepicker" th:field="*{startDate}">
+                                            <em id="startDateError" class="error"
+                                                th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}">
+                                                start date ERROR</em>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="position-relative form-group">
+                                    <div class="card-body">
+                                        <label for="endDate">Ημερομηνία Λήξης</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend datepicker-trigger">
+                                                <div class="input-group-text">
+                                                    <i class="fa fa-calendar-alt"></i>
+                                                </div>
+                                            </div>
+                                            <input type="text" name="endDate" id="endDate" class="datepicker form-control"
+                                                   data-toggle="datepicker" th:field="*{endDate}">
+                                            <em id="endDateError" class="error"
+                                                th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}">
+                                                end date ERROR</em>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-4">
+                            <label for="members">Μέλη Ομάδας
+                                <select class="mb-2 form-control js-example-basic-single" name="members" id="members" th:field="*{members}"
+                                        multiple="multiple">
+                                    <option th:each="user : ${users}"
+                                            th:value="${user.getId()}"
+                                            th:text="${user.getFullName()}">
+                                    </option>
+                                </select>
+                                <em id="membersError" class="error" th:if="${#fields.hasErrors('members')}"
+                                    th:errors="*{members}">
+                                    members ERROR</em>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="clearfix">
+                        <button type="submit" id="createProject"
+                                class="btn-shadow btn-wide float-right btn-hover-shine btn btn-primary">
+                            <!--                                class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">-->
+                            Δημιουργία</button>
+                    </div>
+                </form>
+
+
+
+
+
+
+<!--                <div class="card-hover-shadow-2x mb-3 card">-->
+<!--                    <div class="scroll-area-md">-->
+<!--                        <div class="scrollbar-container">-->
+<!--                            <div class="p-2">-->
+<!--                                <ul class="todo-list-wrapper list-group list-group-flush">-->
+<!--                                    <li th:each="member : ${usersNotInProject}" class="list-group-item">-->
+<!--                                        <div class="todo-indicator bg-success"></div>-->
+<!--                                        <div class="widget-content p-0">-->
+<!--                                            <div class="widget-content-wrapper">-->
+<!--                                                <div class="widget-content-left mr-2">-->
+<!--                                                    <div class="custom-checkbox custom-control">-->
+<!--                                                        <input type="checkbox" name="members"-->
+<!--                                                               th:id="${'cb'+member.getId()}"-->
+<!--                                                               th:value="${member.getId()}" class="custom-control-input">-->
+<!--                                                        <label class="custom-control-label" th:for="${'cb'+member.getId()}">&nbsp;</label>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="widget-content-left mr-3">-->
+<!--                                                    <div class="widget-content-left">-->
+<!--                                                        <img class="rounded" alt="" width="30"-->
+<!--                                                             th:src="@{/img/avatars/{img}(img=${member.getProfilePic()})}">-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="widget-content-left flex2">-->
+<!--                                                    <div th:text="${member.getFullName()}" class="widget-heading">-->
+<!--                                                        Name-->
+<!--                                                    </div>-->
+<!--                                                    <div th:text="${member.getEmail()}" class="widget-subheading">-->
+<!--                                                        email-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                </ul>-->
+
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
