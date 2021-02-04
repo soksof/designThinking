@@ -73,8 +73,9 @@
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy</artifactId>
+            <artifactId>groovy-all</artifactId>
             <version>3.0.7</version>
+            <type>pom</type>
         </dependency>
 
         <dependency>
