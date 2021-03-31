@@ -10,4 +10,5 @@ public interface CommentService {
     List<Comment> findByUser(User user);
     List<Comment> findByProject(Project project);
     List<Comment> findByProjectAndUser(Project project, User user);
+    Comment save(Comment comment);
 }

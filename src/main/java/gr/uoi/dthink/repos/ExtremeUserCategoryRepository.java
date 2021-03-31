@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ExtremeUserCategoryRepository extends JpaRepository<ExtremeUserCategory, Long> {
+public interface ExtremeUserCategoryRepository extends JpaRepository<ExtremeUserCategory, Integer> {
     Optional<ExtremeUserCategory> findByName(String name);
     List<ExtremeUserCategory> findAllByProject(Project project);
 }

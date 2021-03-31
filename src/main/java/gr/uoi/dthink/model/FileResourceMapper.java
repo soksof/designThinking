@@ -1,11 +1,11 @@
 package gr.uoi.dthink.model;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
-@Entity
-public class FileResource extends Resource{
+public class FileResourceMapper extends Resource{
     private String description;
     @Column(columnDefinition = "MEDIUMTEXT")
     private String content;
@@ -13,13 +13,13 @@ public class FileResource extends Resource{
     private ResourceType type;
     @ManyToOne
     private ExtremeUserCategory extremeUserCategory;
-    private String fileName;
+    private MultipartFile file;
 
-    public FileResource(){
+    public FileResourceMapper(){
 
     }
 
-    public FileResource(FileResourceMapper file){
+    public FileResourceMapper(FileResource file){
         this.setId(file.getId());
         this.setTitle(file.getTitle());
         this.setProject(file.getProject());
@@ -27,7 +27,7 @@ public class FileResource extends Resource{
         this.setContent(file.getContent());
         this.setType(file.getType());
         this.setExtremeUserCategory(file.getExtremeUserCategory());
-        this.setFileName(file.getFile().getOriginalFilename());
+        //this.setFile(file.getFileName());
         this.setUser(file.getUser());
         this.setCreatedOn(file.getCreatedOn());
         this.setUpdatedOn(file.getUpdatedOn());
@@ -71,15 +71,15 @@ public class FileResource extends Resource{
         this.description = description;
     }
 
-    public String getFileName() {
-        return fileName;
+    public MultipartFile getFile() {
+        return file;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setFile(MultipartFile file) {
+        this.file = file;
     }
 
-    public FileResourceMapper getFileResourceMapper(){
-        return new FileResourceMapper(this);
+    public FileResource getFileResource(){
+        return new FileResource(this);
     }
 }

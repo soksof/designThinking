@@ -9,17 +9,17 @@ import javax.persistence.ManyToOne;
 public class ExtremeUserCategory {
     @Id
     @GeneratedValue
-    private long id;
+    private int id;
     private String name;
     private String description;
     @ManyToOne
     private Project project;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

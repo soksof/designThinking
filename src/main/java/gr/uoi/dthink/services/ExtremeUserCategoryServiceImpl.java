@@ -21,7 +21,7 @@ public class ExtremeUserCategoryServiceImpl implements ExtremeUserCategoryServic
     }
 
     @Override
-    public ExtremeUserCategory findById(long id) {
+    public ExtremeUserCategory findById(int id) {
         return extremeUserCategoryRepository.findById(id).orElse(null);
     }
 

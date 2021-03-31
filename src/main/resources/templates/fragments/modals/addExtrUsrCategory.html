@@ -1,7 +1,7 @@
 <div class="modal fade" id="addExtrUsrCatModal" tabindex="-1" role="dialog" data-backdrop="false"
      aria-labelledby="addExtrUsrCatModalTitle" aria-hidden="true" xmlns:th="http://www.thymeleaf.org">
     <div class="modal-dialog" role="document">
-        <form class="modal-content" th:action="@{/admin/project/{pid}/addCategory(pid=${project.getId()})}"
+        <form class="modal-content" th:action="@{/project/{pid}/addCategory(pid=${project.getId()})}"
               action="#" method="POST">
             <div class="modal-header">
                 <h5 class="modal-title" id="addMemberModalTitle">Προσθήκη νέας κατηγορίας ακραίων χρηστών</h5>

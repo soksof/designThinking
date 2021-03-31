@@ -1,6 +1,7 @@
 package gr.uoi.dthink.model;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -17,8 +18,12 @@ public class Comment {
     private User user;
     @ManyToOne
     private Project project;
-    @Temporal(TemporalType.TIMESTAMP)
     private Date createdOn;
+
+    @PrePersist
+    protected void onCreate() {
+        this.setCreatedOn(new Date());
+    }
 
     public long getId() {
         return id;
@@ -54,6 +59,10 @@ public class Comment {
 
     public Date getCreatedOn() {
         return createdOn;
+    }
+
+    public String getDateOnly(){
+        return new SimpleDateFormat("dd/MM/yyyy").format(this.createdOn);
     }
 
     public void setCreatedOn(Date createdOn) {

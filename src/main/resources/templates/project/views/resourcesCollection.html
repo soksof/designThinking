@@ -5,44 +5,44 @@
       with:title="Project Dashboard">
 <th:block layout:fragment="content">
     <th:block th:with='role=${#strings.toLowerCase(#authentication.principal.authorities[0]).replace("role_", "")}'>
-    <div class="app-main__inner">
-        <!-- MAIN CONTENT TITLE -->
-        <div class="app-page-title">
-            <div class="page-title-wrapper">
-                <div class="page-title-heading">
-                    <div class="page-title-icon">
-                        <i class="pe-7s-albums icon-gradient bg-mean-fruit"></i>
+        <div class="app-main__inner">
+            <!-- MAIN CONTENT TITLE -->
+            <div class="app-page-title">
+                <div class="page-title-wrapper">
+                    <div class="page-title-heading">
+                        <div class="page-title-icon">
+                            <i class="pe-7s-albums icon-gradient bg-mean-fruit"></i>
+                        </div>
+                        <div><span th:text="${project.getName()}"></span>
+                            <div class="page-title-subheading"><span th:text="${project.getDescription()}"></span></div>
+                        </div>
                     </div>
-                    <div><span th:text="${project.getName()}"></span>
-                        <div class="page-title-subheading"><span th:text="${project.getDescription()}"></span></div>
+                    <div class="page-title-actions">
+
+                        <a th:href="@{/project/{pid}/resource/new(pid=${project.getId()})}">
+                            <button type="button" title="Προσθήκη Υλικού" class="btn-shadow mr-3 btn btn-alternate">
+                                <i class="fa fa-upload"></i>
+                            </button>
+                        </a>
                     </div>
-                </div>
-                <div class="page-title-actions">
-                    <button type="button" data-toggle="modal" data-target="#addResourceModal" title="" data-placement="bottom"
-                            class="btn-shadow mr-3 btn btn-alternate" data-original-title="Προσθήκη νέου υλικού">
-                        <i class="fa fa-upload fa-4x"></i>
-                    </button>
                 </div>
             </div>
+            <!-- END OF MAIN CONTENT TITLE -->
+            <div class="row">
+                <!-- Findings List component -->
+                <th:block layout:insert="~{fragments/components/projectResourcesList}"/>
+                <!-- Member List component -->
+<!--                <th:block layout:insert="~{fragments/components/projectMemberList}"/>-->
+                <!-- project timeline component -->
+                <th:block layout:insert="~{fragments/components/projectTimeline}"/>
+            </div>
         </div>
-        <!-- END OF MAIN CONTENT TITLE -->
-
-        <th:block layout:insert="~{fragments/components/projectResourcesList}"/>
-
-        <div class="row">
-            <!-- Member List component -->
-            <th:block layout:insert="~{fragments/components/projectMemberList}"/>
-            <!-- project timeline component -->
-            <th:block layout:insert="~{fragments/components/projectTimeline}"/>
-        </div>
-    </div>
-        <!-- Add resource modal -->
-        <th:block layout:insert="~{fragments/modals/addResource}"/>
         <!-- Add member modal -->
-        <th:block layout:insert="~{fragments/modals/addMembers}"/>
-        <!-- Delete confirmation modals -->
-        <th:block layout:insert="~{fragments/modals/removeMemberConfirm}"/>
+<!--        <th:block layout:insert="~{fragments/modals/addMembers}"/>-->
+<!--        &lt;!&ndash; Delete confirmation modals &ndash;&gt;-->
+<!--        <th:block layout:insert="~{fragments/modals/removeMemberConfirm}"/>-->
         <!-- Complete stage confirmation modal -->
+<!--        <th:block layout:insert="~{fragments/modals/addResourceCommentModal}"/>-->
         <th:block layout:insert="~{fragments/modals/nextStageConfirm}"/>
     </th:block>
 </th:block>

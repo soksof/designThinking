@@ -23,12 +23,13 @@
         <div class="row">
             <!-- Member List component -->
             <th:block layout:insert="~{fragments/components/projectMemberList}"/>
-            <!-- project timeline component -->
-            <th:block layout:insert="~{fragments/components/projectTimeline}"/>
-        </div>
-        <div class="row">
             <!-- Extreme User Categories List component -->
             <th:block layout:insert="~{fragments/components/projectExtrUsrCatList}"/>
+
+        </div>
+        <div class="row">
+            <!-- project timeline component -->
+            <th:block layout:insert="~{fragments/components/projectTimeline}"/>
         </div>
     </div>
         <!-- Add member modal -->
@@ -39,6 +40,8 @@
         <th:block layout:insert="~{fragments/modals/nextStageConfirm}"/>
         <!-- Add extreme user category modal -->
         <th:block layout:insert="~{fragments/modals/addExtrUsrCategory}"/>
+        <!-- Delete confirmation modals -->
+        <th:block layout:insert="~{fragments/modals/removeExtrUsrCategoryConfirm}"/>
     </th:block>
 </th:block>
 </html>

@@ -1,10 +1,12 @@
 package gr.uoi.dthink.model;
 
+import gr.uoi.dthink.services.FileResourceService;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -25,6 +27,9 @@ public class Project {
     Set<ExtremeUserCategory> categories;
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "projects")
     private Set<User> members = new HashSet<>();
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
+            mappedBy = "project")
+    private Set<FileResource> fileResources = new HashSet<>();
     @NotNull(message="Η ημερομηνία έναρξης είναι κενή!")
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -126,6 +131,10 @@ public class Project {
 
     public void removeMember(User member){
         this.members.remove(member);
+    }
+
+    public void removeExtremeUserCategory(ExtremeUserCategory category){
+        this.categories.remove(category);
     }
 
     public Date getStartDate() {
@@ -267,5 +276,22 @@ public class Project {
 
     public void addCategory(ExtremeUserCategory extremeUserCategory){
         this.categories.add(extremeUserCategory);
+    }
+
+    public Set<FileResource> getFileResources() {
+
+        System.out.println("---->" +this.fileResources.size());
+        return this.fileResources;
+    }
+
+    public void addFileResource(FileResource fileResource){
+        System.out.println("BEFORE: "+this.fileResources.size());
+        this.fileResources.add(fileResource);
+        System.out.println("AFTER:"+this.fileResources.size());
+    }
+
+    public void setFileResources(Set<FileResource> fileResources) {
+        this.fileResources = new HashSet<>();
+        this.fileResources.addAll(fileResources);
     }
 }

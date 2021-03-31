@@ -1,5 +1,6 @@
 package gr.uoi.dthink.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
@@ -17,9 +18,9 @@ public class Resource {
     private Project project;
     private
     @OneToMany
-    List<Comment> comments;
+    List<Comment> comments = new ArrayList<>();
     @OneToMany
-    List<Reaction> reactions;
+    List<Reaction> reactions = new ArrayList<>();
     @ManyToOne
     private User user;
 
@@ -79,7 +80,12 @@ public class Resource {
     }
 
     public void setComments(List<Comment> comments) {
-        this.comments = comments;
+        this.comments = new ArrayList<Comment>();
+        this.comments.addAll(comments);
+    }
+
+    public void addComment(Comment comment){
+        this.comments.add(comment);
     }
 
     public List<Reaction> getReactions() {
@@ -87,8 +93,14 @@ public class Resource {
     }
 
     public void setReactions(List<Reaction> reactions) {
-        this.reactions = reactions;
+        this.reactions = new ArrayList<Reaction>();
+        this.reactions.addAll(reactions);
     }
+
+    public void addReaction(Reaction reaction){
+        this.reactions.add(reaction);
+    }
+
     public User getUser() {
         return user;
     }

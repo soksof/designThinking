@@ -30,7 +30,7 @@ public class Application {
             return null;
         }
     }
-
+/*
     @Bean
     ApplicationRunner init(UserRoleRepository urr, UserService us, ProjectRepository pr, ResourceTypeRepository rtr,
                            StageRepository stageRepository) {
@@ -43,7 +43,7 @@ public class Application {
             });
 
             //Resource types
-            Stream.of("IMAGE", "ZIP", "AUDIO", "PDF", "EXCEL FILE", "WORD DOCUMENT", "VIDEO", "URL").forEach(type -> {
+            Stream.of("IMAGE", "ZIP", "AUDIO", "PDF", "EXCEL FILE", "WORD DOCUMENT", "VIDEO", "URL", "TXT").forEach(type -> {
                 ResourceType rType = new ResourceType(type);
                 rtr.save(rType);
             });
@@ -112,5 +112,5 @@ public class Application {
             pr.save(project1);
             pr.save(project2);
         };
-    }
+    }*/
 }

@@ -30,4 +30,9 @@ public class CommentServiceImpl implements CommentService {
     public List<Comment> findByProjectAndUser(Project project, User user) {
         return commentRepository.findByProjectAndUser(project, user);
     }
+
+    @Override
+    public Comment save(Comment comment) {
+        return commentRepository.save(comment);
+    }
 }

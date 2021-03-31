@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ResourceTypeRepository extends JpaRepository<ResourceType, Integer> {
+    ResourceType findByType(String type);
+
 }

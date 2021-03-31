@@ -1,0 +1,43 @@
+<div xmlns:th="http://www.thymeleaf.org">
+    <div th:each="resource : ${project.getFileResources()}">
+        <div class="modal fade bd-example-modal-sm" data-backdrop="false"
+             tabindex="-1" role="dialog" th:id="${'addResourceCommentModal_'+resource.getId()}"
+             aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">
+                            Σχόλιο</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="#" th:action="@{/resource/{rid}/addComment(rid=${resource.getId()})}" method="post">
+                        <div class="modal-body form-group">
+                            <input name="comment" id="comment" placeholder="......" type="text" class="form-control">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Άκυρο</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function hideDiv(divId) {
+            let x = document.getElementById(divId);
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
+    <style>
+        .modal {
+            padding-top: 3%;
+        }
+    </style>
+</div>

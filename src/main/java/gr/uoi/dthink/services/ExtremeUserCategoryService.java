@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ExtremeUserCategoryService {
     List<ExtremeUserCategory> findByProject(Project project);
-    ExtremeUserCategory findById(long id);
+    ExtremeUserCategory findById(int id);
     ExtremeUserCategory findByName(String name);
     ExtremeUserCategory save(ExtremeUserCategory category);
     void delete(ExtremeUserCategory category);

@@ -1,37 +1,58 @@
 package gr.uoi.dthink.controllers;
 
+import gr.ilsp.extractor.Extractor;
+import gr.ilsp.utils.ContentNormalizer;
+import gr.ilsp.utils.XMLExporter;
 import gr.uoi.dthink.model.*;
 import gr.uoi.dthink.services.*;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 
 // TODO: Add logger with all the actions
 @Controller
 public class ProjectController {
+    private final String UPLOAD_DIR = "uploads/";
     UserController userController;
     UserService userService;
     ProjectService projectService;
     StageService stageService;
-    ExtremeUserService extremeUserService;
     ExtremeUserCategoryService extremeUserCategoryService;
+    FileResourceService fileResourceService;
+    ResourceTypeService resourceTypeService;
+    CommentService commentService;
 
     public ProjectController(UserController userController, UserService userService, ProjectService projectService,
-                             StageService stageService, ExtremeUserService extremeUserService,
-                             ExtremeUserCategoryService extremeUserCategoryService) {
+                             StageService stageService, ExtremeUserCategoryService extremeUserCategoryService,
+                             FileResourceService fileResourceService, ResourceTypeService resourceTypeService,
+                             CommentService commentService) {
         this.userController = userController;
         this.userService = userService;
         this.projectService = projectService;
         this.stageService = stageService;
-        this.extremeUserService = extremeUserService;
         this.extremeUserCategoryService = extremeUserCategoryService;
+        this.fileResourceService = fileResourceService;
+        this.resourceTypeService = resourceTypeService;
+        this.commentService = commentService;
     }
 
     @GetMapping("/project/view/{id}")
@@ -45,6 +66,9 @@ public class ProjectController {
         List<User> users = userService.findAllButMembers(project);
         model.addAttribute("usersNotInProject", users);
         String status = project.getCurrentStage().getStatus().getView();
+        if(status.compareTo("challengeDefinition")==0) {
+            model.addAttribute("newFileResource", new FileResource());
+        }
         return "project/views/"+status;
     }
 
@@ -61,6 +85,17 @@ public class ProjectController {
         return "redirect:/project/view/"+project.getId();
     }
 
+    @GetMapping("/admin/project/{pid}/cat/remove/{id}")
+    public String removeCategory(@PathVariable("pid") int projectId, @PathVariable("id") int catId) {
+        Project project = this.projectService.findById(projectId);
+        ExtremeUserCategory category = this.extremeUserCategoryService.findById(catId);
+        if (project == null || category == null)
+            return "error/404";
+        project.removeExtremeUserCategory(category);
+        projectService.save(project);
+        extremeUserCategoryService.delete(category);
+        return "redirect:/project/view/"+project.getId();
+    }
 
     @GetMapping("/admin/project/{pid}/nextStage")
     public String nextStage(@PathVariable("pid") int projectId) {
@@ -85,14 +120,18 @@ public class ProjectController {
         return "project/new";
     }
 
-    @PostMapping("/admin/project/{id}/addCategory")
+    @PostMapping("/project/{id}/addCategory")
     public String addCategory(@PathVariable("id") int projectId,
-                              @RequestParam(value = "category" , required = false)ExtremeUserCategory category) {
+                              @RequestParam(value = "name" , required = true)String name,
+                              @RequestParam(value = "description" , required = true)String description) {
         Project project = projectService.findById(projectId);
         if (project == null)
             return "error/404";
 
-        if(category != null) {
+        if(name.strip().compareTo("") != 0) {
+            ExtremeUserCategory category = new ExtremeUserCategory();
+            category.setName(name);
+            category.setDescription(description.strip());
             category.setProject(project);
             System.out.println("Adding extreme user category " + category);
             this.extremeUserCategoryService.save(category);
@@ -100,6 +139,137 @@ public class ProjectController {
             projectService.save(project);
         }
         return "redirect:/project/view/" + project.getId();
+    }
+
+
+    @PostMapping("/resource/{rid}/addComment")
+    public String addComment(@PathVariable("rid") int resourceId,
+                              @RequestParam(value = "comment" , required = true)String strComment) {
+        FileResource resource = fileResourceService.findById(resourceId);
+        if (resource == null)
+            return "error/404";
+
+        if(strComment.strip().compareTo("") != 0) {
+            Comment comment  = new Comment();
+            comment.setDescription(strComment);
+            comment.setUser(userService.getLoggedInUser());
+            comment.setProject(resource.getProject());
+            commentService.save(comment);
+            resource.addComment(comment);
+            System.out.println("Adding comment " + comment);
+            fileResourceService.save(resource);
+        }
+        return "redirect:/project/view/" + resource.getProject().getId();
+    }
+
+    @GetMapping("/project/{id}/resource/new")
+    public String newResource(@PathVariable("id") int projectId, Model model) {
+        Project project = projectService.findById(projectId);
+        if(project == null)
+            return "error/404";
+
+        Status status = project.getCurrentStage().getStatus();
+        if(!status.equals(Status.RESOURCE_COLLECTION)) {
+            return "error/403";
+        }
+        FileResourceMapper resourceNew = new FileResourceMapper();
+        resourceNew.setProject(project);
+        model.addAttribute("resourceNew", resourceNew);
+        List<ResourceType> fileResourceTypes = resourceTypeService.findAllFileTypes();
+        model.addAttribute("resourceTypes", fileResourceTypes);
+        return "project/resource/new";
+    }
+
+    public String extract(String fileName) throws IOException {
+        XMLExporter.DocData data = XMLExporter.initDocData();
+        Extractor extr = new Extractor();
+        File infile = new File(fileName);
+        try {
+            data = extr.extract(infile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String text = data.content;
+
+        text = ContentNormalizer.removeBoilerPars(text);
+        String text1 = ContentNormalizer.removeTextTags(text);
+        System.out.println(text1);
+        //FileUtils.writeStringToFile(new File(infile.getAbsolutePath()+Constants.EXTENSION_TXT), text1, Constants.UTF8);
+        return text1;
+    }
+
+    @Transactional
+    @PostMapping("/project/{id}/resource/new")
+    public String addResource(@PathVariable("id") int projectId,
+                              @ModelAttribute("resourceNew") @Valid FileResourceMapper resourceNew,
+                              BindingResult bindingRes, Model model){
+        if (bindingRes.hasErrors()) {
+            System.out.println("ERRORS");
+            for(ObjectError error: bindingRes.getAllErrors()){
+                System.out.println(error.getDefaultMessage());
+            }
+            return "project/resource/new";
+        }
+
+        // check if file is empty
+        if (resourceNew.getFile().isEmpty()) {
+            return "project/resource/new";
+        }
+
+        Project project = projectService.findById(projectId);
+        FileResource fileResource = new FileResource(resourceNew);
+        fileResource.setProject(project);
+
+        // normalize the file path
+        String fileName = StringUtils.cleanPath(resourceNew.getFile().getOriginalFilename());
+        // save the file on the local file system
+        try {
+            File directory = new File(UPLOAD_DIR.concat("p"+projectId));
+            if (! directory.exists())
+                directory.mkdir();
+
+            Path path = Paths.get(directory + "/" + fileName);
+            Files.copy(resourceNew.getFile().getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+            //Read the copy with the extractor
+//            TextExtraction te = new TextExtraction();
+            fileResource.setContent(this.extract(directory + "/" + fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //Map the resource to a FileResource instance and persist it
+        project.addFileResource(fileResource);
+        projectService.save(project);
+
+        return "redirect:/project/view/" + projectId;
+    }
+
+    @GetMapping("/resource/download/{resourceId}")
+    public ResponseEntity downloadFile(@PathVariable long resourceId) {
+        FileResource fileResource = fileResourceService.findById(resourceId);
+        if(fileResource==null)
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+
+        org.springframework.core.io.Resource file = loadFile(fileResource);
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; " +
+                        "filename=\"" + file.getFilename() + "\"").body(file);
+    }
+
+    public org.springframework.core.io.Resource loadFile(FileResource fileResource) {
+        try {
+            Path file = Paths.get(UPLOAD_DIR + "/p" + fileResource.getProject().getId() +
+                    "/" + fileResource.getFileName());
+            org.springframework.core.io.Resource resource = new UrlResource(file.toUri());
+            if(resource.exists() || resource.isReadable()) {
+                return resource;
+            }else{
+                throw new RuntimeException("FAIL!");
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Error! -> message = " + e.getMessage());
+        }
     }
 
     @PostMapping("/admin/project/{id}/addMembers")
