@@ -232,8 +232,6 @@ public class ProjectController {
             Path path = Paths.get(directory + "/" + fileName);
             Files.copy(resourceNew.getFile().getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
-            //Read the copy with the extractor
-//            TextExtraction te = new TextExtraction();
             fileResource.setContent(this.extract(directory + "/" + fileName));
         } catch (IOException e) {
             e.printStackTrace();

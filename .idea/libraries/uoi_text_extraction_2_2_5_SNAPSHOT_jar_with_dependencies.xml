@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="uoi-text-extraction-2.2.5-SNAPSHOT-jar-with-dependencies">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/main/resources/static/lib/uoi-text-extraction-2.2.5-SNAPSHOT-jar-with-dependencies.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/src/main/resources/static/lib/uoi-text-extraction-2.2.5-SNAPSHOT-jar-with-dependencies.jar!/" />
+    </SOURCES>
+  </library>
+</component>
