@@ -1,12 +1,10 @@
 package gr.uoi.dthink.model;
 
-import gr.uoi.dthink.services.FileResourceService;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -26,10 +24,10 @@ public class Project {
             mappedBy = "project")
     Set<ExtremeUserCategory> categories;
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "projects")
-    private Set<User> members = new HashSet<>();
+    private Set<User> members = new LinkedHashSet<>();
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
             mappedBy = "project")
-    private Set<FileResource> fileResources = new HashSet<>();
+    private Set<FileResource> fileResources = new LinkedHashSet<>();
     @NotNull(message="Η ημερομηνία έναρξης είναι κενή!")
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "dd/MM/yyyy")

@@ -1,4 +1,5 @@
-<div class="col-md-12 col-lg-6 col-xl-5" xmlns:th="http://www.thymeleaf.org">
+<div class="col-mb-3" xmlns:th="http://www.thymeleaf.org">
+<!--<div class="col-md-12 col-lg-6 col-xl-5" xmlns:th="http://www.thymeleaf.org">-->
     <div class="card-hover-shadow-2x mb-3 card">
         <div class="card-header-tab card-header">
             <div class="card-header-title font-size-lg text-capitalize font-weight-normal">
@@ -46,4 +47,14 @@
             </div>
         </div>
     </div>
+    <script>
+        function hideDiv(divId) {
+            let x = document.getElementById(divId);
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
 </div>
