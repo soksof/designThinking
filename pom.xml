@@ -11,7 +11,7 @@
 
     <groupId>gr.uoi</groupId>
     <artifactId>designThinking</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
     <name>designThinking</name>
     <description>A collaborative platform for applying the design thinking process on various projects</description>
 
