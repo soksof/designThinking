@@ -1,5 +1,5 @@
 <div class="row" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
-    <div class="col-md-12">
+    <div class="col-md-10">
         <div class="main-card mb-3 card">
             <div class="tabs-lg-alternate card-header">
                 <ul class="nav nav-justified">
@@ -28,10 +28,7 @@
             </div>
             <div class="tab-content">
                 <div class="tab-pane active" id="emphathyMap" role="tabpanel">
-                    <div class="card-body">
-                        <p class="mb-0">Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                            It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </p>
-                    </div>
+                    <th:block layout:insert="~{fragments/components/empathyMap}"/>
                 </div>
                 <div class="tab-pane" id="wordCloud" role="tabpanel">
                     <div class="card-body">

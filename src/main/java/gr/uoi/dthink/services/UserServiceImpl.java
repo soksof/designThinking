@@ -66,6 +66,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public String getLoggedInUserAvatar() {
+        return "/img/avatars/user_"+this.getLoggedInUser().getId()+".png";
+    }
+
+    @Override
     public User getLoggedInUser(){
         return this.findByEmail(this.getLoggedInUserName());
     }

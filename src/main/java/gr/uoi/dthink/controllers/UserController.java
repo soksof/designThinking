@@ -1,10 +1,16 @@
 package gr.uoi.dthink.controllers;
 
+import com.google.common.io.ByteStreams;
 import gr.uoi.dthink.model.*;
 import gr.uoi.dthink.services.SecurityService;
 import gr.uoi.dthink.services.UserRoleService;
 import gr.uoi.dthink.services.UserService;
 import gr.uoi.dthink.validators.UserValidator;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -13,6 +19,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -163,5 +170,15 @@ public class UserController {
             }
             return "user/new";
         }
+    }
+
+    @GetMapping(value = "/user/avatar")
+    public ResponseEntity<byte[]> getAvatar() throws IOException {
+        ClassPathResource resource = new ClassPathResource("static"+userService.getLoggedInUserAvatar());
+        byte[] image = ByteStreams.toByteArray(resource.getInputStream());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        headers.setContentLength(image.length);
+        return new ResponseEntity<>(image, headers, HttpStatus.OK);
     }
 }

@@ -40,11 +40,12 @@ public class ProjectController {
     FileResourceService fileResourceService;
     ResourceTypeService resourceTypeService;
     CommentService commentService;
+    EmpathyMapService empathyMapService;
 
     public ProjectController(UserController userController, UserService userService, ProjectService projectService,
                              StageService stageService, ExtremeUserCategoryService extremeUserCategoryService,
                              FileResourceService fileResourceService, ResourceTypeService resourceTypeService,
-                             CommentService commentService) {
+                             CommentService commentService, EmpathyMapService empathyMapService) {
         this.userController = userController;
         this.userService = userService;
         this.projectService = projectService;
@@ -53,6 +54,7 @@ public class ProjectController {
         this.fileResourceService = fileResourceService;
         this.resourceTypeService = resourceTypeService;
         this.commentService = commentService;
+        this.empathyMapService = empathyMapService;
     }
 
     @GetMapping("/project/view/{id}")
@@ -63,6 +65,8 @@ public class ProjectController {
         model.addAttribute("project", project);
         boolean isManager = userService.getLoggedInUser().getId() == project.getManager().getId();
         model.addAttribute("isManager", isManager);
+        long uid = userService.getLoggedInUser().getId();
+        model.addAttribute("userId", uid);
         List<User> users = userService.findAllButMembers(project);
         model.addAttribute("usersNotInProject", users);
         String status = project.getCurrentStage().getStatus().getView();
@@ -340,6 +344,9 @@ public class ProjectController {
             for(User member: projectNew.getMembers()){
                 projectNew.addMember(member);
             }
+            EmpathyMap empMap = new EmpathyMap();
+            empathyMapService.save(empMap);
+            projectNew.setEmpathyMap(empMap);
             Stage stage = new Stage(Status.CHALLENGE_DEFINITION);
             stageService.save(stage);
             projectNew.setChallengeDefinition(stage);

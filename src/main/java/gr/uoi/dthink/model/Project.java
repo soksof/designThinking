@@ -57,6 +57,8 @@ public class Project {
     private Date createdOn;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedOn;
+    @OneToOne
+    private EmpathyMap empathyMap;
 
     public Project() {
     }
@@ -291,5 +293,13 @@ public class Project {
     public void setFileResources(Set<FileResource> fileResources) {
         this.fileResources = new HashSet<>();
         this.fileResources.addAll(fileResources);
+    }
+
+    public EmpathyMap getEmpathyMap() {
+        return empathyMap;
+    }
+
+    public void setEmpathyMap(EmpathyMap empathyMap) {
+        this.empathyMap = empathyMap;
     }
 }

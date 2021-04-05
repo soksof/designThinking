@@ -13,6 +13,7 @@ public interface UserService {
     boolean isAdmin();
     User getLoggedInUser();
     String getLoggedInUserName();
+    String getLoggedInUserAvatar();
     Set<User> findByRole(UserRole role);
     Set<Project> findAllProjects();
     User initSave(User user);

@@ -16,11 +16,10 @@ public class Resource {
     private Date updatedOn;
     @ManyToOne
     private Project project;
-    private
     @OneToMany
-    List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
     @OneToMany
-    List<Reaction> reactions = new ArrayList<>();
+    private List<Reaction> reactions = new ArrayList<>();
     @ManyToOne
     private User user;
 
