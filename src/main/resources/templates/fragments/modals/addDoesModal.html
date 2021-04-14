@@ -1,7 +1,8 @@
 <div class="modal fade" id="addDoesModal" tabindex="-1" role="dialog" data-backdrop="false"
      aria-labelledby="addDoesModalTitle" aria-hidden="true" xmlns:th="http://www.thymeleaf.org">
     <div class="modal-dialog" role="document">
-        <form class="modal-content" th:action="@{/project/{pid}/addDoes(pid=${project.getId()})}"
+        <form class="modal-content"  onsubmit="return validateDoesForm()"
+              th:action="@{/project/{pid}/addDoes(pid=${project.getId()})}"
               action="#" method="POST">
             <div class="modal-header">
                 <h5 class="modal-title" id="addMemberModalTitle">Τι έκανε: Νέα σημείωση</h5>
@@ -11,14 +12,42 @@
             </div>
 
             <div class="modal-body">
-                    <div class="position-relative form-group">
-                        <label for="description" class="">Περιγραφή</label>
-                        <textarea name="description" id="description" class="form-control"></textarea></div>
+                <div class="position-relative form-group">
+                    <label for="descriptionDo" class="">Περιγραφή</label>
+                    <textarea name="descriptionDo" id="descriptionDo" class="form-control"></textarea>
                 </div>
+                <div class="position-relative form-group">
+                    <label for="categoryDo">Κατηγορία extreme user</label>
+                    <select class="mb-2 form-control" id="categoryDo" name="categoryDo">
+                        <option value="" selected></option>
+                        <option th:each="category : ${project.getCategories()}"
+                                th:value="${category.getId()}"
+                                th:text="${category.getName()}">
+                        </option>
+                    </select>
+<!--                    <em id="typeError" class="error" th:if="${#fields.hasErrors('category')}">-->
+<!--                        extreme user category ERROR</em>-->
+                </div>
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Άκυρο</button>
                 <button type="submit" class="btn btn-primary">Προσθήκη</button>
             </div>
         </form>
     </div>
+    <script>
+        function validateDoesForm() {
+            var descr = document.getElementById("descriptionDo").innerHTML;
+            var category = document.getElementById("categoryDo").value;
+            if(descr == "") {
+                alert("Πρέπει να συμπληρώσετε το πεδίο Περιγραφή: "+descr);
+                return false;
+            }
+            else if(category.trim() == "") {
+                alert("Πρέπει να επιλέξετε κάποια κατηγορία extreme user");
+                return false;
+            }
+            return true;
+        }
+    </script>
 </div>

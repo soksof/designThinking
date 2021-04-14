@@ -19,6 +19,8 @@ public class Comment {
     @ManyToOne
     private Project project;
     private Date createdOn;
+    @ManyToOne
+    private ExtremeUserCategory category;
 
     @PrePersist
     protected void onCreate() {
@@ -67,5 +69,13 @@ public class Comment {
 
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public ExtremeUserCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(ExtremeUserCategory category) {
+        this.category = category;
     }
 }

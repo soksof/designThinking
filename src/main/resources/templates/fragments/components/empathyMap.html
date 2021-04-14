@@ -237,5 +237,11 @@
     <th:block layout:insert="~{fragments/modals/addThinksModal}"/>
     <th:block layout:insert="~{fragments/modals/addDoesModal}"/>
     <th:block layout:insert="~{fragments/modals/addSaysModal}"/>
+    <script>
+        $('#addFeelsModal').css("margin-top", $(window).height() / 2 - $('.modal-content').height() / 2);
+        $('#addThinksModal').css("margin-top", $(window).height() / 2 - $('.modal-content').height() / 2);
+        $('#addDoesModal').css("margin-top", $(window).height() / 2 - $('.modal-content').height() / 2);
+        $('#addSaysModal').css("margin-top", $(window).height() / 2 - $('.modal-content').height() / 2);
+    </script>
 </div>
 
