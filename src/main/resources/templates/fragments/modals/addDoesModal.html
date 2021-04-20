@@ -1,7 +1,7 @@
 <div class="modal fade" id="addDoesModal" tabindex="-1" role="dialog" data-backdrop="false"
      aria-labelledby="addDoesModalTitle" aria-hidden="true" xmlns:th="http://www.thymeleaf.org">
     <div class="modal-dialog" role="document">
-        <form class="modal-content"  onsubmit="return validateDoesForm()"
+        <form class="modal-content"  onsubmit="return validateDoesForm()" id="formAddDoes"
               th:action="@{/project/{pid}/addDoes(pid=${project.getId()})}"
               action="#" method="POST">
             <div class="modal-header">
@@ -10,7 +10,6 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-
             <div class="modal-body">
                 <div class="position-relative form-group">
                     <label for="descriptionDo" class="">Περιγραφή</label>
@@ -25,8 +24,6 @@
                                 th:text="${category.getName()}">
                         </option>
                     </select>
-<!--                    <em id="typeError" class="error" th:if="${#fields.hasErrors('category')}">-->
-<!--                        extreme user category ERROR</em>-->
                 </div>
             </div>
             <div class="modal-footer">
@@ -37,10 +34,10 @@
     </div>
     <script>
         function validateDoesForm() {
-            var descr = document.getElementById("descriptionDo").innerHTML;
-            var category = document.getElementById("categoryDo").value;
+            var descr = document.forms.namedItem("formAddDoes").elements.namedItem("descriptionDo").value;
+            var category = document.forms.namedItem("formAddDoes").elements.namedItem("categoryDo").value;
             if(descr == "") {
-                alert("Πρέπει να συμπληρώσετε το πεδίο Περιγραφή: "+descr);
+                alert("Πρέπει να συμπληρώσετε το πεδίο Περιγραφή");
                 return false;
             }
             else if(category.trim() == "") {

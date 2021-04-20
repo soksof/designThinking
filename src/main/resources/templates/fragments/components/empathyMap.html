@@ -31,15 +31,16 @@
                                                 </div>
                                             </div>
                                             <div class="widget-content-left flex2">
-                                                <div th:text="${sEl.getDescription()}" class="widget-heading">
-                                                    Name
+                                                <div th:text="${sEl.getDescription()}" class="widget-heading"></div>
+                                                <div class="widget-subheading" th:text="${sEl.getCategory().getName()}">
+                                                    <i>Extreme User</i>
                                                 </div>
                                             </div>
                                             <div class="widget-content-right widget-content-actions">
     <!--                                            <div class="badge badge-warning mr-2" th:text="${}">likes</div>-->
                                                 <button class="border-0 btn-transition btn btn-outline-danger"
-                                                        th:if="${isManager or userId == sEl.getUser().getId()}"
-                                                        data-toggle="modal" th:data-target="${'#modal_'+sEl.getId()}">
+                                                   th:if="${isManager or userId == sEl.getUser().getId()}"
+                                                   data-toggle="modal" th:data-target="${'#modalEmpNote_'+sEl.getId()}">
                                                     <i class="fa fa-trash-alt"></i>
                                                 </button>
                                             </div>
@@ -89,15 +90,16 @@
                                                 </div>
                                             </div>
                                             <div class="widget-content-left flex2">
-                                                <div th:text="${sEl.getDescription()}" class="widget-heading">
-                                                    Name
+                                                <div th:text="${sEl.getDescription()}" class="widget-heading"></div>
+                                                <div class="widget-subheading" th:text="${sEl.getCategory().getName()}">
+                                                    <i>Extreme User</i>
                                                 </div>
                                             </div>
                                             <div class="widget-content-right widget-content-actions">
                                                 <!--                                            <div class="badge badge-warning mr-2" th:text="${}">likes</div>-->
                                                 <button class="border-0 btn-transition btn btn-outline-danger"
-                                                        th:if="${isManager or userId == sEl.getUser().getId()}"
-                                                        data-toggle="modal" th:data-target="${'#modal_'+sEl.getId()}">
+                                                   th:if="${isManager or userId == sEl.getUser().getId()}"
+                                                   data-toggle="modal" th:data-target="${'#modalEmpNote_'+sEl.getId()}">
                                                     <i class="fa fa-trash-alt"></i>
                                                 </button>
                                             </div>
@@ -149,15 +151,16 @@
                                                 </div>
                                             </div>
                                             <div class="widget-content-left flex2">
-                                                <div th:text="${sEl.getDescription()}" class="widget-heading">
-                                                    Name
+                                                <div th:text="${sEl.getDescription()}" class="widget-heading"></div>
+                                                <div class="widget-subheading" th:text="${sEl.getCategory().getName()}">
+                                                    <i>Extreme User</i>
                                                 </div>
                                             </div>
                                             <div class="widget-content-right widget-content-actions">
                                                 <!--                                            <div class="badge badge-warning mr-2" th:text="${}">likes</div>-->
                                                 <button class="border-0 btn-transition btn btn-outline-danger"
-                                                        th:if="${isManager or userId == sEl.getUser().getId()}"
-                                                        data-toggle="modal" th:data-target="${'#modal_'+sEl.getId()}">
+                                                   th:if="${isManager or userId == sEl.getUser().getId()}"
+                                                   data-toggle="modal" th:data-target="${'#modalEmpNote_'+sEl.getId()}">
                                                     <i class="fa fa-trash-alt"></i>
                                                 </button>
                                             </div>
@@ -207,15 +210,16 @@
                                                 </div>
                                             </div>
                                             <div class="widget-content-left flex2">
-                                                <div th:text="${sEl.getDescription()}" class="widget-heading">
-                                                    Name
+                                                <div th:text="${sEl.getDescription()}" class="widget-heading"></div>
+                                                <div class="widget-subheading" th:text="${sEl.getCategory().getName()}">
+                                                    <i>Extreme User</i>
                                                 </div>
                                             </div>
                                             <div class="widget-content-right widget-content-actions">
-                                                <!--                                            <div class="badge badge-warning mr-2" th:text="${}">likes</div>-->
+                                                <!-- <div class="badge badge-warning mr-2" th:text="${}">likes</div>-->
                                                 <button class="border-0 btn-transition btn btn-outline-danger"
-                                                        th:if="${isManager or userId == sEl.getUser().getId()}"
-                                                        data-toggle="modal" th:data-target="${'#modal_'+sEl.getId()}">
+                                                   th:if="${isManager or userId == sEl.getUser().getId()}"
+                                                   data-toggle="modal" th:data-target="${'#modalEmpNote_'+sEl.getId()}">
                                                     <i class="fa fa-trash-alt"></i>
                                                 </button>
                                             </div>
@@ -233,15 +237,18 @@
             </div>
         </div>
     </div>
-    <th:block layout:insert="~{fragments/modals/addFeelsModal}"/>
-    <th:block layout:insert="~{fragments/modals/addThinksModal}"/>
-    <th:block layout:insert="~{fragments/modals/addDoesModal}"/>
-    <th:block layout:insert="~{fragments/modals/addSaysModal}"/>
-    <script>
-        $('#addFeelsModal').css("margin-top", $(window).height() / 2 - $('.modal-content').height() / 2);
-        $('#addThinksModal').css("margin-top", $(window).height() / 2 - $('.modal-content').height() / 2);
-        $('#addDoesModal').css("margin-top", $(window).height() / 2 - $('.modal-content').height() / 2);
-        $('#addSaysModal').css("margin-top", $(window).height() / 2 - $('.modal-content').height() / 2);
-    </script>
+    <!-- modals -->
+        <th:block layout:insert="~{fragments/modals/removeEmpathyMapCommentConfirm}"/>
+        <th:block layout:insert="~{fragments/modals/addFeelsModal}"/>
+        <th:block layout:insert="~{fragments/modals/addThinksModal}"/>
+        <th:block layout:insert="~{fragments/modals/addDoesModal}"/>
+        <th:block layout:insert="~{fragments/modals/addSaysModal}"/>
+    <!-- End confirmation modals -->
+    <!--    <script>-->
+<!--        $('#addFeelsModal').css("margin-top", $(window).height() / 2 - $('.modal-content').height());-->
+<!--        $('#addThinksModal').css("margin-top", $(window).height() / 2 - $('.modal-content').height());-->
+<!--        $('#addDoesModal').css("margin-top", $(window).height() / 2 - $('.modal-content').height());-->
+<!--        $('#addSaysModal').css("margin-top", $(window).height() / 2 - $('.modal-content').height()/2);-->
+<!--    </script>-->
 </div>
 

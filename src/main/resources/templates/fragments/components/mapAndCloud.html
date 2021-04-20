@@ -1,5 +1,5 @@
 <div class="row" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
-    <div class="col-md-10">
+    <div class="col-md-9">
         <div class="main-card mb-3 card">
             <div class="tabs-lg-alternate card-header">
                 <ul class="nav nav-justified">
@@ -31,9 +31,16 @@
                     <th:block layout:insert="~{fragments/components/empathyMap}"/>
                 </div>
                 <div class="tab-pane" id="wordCloud" role="tabpanel">
+<!--                    <div class="card-body">-->
+<!--                        <p class="mb-0">It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus-->
+<!--                            PageMaker including versions of Lorem Ipsum.</p>-->
+<!--                    </div>-->
                     <div class="card-body">
-                        <p class="mb-0">It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus
-                            PageMaker including versions of Lorem Ipsum.</p>
+                        <div class="card-title">Word Cloud</div>
+                        <div>
+                            <img th:src="@{/project/{pid}/wordcloud(pid=${project.getId()})}" id="wordCloudImg"
+                                 alt="You have not uploaded any resources that can be used to generate a Word Cloud!">
+                        </div>
                     </div>
                 </div>
             </div>

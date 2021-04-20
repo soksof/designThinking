@@ -1,10 +1,16 @@
 package gr.uoi.dthink.model;
 
+import org.apache.log4j.BasicConfigurator;
 import org.springframework.format.annotation.DateTimeFormat;
+import uio.text_proc.GenWordCloud;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -279,15 +285,14 @@ public class Project {
     }
 
     public Set<FileResource> getFileResources() {
-
-        System.out.println("---->" +this.fileResources.size());
         return this.fileResources;
     }
 
     public void addFileResource(FileResource fileResource){
-        System.out.println("BEFORE: "+this.fileResources.size());
         this.fileResources.add(fileResource);
-        System.out.println("AFTER:"+this.fileResources.size());
+        if(!fileResource.getContent().trim().equals("")){
+            this.generateWordCloud();
+        }
     }
 
     public void setFileResources(Set<FileResource> fileResources) {
@@ -301,5 +306,34 @@ public class Project {
 
     public void setEmpathyMap(EmpathyMap empathyMap) {
         this.empathyMap = empathyMap;
+    }
+
+    public File generateWordCloud(){
+        String content="";
+        for(FileResource resource: this.fileResources){
+            if(!resource.getContent().equals(""))
+            content+=" "+resource.getContent();
+        }
+        File mapPng = new File("uploads/p"+this.getId()+"/word_cloud.png");
+        File outFile = this.generateWordCloudFile(content, mapPng);
+        return outFile;
+    }
+
+    private File generateWordCloudFile(String text, File outFile){
+        String mode = "grad";
+
+        BasicConfigurator.configure();
+        GenWordCloud wcgenerator = new GenWordCloud();
+        File resultFile = null;
+        try {
+            System.out.println("trying to generate "+text);
+            System.out.println("trying to generate "+outFile);
+
+            resultFile = wcgenerator.generate(text, mode, outFile);
+        } catch (IOException e) {
+            System.out.println("ERROR: Problem in generating word cloud for input texts");
+            return null;
+        }
+        return resultFile;
     }
 }

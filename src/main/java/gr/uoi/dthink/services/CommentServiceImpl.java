@@ -17,6 +17,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public Comment findById(long id) {
+        return commentRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public List<Comment> findByUser(User user) {
         return commentRepository.findByUser(user);
     }
@@ -34,5 +39,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Comment save(Comment comment) {
         return commentRepository.save(comment);
+    }
+
+    @Override
+    public void delete(Comment comment) {
+        this.commentRepository.delete(comment);
     }
 }

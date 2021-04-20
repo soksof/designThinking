@@ -5,7 +5,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 public class EmpathyMap {
@@ -35,6 +38,13 @@ public class EmpathyMap {
 
     public void setEmpSay(List<Comment> empSay) {
         this.empSay = empSay;
+    }
+
+    public void addEmpSay(Comment comment){
+        this.empSay.add(comment);
+    }
+    public void removeEmpSay(Comment comment){
+        this.empSay.remove(comment);
     }
 
     public List<Comment> getEmpThink() {
@@ -82,5 +92,23 @@ public class EmpathyMap {
     }
     public void removeEmpFeel(Comment comment){
         this.empFeel.remove(comment);
+    }
+
+    public List<Comment> getAllNotes(){
+        return Stream.of(this.empDo, this.empSay, this.empFeel, this.empThink)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    public boolean removeNote(Comment note){
+        if(this.empDo.remove(note))
+            return true;
+        else if(this.empFeel.remove(note))
+            return true;
+        else if(this.empThink.remove(note))
+            return true;
+        else if (this.empSay.remove(note))
+            return true;
+        return false;
     }
 }

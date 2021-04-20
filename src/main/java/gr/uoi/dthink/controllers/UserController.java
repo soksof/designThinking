@@ -154,8 +154,6 @@ public class UserController {
         return "user/new";
     }
 
-
-
     @Transactional
     @PostMapping("/admin/user/new")
     public String saveUser(@ModelAttribute("userNew") @Valid User userNew, BindingResult bindingRes,

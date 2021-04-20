@@ -1,13 +1,16 @@
 package gr.uoi.dthink.controllers;
 
+import com.google.common.io.ByteStreams;
 import gr.ilsp.extractor.Extractor;
 import gr.ilsp.utils.ContentNormalizer;
 import gr.ilsp.utils.XMLExporter;
 import gr.uoi.dthink.model.*;
 import gr.uoi.dthink.services.*;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-
+import org.apache.commons.io.FileUtils;
 
 // TODO: Add logger with all the actions
 @Controller
@@ -74,6 +77,25 @@ public class ProjectController {
             model.addAttribute("newFileResource", new FileResource());
         }
         return "project/views/"+status;
+    }
+
+    @GetMapping("/project/{pid}/empathy/note/remove/{id}")
+    public String removeEmpathyNote(@PathVariable("pid") int projectId, @PathVariable("id") long noteId) {
+        Project project = this.projectService.findById(projectId);
+        Comment note = this.commentService.findById(noteId);
+        if (project == null || note == null)
+            return "error/404";
+
+        EmpathyMap map = project.getEmpathyMap();
+        map.removeNote(note);
+        this.empathyMapService.save(map);
+        this.commentService.delete(note);
+        return "redirect:/project/view/"+project.getId();
+    }
+
+    @GetMapping("/project/{pid}/wordCloud")
+    public void generateWordCloud(@PathVariable("pid") int projectId){
+
     }
 
     @GetMapping("/admin/project/{pid}/member/remove/{id}")
@@ -195,10 +217,9 @@ public class ProjectController {
         }
 
         String text = data.content;
-
         text = ContentNormalizer.removeBoilerPars(text);
         String text1 = ContentNormalizer.removeTextTags(text);
-        System.out.println(text1);
+        //System.out.println(text1);
         //FileUtils.writeStringToFile(new File(infile.getAbsolutePath()+Constants.EXTENSION_TXT), text1, Constants.UTF8);
         return text1;
     }
@@ -228,8 +249,8 @@ public class ProjectController {
         // normalize the file path
         String fileName = StringUtils.cleanPath(resourceNew.getFile().getOriginalFilename());
         // save the file on the local file system
+        File directory = new File(UPLOAD_DIR.concat("p"+projectId));
         try {
-            File directory = new File(UPLOAD_DIR.concat("p"+projectId));
             if (! directory.exists())
                 directory.mkdir();
 
@@ -243,6 +264,10 @@ public class ProjectController {
 
         //Map the resource to a FileResource instance and persist it
         project.addFileResource(fileResource);
+
+        //Update (or create) the WordCloud png file
+        project.generateWordCloud();
+
         projectService.save(project);
 
         return "redirect:/project/view/" + projectId;
@@ -272,6 +297,73 @@ public class ProjectController {
         } catch (MalformedURLException e) {
             throw new RuntimeException("Error! -> message = " + e.getMessage());
         }
+    }
+
+    @PostMapping("/project/{id}/addSays")
+    public String addSays(@PathVariable("id") int projectId,
+                          @RequestParam(value = "descriptionSays") String description,
+                          @RequestParam(value = "categorySays") int categoryId) {
+        boolean result = this.addCommentToMap(projectId, description, categoryId, "says");
+        if(!result)
+            return "error/404";
+        return "redirect:/project/view/" + projectId;
+    }
+
+    @PostMapping("/project/{id}/addDoes")
+    public String addDo(@PathVariable("id") int projectId,
+                          @RequestParam(value = "descriptionDo") String description,
+                          @RequestParam(value = "categoryDo") int categoryId) {
+        boolean result = this.addCommentToMap(projectId, description, categoryId, "does");
+        if(!result)
+            return "error/404";
+        return "redirect:/project/view/" + projectId;
+    }
+
+    @PostMapping("/project/{id}/addThinks")
+    public String addThinks(@PathVariable("id") int projectId,
+                          @RequestParam(value = "descriptionThink") String description,
+                          @RequestParam(value = "categoryThink") int categoryId) {
+        boolean result = this.addCommentToMap(projectId, description, categoryId, "thinks");
+        if(!result)
+            return "error/404";
+        return "redirect:/project/view/" + projectId;
+    }
+
+    @PostMapping("/project/{id}/addFeels")
+    public String addFeels(@PathVariable("id") int projectId,
+                          @RequestParam(value = "descriptionFeel") String description,
+                          @RequestParam(value = "categoryFeel") int categoryId) {
+        boolean result = this.addCommentToMap(projectId, description, categoryId, "feels");
+        if(!result)
+            return "error/404";
+        return "redirect:/project/view/" + projectId;
+    }
+
+    public boolean addCommentToMap(int projectId, String description, int categoryId, String pos){
+        Project project = projectService.findById(projectId);
+        if (project == null)
+            return false;
+
+        ExtremeUserCategory category = extremeUserCategoryService.findById(categoryId);
+        Comment comment = new Comment();
+        comment.setProject(project);
+        comment.setDescription(description);
+        comment.setCategory(category);
+        comment.setUser(userService.getLoggedInUser());
+        commentService.save(comment);
+        EmpathyMap map = project.getEmpathyMap();
+        switch(pos){
+            case("says"):
+                map.addEmpSay(comment);break;
+            case("feels"):
+                map.addEmpFeel(comment);break;
+            case("thinks"):
+                map.addEmpThink(comment);break;
+            case("does"):
+                map.addEmpDo(comment);break;
+        }
+        empathyMapService.save(map);
+        return true;
     }
 
     @PostMapping("/admin/project/{id}/addMembers")
@@ -369,5 +461,26 @@ public class ProjectController {
             model.addAttribute("users", users);
             return "project/new";
         }
+    }
+
+    @GetMapping(value = "/project/{pid}/wordcloud")
+    public ResponseEntity<byte[]> getWordCloud(@PathVariable("pid") int pid) throws IOException {
+
+        // normalize the file path
+        // save the file on the local file system
+        File directory = new File(UPLOAD_DIR.concat("p"+pid));
+        Path path = Paths.get(directory + "/" + "word_cloud.png");
+        File resource = path.toFile();
+        //ClassPathResource resource = new ClassPathResource(this.UPLOAD_DIR+"p"+pid+"/word_cloud.png");
+        if(!resource.exists()) {
+            return null;
+        }
+        System.out.println(">>>>> "+resource.getCanonicalPath());
+        //byte[] image = ByteStreams.toByteArray(resource.getInputStream());
+        byte[] image = FileUtils.readFileToByteArray(resource);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG);
+        headers.setContentLength(image.length);
+        return new ResponseEntity<>(image, headers, HttpStatus.OK);
     }
 }
