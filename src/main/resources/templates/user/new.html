@@ -24,8 +24,8 @@
 
         <div class="main-card mb-3 card">
             <div class="card-body">
-                <form action="#" th:action="@{/admin/user/new}" th:object="${userNew}" method="post"
-                      class="needs-validation" novalidate>
+                <form th:action="@{/admin/user/new}" th:object="${userNew}" method="post" name="nuf"
+                      class="needs-validation" novalidate onsubmit="return checkPwd()">
                     <div class="form-row">
                         <div class="col-md-3">
                             <div class="position-relative form-group"><label for="name">Όνομα</label>
@@ -104,6 +104,16 @@
         $(document).ready(function () {
             $('.js-example-basic-single').select2();
         });
+
+        function checkPwd() {
+            var passWd = document.forms.namedItem('nuf').elements.namedItem('password').value;
+            var passWdConfirm = document.forms.namedItem('nuf').elements.namedItem('passwordConfirm').value;
+            if(passWd != passWdConfirm || passWdConfirm.trim()=='' || passWd.trim()=='') {
+                alert('Παρακαλώ ελέγξτε τα πεδία με τους κωδικούς σας!');
+                return false;
+            }
+            return true;
+        }
     </script>
 </th:block>
 </html>

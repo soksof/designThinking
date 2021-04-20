@@ -106,7 +106,7 @@ public class UserController {
     @GetMapping("/profile")
     public String getProfile(Model model) {
         User user = userService.getLoggedInUser();
-        model.addAttribute("user", user);
+        model.addAttribute("userNew", user);
         List<UserRole> userRoles = userRoleService.findAll();
         model.addAttribute("userRoles", userRoles);
         return "user/profile";
@@ -124,11 +124,13 @@ public class UserController {
     }
 
     @Transactional
-    @PostMapping("/admin/user/update")
+    @PostMapping("/user/update")
     public String updateProject(@ModelAttribute("user") @Valid User user, BindingResult bindingRes,
                                 Model model) {
         if(!bindingRes.hasErrors()) {
-            userService.save(user);
+            User currentUser = userService.getLoggedInUser();
+            user.setId(currentUser.getId());
+            userService.update(user);
             return "redirect:/dashboard";
         }
         else{
