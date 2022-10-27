@@ -2,11 +2,13 @@ package gr.uoi.dthink.controllers;
 
 import com.google.common.io.ByteStreams;
 import gr.uoi.dthink.model.*;
+import gr.uoi.dthink.repos.LearningResourceRepository;
 import gr.uoi.dthink.services.SecurityService;
 import gr.uoi.dthink.services.UserRoleService;
 import gr.uoi.dthink.services.UserService;
 import gr.uoi.dthink.validators.UserValidator;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,23 +22,30 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 @Controller
 public class UserController {
+    private final String LR_DIR = "uploads/LearningResources/";
     private final UserService userService;
     private final SecurityService securityService;
     private final UserValidator userValidator;
     private final UserRoleService userRoleService;
+    private final LearningResourceRepository learningResourceRepository;
 
     public UserController(UserService userService, SecurityService securityService, UserValidator userValidator,
-                          UserRoleService userRoleService) {
+                          UserRoleService userRoleService, LearningResourceRepository learningResourceRepository) {
         this.userService = userService;
         this.securityService = securityService;
         this.userValidator = userValidator;
         this.userRoleService = userRoleService;
+        this.learningResourceRepository = learningResourceRepository;
     }
 
     @GetMapping("/registration")
@@ -175,10 +184,89 @@ public class UserController {
     @GetMapping(value = "/user/avatar")
     public ResponseEntity<byte[]> getAvatar() throws IOException {
         ClassPathResource resource = new ClassPathResource("static"+userService.getLoggedInUserAvatar());
-        byte[] image = ByteStreams.toByteArray(resource.getInputStream());
+        byte[] image;
+        try {
+            image = ByteStreams.toByteArray(resource.getInputStream());
+        }catch(java.io.FileNotFoundException e){
+            resource = new ClassPathResource("static/img/avatars/default.png");
+            image = ByteStreams.toByteArray(resource.getInputStream());
+        }
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_JPEG);
         headers.setContentLength(image.length);
         return new ResponseEntity<>(image, headers, HttpStatus.OK);
     }
+
+    @GetMapping("/learningHub")
+    public String learningHub(Model model) {
+        List<LearningResource> learningResources = this.learningResourceRepository.findAll();
+        model.addAttribute("learningResources", learningResources);
+        return "learningHub";
+    }
+
+    public org.springframework.core.io.Resource loadFile(LearningResource learningResource) {
+        try {
+            Path file = Paths.get(LR_DIR + learningResource.getContent());
+            org.springframework.core.io.Resource resource = new UrlResource(file.toUri());
+            if(resource.exists() || resource.isReadable()) {
+                return resource;
+            }else{
+                throw new RuntimeException("FAIL!");
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Error! -> message = " + e.getMessage());
+        }
+    }
+
+
+    @GetMapping(value = "/learningResource/{id}")
+    public ResponseEntity getLearningResource(@PathVariable("id") int id) throws IOException {
+        LearningResource resource = this.learningResourceRepository.findById(id).orElse(null);
+        if (resource == null)
+            return new ResponseEntity<byte[]>(null, null, HttpStatus.NOT_FOUND);
+        ResponseEntity<byte[]> response = null;
+
+        switch (resource.getType()){
+            case PDF:
+                org.springframework.core.io.Resource file = loadFile(resource);
+                return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; " +
+                        "filename=\"" + file.getFilename() + "\"").body(file);
+            case URL:
+                break;
+            case VIDEO:
+                break;
+        }
+        return response;
+    }
+
+//    public ResponseEntity<byte[]> getLearningResource(@PathVariable("id") int id) throws IOException {
+//        LearningResource resource = this.learningResourceRepository.findById(id).orElse(null);
+//        if (resource == null)
+//            return new ResponseEntity<byte[]>(null, null, HttpStatus.NOT_FOUND);
+//        ResponseEntity<byte[]> response = null;
+//
+//        switch (resource.getType()){
+//            case PDF:
+//                Path pdfPath = Paths.get(LR_DIR+"\\"+resource.getContent());
+//                System.out.println(pdfPath.toAbsolutePath());
+//                byte[] contents;
+//                try {
+//                    contents = Files.readAllBytes(pdfPath);
+//                }catch(java.io.FileNotFoundException e){
+//                    return new ResponseEntity<byte[]>(null, null, HttpStatus.NOT_FOUND);
+//                }
+//                HttpHeaders headers = new HttpHeaders();
+//                headers.setContentType(MediaType.APPLICATION_PDF);
+////                headers.setContentDispositionFormData("inline", resource.getContent());
+//                headers.add("Content-Disposition", "inline;filename=" + resource.getContent());
+//                headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+//                response = new ResponseEntity<>(contents, headers, HttpStatus.OK);
+//                break;
+//            case URL:
+//                break;
+//            case VIDEO:
+//                break;
+//        }
+//        return response;
+//    }
 }

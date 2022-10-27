@@ -1,0 +1,50 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
+      xmlns:with="http://www.thymeleaf.org/extras/with"
+      layout:decorate="~{layout}"
+      with:title="Learning Hub">
+<head>
+    main css
+  <link th:href="@{/css/kuba_main.css}" rel="stylesheet" type="text/css">
+  <!--  responsive css  -->
+  <link th:href="@{/css/kuba_responsive.css}" rel="stylesheet" type="text/css">
+</head>
+<th:block layout:fragment="content">
+<div class="app-main__inner">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 col-md-6" th:each="resource, stats : ${learningResources}">
+        <div th:if="${resource.getType() == T(gr.uoi.dthink.model.LearningResourceType).PDF}" class="blog-item mt-30">
+          <div class="blog-img">
+            <a th:href="@{/learningResource/{id}(id=${resource.getId()})}">
+              <img class="img-fluid" th:src="@{/img/kuba/lr-{x}.jpg(x=${stats.index + 1})}" alt="">
+              <span class="ion-ios-paper-outline"></span>
+            </a>
+          </div>
+          <div class="blog-item-info">
+            <h4><a th:href="@{/learningResource/{id}(id=${resource.getId()})}" th:text="${resource.getName()}"></a></h4>
+            <span class="mr-5">by <a href="#0" th:text="${resource.getUser().getFullName()}"></a></span>
+          </div>
+        </div>
+
+        <div th:if="${resource.getType() != T(gr.uoi.dthink.model.LearningResourceType).PDF}"  class="blog-item mt-30">
+          <div class="blog-img">
+            <a th:href="|${resource.getContent()}|" target="_blank">
+              <img class="img-fluid" th:src="@{/img/kuba/lr-{x}.jpg(x=${stats.index + 1})}" alt="">
+              <span th:if="${resource.getType() == T(gr.uoi.dthink.model.LearningResourceType).VIDEO}" class="ion-ios-videocam-outline"></span>
+              <span th:if="${resource.getType() == T(gr.uoi.dthink.model.LearningResourceType).URL}" class="ion-ios-world-outline"></span>
+            </a>
+          </div>
+          <div class="blog-item-info">
+            <h4><a th:href="|${resource.getContent()}|" th:text="${resource.getName()}" target="_blank"></a></h4>
+            <span class="mr-5">by <a href="#0" th:text="${resource.getUser().getFullName()}"></a></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</th:block>
+<script th:src="@{/js/kuba_plugins.js}"></script>
+<script th:src="@{/js/kuba_main.js}"></script>
+</html>

@@ -5,6 +5,7 @@
       with:title="Project Dashboard">
 <th:block layout:fragment="content">
     <th:block th:with='role=${#strings.toLowerCase(#authentication.principal.authorities[0]).replace("role_", "")}'>
+    </th:block>
     <div class="app-main__inner">
         <!-- MAIN CONTENT TITLE -->
         <div class="app-page-title">

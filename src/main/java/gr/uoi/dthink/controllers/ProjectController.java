@@ -236,12 +236,10 @@ public class ProjectController {
             }
             return "project/resource/new";
         }
-
         // check if file is empty
         if (resourceNew.getFile().isEmpty()) {
             return "project/resource/new";
         }
-
         Project project = projectService.findById(projectId);
         FileResource fileResource = new FileResource(resourceNew);
         fileResource.setProject(project);
@@ -251,7 +249,7 @@ public class ProjectController {
         // save the file on the local file system
         File directory = new File(UPLOAD_DIR.concat("p"+projectId));
         try {
-            if (! directory.exists())
+            if (!directory.exists())
                 directory.mkdir();
 
             Path path = Paths.get(directory + "/" + fileName);
@@ -259,15 +257,10 @@ public class ProjectController {
 
             fileResource.setContent(this.extract(directory + "/" + fileName));
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("ERROR: Creating file from uploaded resournce "+fileName);
         }
-
         //Map the resource to a FileResource instance and persist it
         project.addFileResource(fileResource);
-
-        //Update (or create) the WordCloud png file
-        project.generateWordCloud();
-
         projectService.save(project);
 
         return "redirect:/project/view/" + projectId;

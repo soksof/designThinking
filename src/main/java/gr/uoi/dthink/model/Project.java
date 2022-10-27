@@ -1,5 +1,7 @@
 package gr.uoi.dthink.model;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.springframework.format.annotation.DateTimeFormat;
 import uio.text_proc.GenWordCloud;
@@ -8,7 +10,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
@@ -319,19 +323,44 @@ public class Project {
         return outFile;
     }
 
+    /**
+     *
+     * @return
+     * @throws IOException
+     */
+    private static List<String> getStopWords() throws IOException {
+        List<String> stopwords = new ArrayList();
+
+        File srcdir = new File("stopwords/");
+        File[] files = srcdir.listFiles();
+        File[] var4 = files;
+        int var5 = files.length;
+
+        for(int var6 = 0; var6 < var5; ++var6) {
+            File file = var4[var6];
+            stopwords.addAll(FileUtils.readLines(file, "UTF8"));
+        }
+
+        return stopwords;
+    }
+
     private File generateWordCloudFile(String text, File outFile){
         String mode = "grad";
-
+        File resultFile = null;
         BasicConfigurator.configure();
         GenWordCloud wcgenerator = new GenWordCloud();
-        File resultFile = null;
         try {
-            System.out.println("trying to generate "+text);
-            System.out.println("trying to generate "+outFile);
-
-            resultFile = wcgenerator.generate(text, mode, outFile);
-        } catch (IOException e) {
-            System.out.println("ERROR: Problem in generating word cloud for input texts");
+            resultFile = wcgenerator.generate(text, mode, outFile, getStopWords());
+        } catch (Exception e) {
+            System.out.println("ERROR: Problem in generating word cloud: "+e.getMessage());
+//            String stacktrace = ExceptionUtils.getStackTrace(e);
+//            try {
+//                FileWriter myWriter = new FileWriter("uploads/p" + this.getId() + "/exception.txt");
+//                myWriter.write(stacktrace);
+//                myWriter.close();
+//            }catch(java.io.IOException e222){
+//
+//            }
             return null;
         }
         return resultFile;
