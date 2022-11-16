@@ -118,6 +118,8 @@ public class UserController {
         model.addAttribute("userNew", user);
         List<UserRole> userRoles = userRoleService.findAll();
         model.addAttribute("userRoles", userRoles);
+        String currentRole = userService.getLoggedInUser().getRole().getName();
+        model.addAttribute("currentRole", currentRole);
         return "user/profile";
     }
 
@@ -134,20 +136,38 @@ public class UserController {
 
     @Transactional
     @PostMapping("/user/update")
-    public String updateProject(@ModelAttribute("user") @Valid User user, BindingResult bindingRes,
-                                Model model) {
+    public String updateProject(@ModelAttribute("user") @Valid User user, BindingResult bindingRes, Model model) {
+        User currentUser = userService.getLoggedInUser();
         if(!bindingRes.hasErrors()) {
-            User currentUser = userService.getLoggedInUser();
-            user.setId(currentUser.getId());
-            userService.update(user);
-            return "redirect:/dashboard";
-        }
-        else{
-            for(ObjectError error: bindingRes.getAllErrors()){
-                System.out.println(error.getDefaultMessage());
+            //This is an admin editing the user
+            if(currentUser.getId() != user.getId()){
+                //Another admin wants to change the user role, name, or email
+                if((user.getPassword().compareTo(user.getPasswordConfirm())==0) && (user.getPassword().length() >= 8)){
+                    User initUser = userService.findById(user.getId());
+                    initUser.setRole(user.getRole());
+                    initUser.setName(user.getName());
+                    initUser.setEmail(user.getEmail());
+                    initUser.setLastName(user.getLastName());
+                    initUser.setPassword(user.getPassword());
+                    userService.update(initUser);
+                }
             }
+            else {
+                userService.update(user);
+            }
+        }
+        else {
+            for (ObjectError error : bindingRes.getAllErrors()) {
+                System.out.println("USER UPDATE ERROR: " + error.getDefaultMessage());
+            }
+            //model.addAttribute("userNew", user);
+            List<UserRole> userRoles = userRoleService.findAll();
+            model.addAttribute("userRoles", userRoles);
+            String currentRole = userService.getLoggedInUser().getRole().getName();
+            model.addAttribute("currentRole", currentRole);
             return "user/profile";
         }
+        return "redirect:/dashboard";
     }
 
     @GetMapping("/admin/user/all")

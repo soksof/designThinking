@@ -1,12 +1,10 @@
 package gr.uoi.dthink.controllers;
 
-import com.google.common.io.ByteStreams;
 import gr.ilsp.extractor.Extractor;
 import gr.ilsp.utils.ContentNormalizer;
 import gr.ilsp.utils.XMLExporter;
 import gr.uoi.dthink.model.*;
 import gr.uoi.dthink.services.*;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -111,6 +109,26 @@ public class ProjectController {
         return "redirect:/project/view/"+project.getId();
     }
 
+    @GetMapping("/admin/project/{pid}/resource/remove/{rid}")
+    public String removeFileResource(@PathVariable("pid") int projectId, @PathVariable("rid") long resourceId) {
+        System.out.println(">>>>> Went in here");
+        Project project = this.projectService.findById(projectId);
+        FileResource resource = this.fileResourceService.findById(resourceId);
+        if (project == null || resource == null) {
+            System.out.println(project+">>>>>> "+resource);
+            return "error/404";
+        }
+        project.removeFileResource(resource);
+        //Also delete the resource's file from the server
+        File resFile = new File(UPLOAD_DIR.concat("p"+projectId)+System.getProperty("file.separator")+resource.getFileName());
+        if (resFile.delete())
+            System.out.println("Deleted the file: " + resource.getFileName());
+        else
+            System.out.println("Failed to delete the file: "+resource.getFileName());
+        projectService.save(project);
+        return "redirect:/project/view/"+project.getId();
+    }
+
     @GetMapping("/admin/project/{pid}/cat/remove/{id}")
     public String removeCategory(@PathVariable("pid") int projectId, @PathVariable("id") int catId) {
         Project project = this.projectService.findById(projectId);
@@ -167,7 +185,6 @@ public class ProjectController {
         return "redirect:/project/view/" + project.getId();
     }
 
-
     @PostMapping("/resource/{rid}/addComment")
     public String addComment(@PathVariable("rid") int resourceId,
                               @RequestParam(value = "comment" , required = true)String strComment) {
@@ -212,14 +229,17 @@ public class ProjectController {
         File infile = new File(fileName);
         try {
             data = extr.extract(infile);
+            System.out.println(data.format);
+            System.out.println(data.sourceFilename);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         String text = data.content;
+        System.out.println("extracting:::"+text);
         text = ContentNormalizer.removeBoilerPars(text);
         String text1 = ContentNormalizer.removeTextTags(text);
-        //System.out.println(text1);
+        System.out.println("extracting:::"+text1);
         //FileUtils.writeStringToFile(new File(infile.getAbsolutePath()+Constants.EXTENSION_TXT), text1, Constants.UTF8);
         return text1;
     }
@@ -243,6 +263,7 @@ public class ProjectController {
         Project project = projectService.findById(projectId);
         FileResource fileResource = new FileResource(resourceNew);
         fileResource.setProject(project);
+        fileResource.setUser(userService.getLoggedInUser());
 
         // normalize the file path
         String fileName = StringUtils.cleanPath(resourceNew.getFile().getOriginalFilename());
@@ -257,7 +278,7 @@ public class ProjectController {
 
             fileResource.setContent(this.extract(directory + "/" + fileName));
         } catch (IOException e) {
-            System.out.println("ERROR: Creating file from uploaded resournce "+fileName);
+            System.out.println("ERROR: Creating file from uploaded resource "+fileName);
         }
         //Map the resource to a FileResource instance and persist it
         project.addFileResource(fileResource);
@@ -468,7 +489,6 @@ public class ProjectController {
         if(!resource.exists()) {
             return null;
         }
-        System.out.println(">>>>> "+resource.getCanonicalPath());
         //byte[] image = ByteStreams.toByteArray(resource.getInputStream());
         byte[] image = FileUtils.readFileToByteArray(resource);
         HttpHeaders headers = new HttpHeaders();

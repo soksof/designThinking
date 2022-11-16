@@ -24,6 +24,7 @@
             <div class="card-body">
                 <form th:action="@{/user/update}" th:object="${userNew}" method="post" name="uuf"
                       class="needs-validation" novalidate onsubmit="return checkPwd()">
+                    <input name="id" id="id" th:field="*{id}" type="hidden">
                     <div class="form-row">
                         <div class="col-md-3">
                             <div class="position-relative form-group"><label for="name">Όνομα</label>
@@ -56,7 +57,7 @@
                     <div class="form-row">
                         <div class="col-md-3">
                             <div class="position-relative form-group"><label for="role">Ρόλος στην πλατφόρμα</label>
-                                <select class="mb-2 form-control" id="role" name="role" th:field="*{role}">
+                                <select class="mb-2 form-control" id="role" name="role" th:field="*{role}" th:readonly ="${currentRole != 'ADMIN'}">
                                     <option value="" selected></option>
                                     <option th:each="role : ${userRoles}"
                                             th:value="${role.getId()}"

@@ -83,10 +83,6 @@
                                                    type="text" class="form-control-sm form-control">
                                         </form>
                                     </div>
-
-                                    <!--                        <ul th:each="com : ${resource.getComments()}" class="list-group list-group-flush">-->
-                                    <!--                            <a href="javascript:void(0);" class="list-group-item" th:text="${com.getDescription()}"></a>-->
-                                    <!--                        </ul>-->
                                 </div>
                                 <div class="tab-pane" id="tab2_" th:id="${'tab2_'+resource.getId()}">
                                     <div class="p-3">
@@ -96,13 +92,10 @@
                             </div>
                         </div>
                         <div class="text-center d-block card-footer">
-                            <button class="btn-icon btn-icon-only btn btn-link">
+                            <button class="btn-icon btn-icon-only btn btn-link" data-toggle="modal"
+                                    th:data-target="${'#res_modal_'+resource.getId()}">
                                 <i class="pe-7s-close-circle fsize-3 icon-gradient bg-love-kiss"> </i>
                             </button>
-                            <!--                <button class="btn-icon btn-icon-only btn btn-link" data-toggle="modal"-->
-                            <!--                        th:data-target="${'#addResourceCommentModal_'+resource.getId()}">-->
-                            <!--                    <i class="pe-7s-comment fsize-3 btn-icon-wrapper"> </i>-->
-                            <!--                </button>-->
                             <a th:href="@{/resource/download/{rid}(rid=${resource.getId()})}">
                                 <button class="btn-icon btn-icon-only btn btn-link">
                                     <i class="pe-7s-download fsize-3 btn-icon-wrapper"> </i>

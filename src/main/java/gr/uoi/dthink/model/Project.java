@@ -143,6 +143,10 @@ public class Project {
         this.members.remove(member);
     }
 
+    public void removeFileResource(FileResource resource){
+        this.fileResources.remove(resource);
+    }
+
     public void removeExtremeUserCategory(ExtremeUserCategory category){
         this.categories.remove(category);
     }
