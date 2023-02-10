@@ -12,7 +12,7 @@
                         <i class="pe-7s-cloud-upload  icon-gradient bg-mean-fruit">
                         </i>
                     </div>
-                    <div>Νέο υλικό
+                    <div>Προσθήκη νέου υλικού
                         <div class="page-title-subheading">Παρακαλώ συμπληρώστε τα παρακάτω πεδία
                         </div>
                     </div>
@@ -80,6 +80,9 @@
                         <label for="exampleFile" class="">Επιλογή αρχείου</label>
                         <input name="file" id="exampleFile" type="file" class="form-control-file" th:field="*{file}" >
                         <small class="form-text text-muted"></small>
+                        <em id="fileError" class="error" th:if="${#fields.hasErrors('file')}"
+                            th:errors="*{file}">
+                            File name ERROR</em>
                     </div>
 
                     <div class="divider"></div>
@@ -87,7 +90,7 @@
                         <button type="submit" id="createFileResource"
                                 class="btn-shadow btn-wide btn-hover-shine btn btn-primary">
                             Upload</button>
-                        <button type="button" id="cancel"
+                        <button type="button" id="cancel" onclick="window.history.back()"
                                 class="btn-shadow btn-wide float-right btn-hover-shine btn btn-secondary">
                             Άκυρο</button>
                     </div>

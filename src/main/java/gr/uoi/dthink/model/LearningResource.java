@@ -4,12 +4,11 @@ import javax.persistence.*;
 
 @Entity
 public class LearningResource {
-
-
     @Id
     @GeneratedValue
     private int id;
     private String name;
+    @Enumerated(EnumType.ORDINAL)
     private LearningResourceType type;
     private String description;
     @Column(unique = true)

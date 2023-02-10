@@ -1,7 +1,6 @@
 package gr.uoi.dthink.model;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.springframework.format.annotation.DateTimeFormat;
 import uio.text_proc.GenWordCloud;
@@ -10,11 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -38,6 +33,10 @@ public class Project {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
             mappedBy = "project")
     private Set<FileResource> fileResources = new LinkedHashSet<>();
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
+            mappedBy = "project")
+    private Set<Finding> findings = new LinkedHashSet<>();
+
     @NotNull(message="Η ημερομηνία έναρξης είναι κενή!")
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -145,6 +144,10 @@ public class Project {
 
     public void removeFileResource(FileResource resource){
         this.fileResources.remove(resource);
+    }
+
+    public void removeFinding(Finding finding){
+        this.findings.remove(finding);
     }
 
     public void removeExtremeUserCategory(ExtremeUserCategory category){
@@ -259,6 +262,26 @@ public class Project {
         return stageList;
     }
 
+    public boolean hasPreviousStage(){
+        return !this.getCurrentStage().getStatus().equals(Status.CHALLENGE_DEFINITION);
+    }
+
+    public boolean haveVisitedNextStage(){
+        Status status = this.getCurrentStage().getStatus();
+        if (status.equals(Status.CHALLENGE_DEFINITION)) {
+            return this.getResourceCollection() != null;
+        } else if(status.equals(Status.RESOURCE_COLLECTION)) {
+            return this.getFindingsCollection() != null;
+        } else if(status.equals(Status.FINDINGS_COLLECTION)) {
+            return this.getIdeaCreation() != null;
+        } else if(status.equals(Status.IDEA_CREATION)) {
+            return this.getPrototypeCreation() != null;
+        } else if(status.equals(Status.PROTOTYPE_CREATION)) {
+            return this.getCompletedProject() != null;
+        }
+        return false;
+    }
+
     @PreUpdate
     protected void onUpdate() {
         updatedOn = new Date();
@@ -296,6 +319,10 @@ public class Project {
         return this.fileResources;
     }
 
+    public Set<Finding> getFindings() {
+        return this.findings;
+    }
+
     public void addFileResource(FileResource fileResource){
         this.fileResources.add(fileResource);
         if(!fileResource.getContent().trim().equals("")){
@@ -303,9 +330,26 @@ public class Project {
         }
     }
 
+    public void addFinding(Finding finding){
+        this.findings.add(finding);
+    }
+
     public void setFileResources(Set<FileResource> fileResources) {
         this.fileResources = new HashSet<>();
         this.fileResources.addAll(fileResources);
+    }
+
+    public void setFindings(Set<Finding> findings) {
+        this.findings = new HashSet<>();
+        this.findings.addAll(findings);
+    }
+
+    public int getTotalFindingLikes(){
+        int totalLikes = 0;
+        for(Finding finding:this.getFindings()){
+            totalLikes += finding.getLikes();
+        }
+        return totalLikes;
     }
 
     public EmpathyMap getEmpathyMap() {
@@ -316,45 +360,40 @@ public class Project {
         this.empathyMap = empathyMap;
     }
 
-    public File generateWordCloud(){
-        String content="";
+    public void generateWordCloud(){
+        StringBuilder content= new StringBuilder();
         for(FileResource resource: this.fileResources){
             if(!resource.getContent().equals(""))
-            content+=" "+resource.getContent();
+                content.append(" ").append(resource.getContent());
         }
         File mapPng = new File("uploads/p"+this.getId()+"/word_cloud.png");
-        File outFile = this.generateWordCloudFile(content, mapPng);
-        return outFile;
+        this.generateWordCloudFile(content.toString(), mapPng);
     }
 
     /**
-     *
-     * @return
-     * @throws IOException
+     * Gets a String List of the stopwords found in the corresponding file
+     * @return List of stopwords
+     * @throws IOException In case the file stopwords is not found
      */
     private static List<String> getStopWords() throws IOException {
-        List<String> stopwords = new ArrayList();
+        List<String> stopwords = new ArrayList<>();
 
-        File srcdir = new File("stopwords/");
-        File[] files = srcdir.listFiles();
-        File[] var4 = files;
-        int var5 = files.length;
+        File src_dir = new File("stopwords/");
+        File[] files = src_dir.listFiles();
+        assert files != null;
 
-        for(int var6 = 0; var6 < var5; ++var6) {
-            File file = var4[var6];
+        for (File file : files) {
             stopwords.addAll(FileUtils.readLines(file, "UTF8"));
         }
 
         return stopwords;
     }
 
-    private File generateWordCloudFile(String text, File outFile){
-        String mode = "grad";
-        File resultFile = null;
+    private void generateWordCloudFile(String text, File outFile){
+        File resultFile;
         BasicConfigurator.configure();
-        GenWordCloud wcgenerator = new GenWordCloud();
         try {
-            resultFile = wcgenerator.generate(text, mode, outFile, getStopWords());
+            resultFile = GenWordCloud.generate(text, "grad", outFile, getStopWords());
         } catch (Exception e) {
             System.out.println("ERROR: Problem in generating word cloud: "+e.getMessage());
 //            String stacktrace = ExceptionUtils.getStackTrace(e);
@@ -363,10 +402,7 @@ public class Project {
 //                myWriter.write(stacktrace);
 //                myWriter.close();
 //            }catch(java.io.IOException e222){
-//
 //            }
-            return null;
         }
-        return resultFile;
     }
 }

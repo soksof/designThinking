@@ -5,7 +5,7 @@ public enum Status {
     RESOURCE_COLLECTION("Παρατήρηση Χρηστών", "focus", "resourcesCollection"),
     FINDINGS_COLLECTION("Διαπιστώσεις", "secondary", "findingsCollection"),
     IDEA_CREATION("Δημιουργία ιδεών", "info", "ideaCreation"),
-    PROTOTYPE_CREATION("Δημιουργία Πρωτότυπου", "success", "prototypeCreation"),
+    PROTOTYPE_CREATION("Δημιουργία Πρωτοτύπου", "success", "prototypeCreation"),
     COMPLETED("Ολοκλήρωση", "primary", "completed");
 
     private final String full;

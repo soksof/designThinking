@@ -1,0 +1,62 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:with="http://www.thymeleaf.org/extras/with"
+      layout:decorate="~{layout}"
+      with:title="Προφίλ χρήστη">
+<th:block layout:fragment="content">
+
+    <div class="app-main__inner">
+        <!-- MAIN CONTENT TITLE -->
+        <div class="app-page-title">
+            <div class="page-title-wrapper">
+                <div class="page-title-heading">
+                    <div class="page-title-icon">
+                        <i class="pe-7s-link icon-gradient bg-mean-fruit">
+                        </i>
+                    </div>
+                    <div>Προσθήκη υλικού Εκπαίδευσης από πηγή στο διαδίκτυο (video ή online άρθρο)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END OF MAIN CONTENT TITLE -->
+
+        <div class="main-card mb-3 card">
+            <div class="card-body">
+                <p th:text="${message}" th:if="${message ne null}" class="alert alert-primary"></p>
+                <form method="post" th:action="@{/admin/learningMaterial/upload/url}" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <div class="position-relative form-group"><label for="name">Τίτλος</label>
+                            <input type="text" name="name" id="name" placeholder="Τίτλος"
+                                   class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="position-relative form-group"><label for="url">Διεύθυνση</label>
+                            <input type="text" name="url" id="url" placeholder="url υλικού"
+                                   class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="position-relative form-group"><label for="type">Κατηγορία</label>
+                            <select name="type" id="type">
+                                <option value="url">Online Άρθρο</option>
+                                <option value="video">Online Video</option>
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="position-relative form-group"><label for="descr">Περιγραφή</label>
+                            <input name="descr" id="descr" placeholder="περιγραφή υλικού"
+                                   type="text" class="form-control">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</th:block>
+</html>

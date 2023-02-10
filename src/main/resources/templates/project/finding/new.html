@@ -1,0 +1,61 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:with="http://www.thymeleaf.org/extras/with"
+      layout:decorate="~{layout}"
+      with:title="Δημιουργία νέας διαπίστωσης">
+<th:block layout:fragment="content">
+    <div class="app-main__inner">
+        <!-- MAIN CONTENT TITLE -->
+        <div class="app-page-title">
+            <div class="page-title-wrapper">
+                <div class="page-title-heading">
+                    <div class="page-title-icon">
+                        <i class="pe-7s-cloud-upload  icon-gradient bg-mean-fruit">
+                        </i>
+                    </div>
+                    <div>Προσθήκη νέας διαπίστωσης
+                        <div class="page-title-subheading">Παρακαλώ συμπληρώστε τα παρακάτω πεδία
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END OF MAIN CONTENT TITLE -->
+
+        <div class="main-card mb-3 card">
+            <div class="card-body">
+                <form action="#" th:action="@{/project/{pid}/finding/new(pid=${findingNew.getProject.getId()})}"
+                      th:object="${findingNew}" method="post" enctype="multipart/form-data"
+                      class="needs-validation" novalidate>
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <div class="position-relative form-group"><label for="title">Τίτλος</label>
+                                <input name="title" id="title" th:field="*{title}" placeholder="Τίτλος"
+                                       type="text" class="form-control">
+                                <em id="titleError" class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">
+                                    title ERROR</em>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="position-relative form-group">
+                        <label for="description">Περιγραφή</label>
+                        <textarea name="description" id="description" class="form-control" th:field="*{description}"></textarea>
+                        <em id="descriptionError" class="error" th:if="${#fields.hasErrors('description')}"
+                            th:errors="*{description}">
+                            description ERROR</em>
+                    </div>
+
+                    <div class="divider"></div>
+                    <div class="clearfix">
+                        <button type="submit" id="createFileResource"
+                                class="btn-shadow btn-wide btn-hover-shine btn btn-primary">
+                            Αποθήκευση</button>
+                        <button type="button" id="cancel" onclick="window.history.back()"
+                                class="btn-shadow btn-wide float-right btn-hover-shine btn btn-secondary">
+                            Άκυρο</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</th:block>
+</html>

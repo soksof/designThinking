@@ -14,8 +14,6 @@ public class Reaction {
     private long id;
     @ManyToOne
     private User user;
-    @ManyToOne
-    private Project project;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdOn;
     private boolean liked;
@@ -51,13 +49,5 @@ public class Reaction {
 
     public void setLiked(boolean liked) {
         this.liked = liked;
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
     }
 }

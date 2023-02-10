@@ -11,5 +11,6 @@ public interface ProjectService {
     Project findById(int id);
     Project save(Project project);
     Project nextStage(Project project);
+    Project previousStage(Project project);
     void delete(Project project);
 }

@@ -40,10 +40,26 @@
                     </div>
                 </div>
             </div>
-            <div th:if="${isManager == true}" class="d-block text-center card-footer">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#nextStageModal">
+<!--            <div th:if="${isManager == true}" class="d-block text-center card-footer">-->
+            <div class="d-block text-center card-footer">
+                <button th:if="${project.hasPreviousStage()}" class="mb-2 mr-2 btn-icon btn btn-primary" data-toggle="modal" data-target="#previousStageModal">
+                    <i class="pe-7s-left-arrow btn-icon-wrapper"></i>
+                    Προηγούμενη φάση
+                </button>
+
+                <button th:if="${!project.haveVisitedNextStage() and isManager}" class="mb-2 mr-2 btn-icon btn btn-primary" data-toggle="modal" data-target="#nextStageModal">
+                    <i class="pe-7s-right-arrow btn-icon-wrapper">
+                    </i>
                     Ολοκλήρωση φάσης
                 </button>
+                <button th:if="${project.haveVisitedNextStage()}" class="mb-2 mr-2 btn-icon btn btn-primary" data-toggle="modal" data-target="#nextStageModal">
+                    <i class="pe-7s-right-arrow btn-icon-wrapper">
+                    </i>
+                    Επόμενη φάση
+                </button>
+
+
+
             </div>
         </div>
     </div>

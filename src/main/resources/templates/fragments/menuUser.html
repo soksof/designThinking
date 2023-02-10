@@ -88,13 +88,18 @@
             <!--            <li class="app-sidebar__heading">Menu Option B'</li>-->
             <li>
                 <a href="#">
-                    <i class="metismenu-icon pe-7s-display1"></i>Υλικό
+                    <i class="metismenu-icon pe-7s-display1"></i>Υλικό Εκπαίδευσης
                     <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
                 </a>
                 <ul>
                     <li th:if="${role == 'admin'}">
-                        <a th:href="@{'/projectList'}">
-                            <i class="metismenu-icon"></i>Προσθήκη νέου υλικού
+                        <a th:href="@{'/admin/addLearningMaterial/pdf'}">
+                            <i class="metismenu-icon"></i>Upload file
+                        </a>
+                    </li>
+                    <li th:if="${role == 'admin'}">
+                        <a th:href="@{'/admin/addLearningMaterial/url'}">
+                            <i class="metismenu-icon"></i>Upload URL/video
                         </a>
                     </li>
                     <li>

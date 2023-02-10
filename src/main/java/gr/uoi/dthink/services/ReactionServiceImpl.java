@@ -22,12 +22,12 @@ public class ReactionServiceImpl implements ReactionService {
     }
 
     @Override
-    public List<Reaction> findByProject(Project project) {
-        return reactionRepository.findByProject(project);
+    public Reaction save(Reaction reaction) {
+        return this.reactionRepository.save(reaction);
     }
 
-    @Override
-    public List<Reaction> findByProjectAndUser(Project project, User user) {
-        return reactionRepository.findByProjectAndUser(project, user);
-    }
+//    @Override
+//    public List<Reaction> findByProject(Project project) {
+//        return reactionRepository.findByProject(project);
+//    }
 }

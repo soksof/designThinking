@@ -14,7 +14,7 @@
                             <i class="pe-7s-albums icon-gradient bg-mean-fruit"></i>
                         </div>
                         <div><span th:text="${project.getName()}"></span>
-                            <div class="page-title-subheading"><span th:text="${project.getDescription()}"></span></div>
+                            <div class="page-title-subheading"><span th:text="'Τρέχων στάδιο'+${project.getStatus()}"></span></div>
                         </div>
                     </div>
                     <div class="page-title-actions">
@@ -43,6 +43,8 @@
         <th:block layout:insert="~{fragments/modals/removeMemberConfirm}"/>
         <!-- Complete stage confirmation modal -->
         <th:block layout:insert="~{fragments/modals/nextStageConfirm}"/>
+        <!-- Previous stage confirmation modal -->
+        <th:block layout:insert="~{fragments/modals/previousStageConfirm}"/>
     </th:block>
 </th:block>
 </html>

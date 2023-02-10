@@ -8,104 +8,336 @@
             </div>
             <div class="btn-actions-pane-right text-capitalize actions-icon-btn">
                 <div class="btn-group dropdown">
-                    <button type="button" onclick="hideDiv('resourcesDIV')" aria-haspopup="true"
-                            data-toggle="tooltip" data-placement="top" title="Εμφάνιση δυναμικού Wordcloud"
-                            aria-expanded="false" class="btn-icon btn-icon-only btn btn-link">
-                        <i class="pe-7s-map-2 btn-icon-wrapper"></i>
-                    </button>
+                    <a th:href="@{/project/{pid}/resource/new(pid=${project.getId()})}">
+                        <button type="button" title="Προσθήκη Υλικού" class="btn-shadow mr-3 btn btn-alternate">
+                            <i class="fa fa-upload"></i>
+                        </button>
+                    </a>
                 </div>
             </div>
         </div>
 
         <div id="resourcesDIV" class="slider-light">
-        <div class="slick-slider-inverted">
-                <div class="p-5 bg-midnight-bloom" th:each="resource : ${project.getFileResources()}">
-                    <div class="slider-content card-shadow-primary card-border mb-3 card">
-                        <div class="dropdown-menu-header">
-                            <div class="dropdown-menu-header-inner bg-midnight-bloom">
-                                <div class="menu-header-content">
-                                    <div class="avatar-icon-wrapper btn-hover-shine mb-2 avatar-icon-xl">
-                                        <div class="avatar-icon rounded">
-                                            <img src="assets/images/avatars/1.jpg" alt="File Type"
-                                                 th:src="@{/img/ftypes/{img}(img=${resource.getTypeString()})}">
-                                        </div>
+            <div class="slick-slider slick-dotted">
+                <div class="p-5 card-body" th:each="resource : ${project.getFileResources()}">
+                <div class="slider-content">
+                    <div class="dropdown-menu-header">
+                        <div class="dropdown-menu-header-inner bg-dark">
+                            <div class="menu-header-image opacity-2"
+                                 th:style="|background-image: url(@{/img/dropdown-header/abstract3.jpg});|"></div>
+                            <div class="menu-header-content btn-pane-right">
+                                <div class="avatar-icon-wrapper mr-3 avatar-icon-xl">
+                                    <div class="avatar-icon rounded">
+                                        <img th:src="@{/img/ftypes/{img}(img=${resource.getTypeString()})}" alt="FileType">
                                     </div>
-                                    <div>
-                                        <h5 class="menu-header-title" th:text="${resource.getTitle()}">Title</h5>
-                                    </div>
-                                    <div class="menu-header-btn-pane pt-2">
-                                        <div role="group" class="btn-group text-center">
-                                            <div class="nav">
-                                                <a href="#tab0_" th:href="${'#tab0_'+resource.getId()}" data-toggle="tab"
-                                                   class="btn-warning active btn btn-outline-alternate btn-sm">x</a>
-                                                <a href="#tab1_" th:href="${'#tab1_'+resource.getId()}" data-toggle="tab"
-                                                   class="btn-warning mr-1 ml-1  btn btn-outline-alternate btn-sm">Σχόλια</a>
-                                                <a href="#tab2_" th:href="${'#tab2_'+resource.getId()}" data-toggle="tab"
-                                                   class="btn-warning btn btn-outline-alternate btn-sm">Περιγραφή</a>
-                                            </div>
-                                        </div>
-                                    </div>
+                                </div>
+                                <div>
+                                    <h5 class="menu-header-title" th:text="${resource.getTitle()}">Title</h5>
+                                    <h6 class="menu-header-subtitle" th:text="'Extreme User: '+${resource.getExtremeUserCategory().getName()}"></h6>
+                                </div>
+                                <div class="menu-header-btn-pane">
+                                    <a th:href="@{/resource/download/{rid}(rid=${resource.getId()})}">
+                                        <button title="Λήψη Υλικού"
+                                                class="mb-2 mr-2 btn-icon btn-icon-only btn-shadow btn-outline-2x btn btn-outline-primary">
+                                            <i class="lnr-download btn-icon-wrapper"> </i>
+                                        </button>
+                                    </a>
+
+                                    <button data-toggle="modal" th:data-target="${'#res_modal_'+resource.getId()}"
+                                            title="Διαγραφή Υλικού"
+                                            class="mb-2 mr-2 btn-icon btn-icon-only btn-shadow btn-outline-2x btn btn-outline-danger">
+                                        <i class="lnr-trash btn-icon-wrapper"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="p-0 card-body">
-                            <div class="tab-content">
-                                <div class="tab-pane" id="tab0_" th:id="${'tab0_'+resource.getId()}">
-                                </div>
-                                <div class="tab-pane" id="tab1_" th:id="${'tab1_'+resource.getId()}">
-                                    <div class="scroll-area-sm">
-                                        <div class="scrollbar-container">
-                                            <div th:each="com : ${resource.getComments()}">
-                                                <div class="chat-wrapper">
-                                                    <div class="chat-box-wrapper">
-                                                        <div>
-                                                            <div class="avatar-icon-wrapper mr-1">
-                                                                <div class="avatar-icon avatar-icon-sm rounded">
-                                                                    <img th:src="@{/img/avatars/{img}(img=${com.getUser().getProfilePic()})}">
-                                                                </div>
+                    </div>
+                    <ul class="tabs-animated-shadow tabs-animated nav nav-justified tabs-shadow-bordered p-3">
+                        <li class="nav-item">
+                            <a role="tab" class="nav-link active" th:id="${'#tab-c-description'+resource.getId()}"
+                               data-toggle="tab" th:href="${'#tab-description_'+resource.getId()}" aria-selected="true">
+                                <span>Περιγραφή</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a role="tab" class="nav-link" th:id="${'#tab-c-comments_'+resource.getId()}"
+                               data-toggle="tab" th:href="${'#tab-comments_'+resource.getId()}" aria-selected="false">
+                                <span>Σχόλια</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" th:aria-labelledby="${'tab-c-description'+resource.getId()}" th:id="${'#tab-description_'+resource.getId()}" role="tabpanel">
+                            <div class="scroll-area-sm">
+                                <div class="scrollbar-container ps">
+                                    <div class="no-results pt-3 pb-0">
+                                        <div class="results-title" th:text="${resource.getDescription()}"></div>
+                                    </div>
+                                    <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" th:aria-labelledby="${'tab-c-comments_'+resource.getId()}"  th:id="${'tab-comments_'+resource.getId()}" role="tabpanel">
+                            <div class="scroll-area-sm">
+                                <div class="scrollbar-container" th:with="prevUser=${resource.getComments()[0].getUserId()}">
+                                    <div th:remove="tag" th:each="com, itemStat : ${resource.getComments()}">
+                                        <div class="chat-wrapper">
+<!--                                            <div th:classappend="${itemStat.index % 2 != 0} ? 'float-right' : ''">-->
+                                            <div th:classappend="${com.getUserId()!=prevUser} ? 'float-right' : ''">
+                                                <div class="chat-box-wrapper" th:classappend="${com.getUserId()!=prevUser} ? 'chat-box-wrapper-right' : ''">
+                                                    <div th:with="prevUser=${curUser}">
+                                                        <div class="avatar-icon-wrapper mr-1">
+                                                            <div class="avatar-icon avatar-icon-sm rounded">
+                                                                <img th:src="@{/user/{id}/avatar(id=${com.getUserId()})}">
                                                             </div>
                                                         </div>
-                                                        <div>
-                                                            <div class="chat-box" th:text="${com.getDescription()}"></div>
-                                                            <small class="opacity-6">
-                                                                <i class="fa fa-calendar-alt mr-1"></i>
-                                                                <span th:text="${com.getDateOnly()}">11:01 AM</span>
-                                                            </small>
-                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div class="chat-box" th:text="${com.getDescription()}"></div>
+                                                        <small class="opacity-6">
+                                                            <i class="fa fa-calendar-alt mr-1" th:text="${com.getDateOnly()}"></i>
+                                                        </small>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="card-footer">
-                                        <form action="#" th:action="@{/resource/{rid}/addComment(rid=${resource.getId()})}" method="post">
-                                            <input name="comment" id="comment" placeholder="Σχόλιο και μετά enter..."
-                                                   type="text" class="form-control-sm form-control">
-                                        </form>
-                                    </div>
-                                </div>
-                                <div class="tab-pane" id="tab2_" th:id="${'tab2_'+resource.getId()}">
-                                    <div class="p-3">
-                                        <p class="mb-0" th:text="${resource.getDescription()}">description</p>
-                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="text-center d-block card-footer">
-                            <button class="btn-icon btn-icon-only btn btn-link" data-toggle="modal"
-                                    th:data-target="${'#res_modal_'+resource.getId()}">
-                                <i class="pe-7s-close-circle fsize-3 icon-gradient bg-love-kiss"> </i>
-                            </button>
-                            <a th:href="@{/resource/download/{rid}(rid=${resource.getId()})}">
-                                <button class="btn-icon btn-icon-only btn btn-link">
-                                    <i class="pe-7s-download fsize-3 btn-icon-wrapper"> </i>
-                                </button>
-                            </a>
+                            <div class="card-footer">
+                                <form class="form-inline" action="#" th:action="@{/resource/{rid}/addComment(rid=${resource.getId()})}" method="post">
+                                    <div class="mb-2 mr-sm-2 mb-sm-0 position-relative form-group">
+                                        <input name="comment" id="comment" placeholder="Εδώ μπορείτε να γράψετε το σχόλιό σας"
+                                               size="40" type="text" class="form-control-sm form-control">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Δημοσίευση</button>
+                                </form>
+                            </div>
+
+<!--                            <div class="scroll-area-sm">-->
+<!--                                <div class="scrollbar-container ps">-->
+<!--                                    <div class="p-3">-->
+<!--                                        <div class="vertical-without-time vertical-timeline vertical-timeline&#45;&#45;animate vertical-timeline&#45;&#45;one-column">-->
+<!--                                            <div class="vertical-timeline-item vertical-timeline-element">-->
+<!--                                                <div>-->
+<!--         <span class="vertical-timeline-element-icon bounce-in">-->
+<!--        <i class="badge badge-dot badge-dot-xl badge-success"></i>-->
+<!--        </span>-->
+<!--                                                    <div class="vertical-timeline-element-content bounce-in">-->
+<!--                                                        <h4 class="timeline-title">All Hands Meeting</h4>-->
+<!--                                                        <p>Lorem ipsum dolor sic amet, today at-->
+<!--                                                            <a href="javascript:void(0);">12:00 PM</a>-->
+<!--                                                        </p>-->
+<!--                                                        <span class="vertical-timeline-element-date"></span>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="vertical-timeline-item vertical-timeline-element">-->
+<!--                                                <div>-->
+<!--        <span class="vertical-timeline-element-icon bounce-in">-->
+<!--        <i class="badge badge-dot badge-dot-xl badge-warning"></i>-->
+<!--        </span>-->
+<!--                                                    <div class="vertical-timeline-element-content bounce-in">-->
+<!--                                                        <p>Another meeting today, at-->
+<!--                                                            <b class="text-danger">12:00 PM</b>-->
+<!--                                                        </p>-->
+<!--                                                        <p>Yet another one, at-->
+<!--                                                            <span class="text-success">15:00 PM</span>-->
+<!--                                                        </p>-->
+<!--                                                        <span class="vertical-timeline-element-date"></span>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="vertical-timeline-item vertical-timeline-element">-->
+<!--                                                <div>-->
+<!--        <span class="vertical-timeline-element-icon bounce-in">-->
+<!--        <i class="badge badge-dot badge-dot-xl badge-danger"></i>-->
+<!--        </span>-->
+<!--                                                    <div class="vertical-timeline-element-content bounce-in">-->
+<!--                                                        <h4 class="timeline-title">Build the production release</h4>-->
+<!--                                                        <p>Lorem ipsum dolor sit amit,consectetur eiusmdd tempor-->
+<!--                                                            incididunt ut labore et dolore magna elit enim at-->
+<!--                                                            minim veniam quis nostrud-->
+<!--                                                        </p>-->
+<!--                                                        <span class="vertical-timeline-element-date"></span>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="vertical-timeline-item vertical-timeline-element">-->
+<!--                                                <div>-->
+<!--        <span class="vertical-timeline-element-icon bounce-in">-->
+<!--        <i class="badge badge-dot badge-dot-xl badge-primary"></i>-->
+<!--        </span>-->
+<!--                                                    <div class="vertical-timeline-element-content bounce-in">-->
+<!--                                                        <h4 class="timeline-title text-success">Something not important</h4>-->
+<!--                                                        <p>Lorem ipsum dolor sit amit,consectetur elit enim at-->
+<!--                                                            minim veniam quis nostrud-->
+<!--                                                        </p>-->
+<!--                                                        <span class="vertical-timeline-element-date"></span>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="vertical-timeline-item vertical-timeline-element">-->
+<!--                                                <div>-->
+<!--        <span class="vertical-timeline-element-icon bounce-in">-->
+<!--        <i class="badge badge-dot badge-dot-xl badge-success"></i>-->
+<!--        </span>-->
+<!--                                                    <div class="vertical-timeline-element-content bounce-in">-->
+<!--                                                        <h4 class="timeline-title">All Hands Meeting</h4>-->
+<!--                                                        <p>Lorem ipsum dolor sic amet, today at-->
+<!--                                                            <a href="javascript:void(0);">12:00 PM</a>-->
+<!--                                                        </p>-->
+<!--                                                        <span class="vertical-timeline-element-date"></span>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="vertical-timeline-item vertical-timeline-element">-->
+<!--                                                <div>-->
+<!--        <span class="vertical-timeline-element-icon bounce-in">-->
+<!--        <i class="badge badge-dot badge-dot-xl badge-warning"></i>-->
+<!--        </span>-->
+<!--                                                    <div class="vertical-timeline-element-content bounce-in">-->
+<!--                                                        <p>Another meeting today, at-->
+<!--                                                            <b class="text-danger">12:00 PM</b>-->
+<!--                                                        </p>-->
+<!--                                                        <p>Yet another one, at-->
+<!--                                                            <span class="text-success">15:00 PM</span>-->
+<!--                                                        </p>-->
+<!--                                                        <span class="vertical-timeline-element-date"></span>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="vertical-timeline-item vertical-timeline-element">-->
+<!--                                                <div>-->
+<!--        <span class="vertical-timeline-element-icon bounce-in">-->
+<!--        <i class="badge badge-dot badge-dot-xl badge-danger"></i>-->
+<!--        </span>-->
+<!--                                                    <div class="vertical-timeline-element-content bounce-in">-->
+<!--                                                        <h4 class="timeline-title">Build the production release</h4>-->
+<!--                                                        <p>Lorem ipsum dolor sit amit,consectetur eiusmdd tempor-->
+<!--                                                            incididunt ut labore et dolore magna elit enim at-->
+<!--                                                            minim veniam quis nostrud-->
+<!--                                                        </p>-->
+<!--                                                        <span class="vertical-timeline-element-date"></span>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="vertical-timeline-item vertical-timeline-element">-->
+<!--                                                <div>-->
+<!--        <span class="vertical-timeline-element-icon bounce-in">-->
+<!--        <i class="badge badge-dot badge-dot-xl badge-primary"></i>-->
+<!--        </span>-->
+<!--                                                    <div class="vertical-timeline-element-content bounce-in">-->
+<!--                                                        <h4 class="timeline-title text-success">Something not important</h4>-->
+<!--                                                        <p>Lorem ipsum dolor sit amit,consectetur elit enim at-->
+<!--                                                            minim veniam quis nostrud</p>-->
+<!--                                                        <span class="vertical-timeline-element-date"></span>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></div>-->
+<!--                            </div>-->
+
+
+
                         </div>
                     </div>
                 </div>
-             </div>
+                </div>
+            </div>
         </div>
+
+
+
+
+
+<!--                <div class="p-5 bg-midnight-bloom" th:each="resource : ${project.getFileResources()}">-->
+<!--                    <div class="slider-content card-shadow-primary card-border mb-3 card">-->
+<!--                        <div class="dropdown-menu-header">-->
+<!--                            <div class="dropdown-menu-header-inner bg-midnight-bloom">-->
+<!--                                <div class="menu-header-content">-->
+<!--                                    <div class="avatar-icon-wrapper btn-hover-shine mb-2 avatar-icon-xl">-->
+<!--                                        <div class="avatar-icon rounded">-->
+<!--                                            <img src="assets/images/avatars/1.jpg" alt="File Type"-->
+<!--                                                 th:src="@{/img/ftypes/{img}(img=${resource.getTypeString()})}">-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div>-->
+<!--                                        <h5 class="menu-header-title" th:text="${resource.getTitle()}">Title</h5>-->
+<!--                                    </div>-->
+<!--                                    <div class="menu-header-btn-pane pt-2">-->
+<!--                                        <div role="group" class="btn-group text-center">-->
+<!--                                            <div class="nav">-->
+<!--                                                <button class="btn-icon btn-icon-only btn btn-link" data-toggle="modal"-->
+<!--                                                        th:data-target="${'#res_modal_'+resource.getId()}">-->
+<!--                                                    <i class="pe-7s-close-circle fsize-3 icon-gradient bg-love-kiss"> </i>-->
+<!--                                                </button>-->
+<!--                                                <a th:href="@{/resource/download/{rid}(rid=${resource.getId()})}">-->
+<!--                                                    <button class="btn-icon btn-icon-only btn btn-link">-->
+<!--                                                        <i class="pe-7s-download fsize-3 btn-icon-wrapper"> </i>-->
+<!--                                                    </button>-->
+<!--                                                </a>-->
+<!--                                                <a href="#tab0_" th:href="${'#tab0_'+resource.getId()}" data-toggle="tab"-->
+<!--                                                   class="btn-warning active btn btn-outline-alternate btn-sm">x</a>-->
+<!--                                                <a href="#tab1_" th:href="${'#tab1_'+resource.getId()}" data-toggle="tab"-->
+<!--                                                   class="btn-warning mr-1 ml-1  btn btn-outline-alternate btn-sm">Σχόλια</a>-->
+<!--                                                <a href="#tab2_" th:href="${'#tab2_'+resource.getId()}" data-toggle="tab"-->
+<!--                                                   class="btn-warning btn btn-outline-alternate btn-sm">Περιγραφή</a>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="p-0 card-body">-->
+<!--                            <div class="tab-content">-->
+<!--                                <div class="tab-pane" id="tab0_" th:id="${'tab0_'+resource.getId()}">-->
+<!--                                </div>-->
+<!--                                <div class="tab-pane" id="tab1_" th:id="${'tab1_'+resource.getId()}">-->
+<!--                                    <div class="scroll-area-sm">-->
+<!--                                        <div class="scrollbar-container">-->
+<!--                                            <div th:each="com : ${resource.getComments()}">-->
+<!--                                                <div class="chat-wrapper">-->
+<!--                                                    <div class="chat-box-wrapper">-->
+<!--                                                        <div>-->
+<!--                                                            <div class="avatar-icon-wrapper mr-1">-->
+<!--                                                                <div class="avatar-icon avatar-icon-sm rounded">-->
+<!--                                                                    <img th:src="@{/img/avatars/{img}(img=${com.getUser().getProfilePic()})}">-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+<!--                                                        <div>-->
+<!--                                                            <div class="chat-box" th:text="${com.getDescription()}"></div>-->
+<!--                                                            <small class="opacity-6">-->
+<!--                                                                <i class="fa fa-calendar-alt mr-1"></i>-->
+<!--                                                                <span th:text="${com.getDateOnly()}">11:01 AM</span>-->
+<!--                                                            </small>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="card-footer">-->
+<!--                                        <form action="#" th:action="@{/resource/{rid}/addComment(rid=${resource.getId()})}" method="post">-->
+<!--                                            <input name="comment" id="comment" placeholder="Σχόλιο και μετά enter..."-->
+<!--                                                   type="text" class="form-control-sm form-control">-->
+<!--                                        </form>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="tab-pane" id="tab2_" th:id="${'tab2_'+resource.getId()}">-->
+<!--                                    <div class="p-3">-->
+<!--                                        <p class="mb-0" th:text="${resource.getDescription()}">description</p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--             </div>-->
+<!--        </div>-->
+
+
     </div>
 </div>
-<!--</div>-->

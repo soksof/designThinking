@@ -26,7 +26,7 @@
                                         <div class="widget-content-left mr-2">
                                             <div class="widget-content-wrapper">
                                                 <img class="rounded-circle" alt="" width="30"
-                                                     th:src="@{/img/avatars/{img}(img=${member.getProfilePic()})}">
+                                                     th:src="@{/user/{uid}/avatar(uid=${member.getId()})}">
                                             </div>
                                         </div>
                                         <div class="widget-content-left flex2">
@@ -42,8 +42,7 @@
                                                  class="badge badge-warning mr-2">Manager</div>
                                             <button class="border-0 btn-transition btn btn-outline-danger"
                                                     th:if="${project.getManager().getId()!=member.getId()
-                                                    and isManager == true}"
-                                                    data-toggle="modal"
+                                                    and isManager == true}" data-toggle="modal" title="Διαγραφή από το project"
                                                     th:data-target="${'#modal_'+member.getId()}">
                                                 <i class="fa fa-trash-alt"></i>
                                             </button>

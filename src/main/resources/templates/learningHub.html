@@ -13,11 +13,13 @@
 <div class="app-main__inner">
   <div class="container">
     <div class="row">
-      <div class="col-lg-4 col-md-6" th:each="resource, stats : ${learningResources}">
+<!--      <div class="col-lg-4 col-md-6" th:each="resource, stats : ${learningResources}">-->
+      <div class="col-lg-4 col-md-6" th:each="resource, itemStat : ${learningResources}">
         <div th:if="${resource.getType() == T(gr.uoi.dthink.model.LearningResourceType).PDF}" class="blog-item mt-30">
           <div class="blog-img">
             <a th:href="@{/learningResource/{id}(id=${resource.getId()})}">
-              <img class="img-fluid" th:src="@{/img/kuba/lr-{x}.jpg(x=${stats.index + 1})}" alt="">
+<!--              <img class="img-fluid" th:src="@{/img/kuba/lr-{x}.jpg(x=${stats.index + 1})}" alt="">-->
+              <img class="img-fluid" th:src="@{/img/kuba/lr-{x}.jpg(x=*{indexes[__${itemStat.index}__]})}" alt="">
               <span class="ion-ios-paper-outline"></span>
             </a>
           </div>
@@ -30,7 +32,7 @@
         <div th:if="${resource.getType() != T(gr.uoi.dthink.model.LearningResourceType).PDF}"  class="blog-item mt-30">
           <div class="blog-img">
             <a th:href="|${resource.getContent()}|" target="_blank">
-              <img class="img-fluid" th:src="@{/img/kuba/lr-{x}.jpg(x=${stats.index + 1})}" alt="">
+              <img class="img-fluid" th:src="@{/img/kuba/lr-{x}.jpg(x=*{indexes[__${itemStat.index}__]})}" alt="">
               <span th:if="${resource.getType() == T(gr.uoi.dthink.model.LearningResourceType).VIDEO}" class="ion-ios-videocam-outline"></span>
               <span th:if="${resource.getType() == T(gr.uoi.dthink.model.LearningResourceType).URL}" class="ion-ios-world-outline"></span>
             </a>

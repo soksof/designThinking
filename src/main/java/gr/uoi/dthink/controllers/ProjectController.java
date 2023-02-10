@@ -4,6 +4,8 @@ import gr.ilsp.extractor.Extractor;
 import gr.ilsp.utils.ContentNormalizer;
 import gr.ilsp.utils.XMLExporter;
 import gr.uoi.dthink.model.*;
+import gr.uoi.dthink.repos.FindingRepository;
+import gr.uoi.dthink.repos.UserRepository;
 import gr.uoi.dthink.services.*;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -42,11 +44,16 @@ public class ProjectController {
     ResourceTypeService resourceTypeService;
     CommentService commentService;
     EmpathyMapService empathyMapService;
+    private final UserRepository userRepository;
+    private final FindingRepository findingRepository;
+    private final ReactionService reactionService;
 
     public ProjectController(UserController userController, UserService userService, ProjectService projectService,
                              StageService stageService, ExtremeUserCategoryService extremeUserCategoryService,
                              FileResourceService fileResourceService, ResourceTypeService resourceTypeService,
-                             CommentService commentService, EmpathyMapService empathyMapService) {
+                             CommentService commentService, EmpathyMapService empathyMapService,
+                             UserRepository userRepository, ReactionService reactionService,
+                             FindingRepository findingRepository) {
         this.userController = userController;
         this.userService = userService;
         this.projectService = projectService;
@@ -56,6 +63,9 @@ public class ProjectController {
         this.resourceTypeService = resourceTypeService;
         this.commentService = commentService;
         this.empathyMapService = empathyMapService;
+        this.userRepository = userRepository;
+        this.reactionService = reactionService;
+        this.findingRepository = findingRepository;
     }
 
     @GetMapping("/project/view/{id}")
@@ -65,7 +75,9 @@ public class ProjectController {
             return "error/404";
         model.addAttribute("project", project);
         boolean isManager = userService.getLoggedInUser().getId() == project.getManager().getId();
+        boolean haveVisitedNextStage = project.haveVisitedNextStage();
         model.addAttribute("isManager", isManager);
+        model.addAttribute("haveVisitedNextStage", haveVisitedNextStage);
         long uid = userService.getLoggedInUser().getId();
         model.addAttribute("userId", uid);
         List<User> users = userService.findAllButMembers(project);
@@ -73,6 +85,9 @@ public class ProjectController {
         String status = project.getCurrentStage().getStatus().getView();
         if(status.compareTo("challengeDefinition")==0) {
             model.addAttribute("newFileResource", new FileResource());
+        }
+        else if(status.compareTo("findingsCollection")==0) {
+            model.addAttribute("findings", findingRepository.findByProject(project));
         }
         return "project/views/"+status;
     }
@@ -92,8 +107,12 @@ public class ProjectController {
     }
 
     @GetMapping("/project/{pid}/wordCloud")
-    public void generateWordCloud(@PathVariable("pid") int projectId){
-
+    public String generateWordCloud(@PathVariable("pid") int projectId){
+        Project project = this.projectService.findById(projectId);
+        if (project == null)
+            return "error/404";
+        project.generateWordCloud();
+        return "";
     }
 
     @GetMapping("/admin/project/{pid}/member/remove/{id}")
@@ -111,20 +130,20 @@ public class ProjectController {
 
     @GetMapping("/admin/project/{pid}/resource/remove/{rid}")
     public String removeFileResource(@PathVariable("pid") int projectId, @PathVariable("rid") long resourceId) {
-        System.out.println(">>>>> Went in here");
         Project project = this.projectService.findById(projectId);
         FileResource resource = this.fileResourceService.findById(resourceId);
-        if (project == null || resource == null) {
-            System.out.println(project+">>>>>> "+resource);
+        if (project == null || resource == null)
             return "error/404";
-        }
-        project.removeFileResource(resource);
+
         //Also delete the resource's file from the server
         File resFile = new File(UPLOAD_DIR.concat("p"+projectId)+System.getProperty("file.separator")+resource.getFileName());
-        if (resFile.delete())
+        if (resFile.delete()) {
             System.out.println("Deleted the file: " + resource.getFileName());
+            project.removeFileResource(resource);
+            fileResourceService.delete(resource);
+        }
         else
-            System.out.println("Failed to delete the file: "+resource.getFileName());
+            System.out.println("LOG: Failed to delete file "+resource.getFileName());
         projectService.save(project);
         return "redirect:/project/view/"+project.getId();
     }
@@ -147,6 +166,15 @@ public class ProjectController {
         if (project == null)
             return "error/404";
         projectService.nextStage(project);
+        return "redirect:/project/view/"+project.getId();
+    }
+
+    @GetMapping("/admin/project/{pid}/previousStage")
+    public String previousStage(@PathVariable("pid") int projectId) {
+        Project project = this.projectService.findById(projectId);
+        if (project == null)
+            return "error/404";
+        projectService.previousStage(project);
         return "redirect:/project/view/"+project.getId();
     }
 
@@ -185,6 +213,25 @@ public class ProjectController {
         return "redirect:/project/view/" + project.getId();
     }
 
+    @PostMapping("/resource/{rid}/reaction/add/positive")
+    public String addReaction(@PathVariable("rid") int resourceId) {
+        FileResource resource = fileResourceService.findById(resourceId);
+        if (resource == null)
+            return "error/404";
+//
+//        if(strComment.strip().compareTo("") != 0) {
+//            Comment comment  = new Comment();
+//            comment.setDescription(strComment);
+//            comment.setUser(userService.getLoggedInUser());
+//            comment.setProject(resource.getProject());
+//            commentService.save(comment);
+//            resource.addComment(comment);
+//            System.out.println("Adding comment " + comment);
+//            fileResourceService.save(resource);
+//        }
+        return "redirect:/project/view/" + resource.getProject().getId();
+    }
+
     @PostMapping("/resource/{rid}/addComment")
     public String addComment(@PathVariable("rid") int resourceId,
                               @RequestParam(value = "comment" , required = true)String strComment) {
@@ -203,6 +250,67 @@ public class ProjectController {
             fileResourceService.save(resource);
         }
         return "redirect:/project/view/" + resource.getProject().getId();
+    }
+
+    @GetMapping("/project/{id}/finding/{fid}/like")
+    public String likeFinding(@PathVariable("id") int pid, @PathVariable("fid") long fid, Model model) {
+        Project project = projectService.findById(pid);
+        if(project == null)
+            return "error/404";
+        Status status = project.getCurrentStage().getStatus();
+        if(!status.equals(Status.FINDINGS_COLLECTION))
+            return "error/403";
+
+        Finding finding = findingRepository.findById(fid).orElse(null);
+        if(finding == null)
+            return "error/404";
+
+        Reaction like = new Reaction();
+        like.setLiked(true);
+        like.setUser(userService.getLoggedInUser());
+        reactionService.save(like);
+        finding.addReaction(like);
+        finding.setProject(project);
+        findingRepository.save(finding);
+        return "redirect:/project/view/" + pid;
+    }
+
+    @GetMapping("/project/{id}/finding/new")
+    public String newFinding(@PathVariable("id") int projectId, Model model) {
+        Project project = projectService.findById(projectId);
+        if(project == null)
+            return "error/404";
+        Status status = project.getCurrentStage().getStatus();
+        if(!status.equals(Status.FINDINGS_COLLECTION))
+            return "error/403";
+        Finding newFinding = new Finding();
+        newFinding.setProject(project);
+        model.addAttribute("findingNew", newFinding);
+        return "project/finding/new";
+    }
+
+    @Transactional
+    @PostMapping("/project/{id}/finding/new")
+    public String addFinding(@PathVariable("id") int projectId,
+                              @ModelAttribute("findingNew") @Valid Finding findingNew,
+                              BindingResult bindingRes, Model model){
+        Project project = projectService.findById(projectId);
+        if(project == null)
+            return "error/404";
+        findingNew.setProject(project);
+        model.addAttribute("findingNew", findingNew);
+
+        if (bindingRes.hasErrors()) {
+            System.out.println("ERRORS");
+            for(ObjectError error: bindingRes.getAllErrors()){
+                System.out.println(error.getDefaultMessage());
+            }
+            return "project/finding/new";
+        }
+        findingNew.setUser(userService.getLoggedInUser());
+        project.addFinding(findingNew);
+        projectService.save(project);
+        return "redirect:/project/view/" + projectId;
     }
 
     @GetMapping("/project/{id}/resource/new")
@@ -225,18 +333,15 @@ public class ProjectController {
 
     public String extract(String fileName) throws IOException {
         XMLExporter.DocData data = XMLExporter.initDocData();
-        Extractor extr = new Extractor();
+        //Extractor extr = new Extractor();
         File infile = new File(fileName);
         try {
-            data = extr.extract(infile);
-            System.out.println(data.format);
-            System.out.println(data.sourceFilename);
+            data = Extractor.extract(infile);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         String text = data.content;
-        System.out.println("extracting:::"+text);
+        System.out.println("LOG: extracting content from file :"+fileName);
         text = ContentNormalizer.removeBoilerPars(text);
         String text1 = ContentNormalizer.removeTextTags(text);
         System.out.println("extracting:::"+text1);
@@ -249,6 +354,14 @@ public class ProjectController {
     public String addResource(@PathVariable("id") int projectId,
                               @ModelAttribute("resourceNew") @Valid FileResourceMapper resourceNew,
                               BindingResult bindingRes, Model model){
+        Project project = projectService.findById(projectId);
+        if(project == null)
+            return "error/404";
+        resourceNew.setProject(project);
+        model.addAttribute("resourceNew", resourceNew);
+        List<ResourceType> fileResourceTypes = resourceTypeService.findAllFileTypes();
+        model.addAttribute("resourceTypes", fileResourceTypes);
+
         if (bindingRes.hasErrors()) {
             System.out.println("ERRORS");
             for(ObjectError error: bindingRes.getAllErrors()){
@@ -258,9 +371,14 @@ public class ProjectController {
         }
         // check if file is empty
         if (resourceNew.getFile().isEmpty()) {
+            bindingRes.rejectValue("file", "error.file", "Το αρχείο είναι άδειο.");
             return "project/resource/new";
         }
-        Project project = projectService.findById(projectId);
+        if(fileResourceService.fileNameExistsInProject(resourceNew.getFile().getOriginalFilename(), project)) {
+            bindingRes.rejectValue("file", "error.file", "Υπάρχει ήδη στο project αρχείο με το ίδιο όνομα.");
+            return "project/resource/new";
+        }
+
         FileResource fileResource = new FileResource(resourceNew);
         fileResource.setProject(project);
         fileResource.setUser(userService.getLoggedInUser());
@@ -275,7 +393,6 @@ public class ProjectController {
 
             Path path = Paths.get(directory + "/" + fileName);
             Files.copy(resourceNew.getFile().getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-
             fileResource.setContent(this.extract(directory + "/" + fileName));
         } catch (IOException e) {
             System.out.println("ERROR: Creating file from uploaded resource "+fileName);
@@ -283,7 +400,6 @@ public class ProjectController {
         //Map the resource to a FileResource instance and persist it
         project.addFileResource(fileResource);
         projectService.save(project);
-
         return "redirect:/project/view/" + projectId;
     }
 
@@ -366,15 +482,11 @@ public class ProjectController {
         comment.setUser(userService.getLoggedInUser());
         commentService.save(comment);
         EmpathyMap map = project.getEmpathyMap();
-        switch(pos){
-            case("says"):
-                map.addEmpSay(comment);break;
-            case("feels"):
-                map.addEmpFeel(comment);break;
-            case("thinks"):
-                map.addEmpThink(comment);break;
-            case("does"):
-                map.addEmpDo(comment);break;
+        switch (pos) {
+            case ("says") -> map.addEmpSay(comment);
+            case ("feels") -> map.addEmpFeel(comment);
+            case ("thinks") -> map.addEmpThink(comment);
+            case ("does") -> map.addEmpDo(comment);
         }
         empathyMapService.save(map);
         return true;
@@ -460,10 +572,10 @@ public class ProjectController {
             projectService.save(projectNew);
             for(User member: projectNew.getMembers()){
                 member.addProject(projectNew);
-                userService.save(member);
+                userRepository.save(member);
             }
             thisUser.addProject(projectNew);
-            userService.save(thisUser);
+            userRepository.save(thisUser);
             return "redirect:/project/view/" + projectNew.getId();
         }
         else{

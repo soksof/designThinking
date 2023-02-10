@@ -16,7 +16,6 @@ public class FileResourceMapper extends Resource{
     private MultipartFile file;
 
     public FileResourceMapper(){
-
     }
 
     public FileResourceMapper(FileResource file){
@@ -27,7 +26,6 @@ public class FileResourceMapper extends Resource{
         this.setContent(file.getContent());
         this.setType(file.getType());
         this.setExtremeUserCategory(file.getExtremeUserCategory());
-        //this.setFile(file.getFileName());
         this.setUser(file.getUser());
         this.setCreatedOn(file.getCreatedOn());
         this.setUpdatedOn(file.getUpdatedOn());
