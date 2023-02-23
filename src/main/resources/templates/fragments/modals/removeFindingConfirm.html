@@ -1,0 +1,44 @@
+<div xmlns:th="http://www.thymeleaf.org">
+    <div th:each="finding : ${findings}">
+        <div class="modal fade bd-example-modal-sm" data-backdrop="false"
+             tabindex="-1" role="dialog" th:id="${'find_modal_'+finding.getId()}"
+             aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">
+                            Διαγραφή Διαπίστωσης</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Είστε σίγουροι πως θέλετε να διαγράψετε τη διαπίστωση;</p>
+                        <p>Μαζί με τη διαπίστωση Θα χαθούν όλες οι ψήφοι που έχει λάβει.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Άκυρο</button>
+                        <a th:href="@{/admin/project/{pid}/finding/remove/{id}(pid=${project.getId()}, id=${finding.getId()})}">
+                            <button type="button" class="btn btn-danger">Διαγραφή</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function hideDiv(divId) {
+            let x = document.getElementById(divId);
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
+    <style>
+        .modal {
+            padding-top: 3%;
+        }
+    </style>
+</div>

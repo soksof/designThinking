@@ -1,12 +1,15 @@
 package gr.uoi.dthink.controllers;
 
+import com.google.common.io.ByteStreams;
 import gr.ilsp.extractor.Extractor;
 import gr.ilsp.utils.ContentNormalizer;
 import gr.ilsp.utils.XMLExporter;
 import gr.uoi.dthink.model.*;
 import gr.uoi.dthink.repos.FindingRepository;
+import gr.uoi.dthink.repos.IdeaRepository;
 import gr.uoi.dthink.repos.UserRepository;
 import gr.uoi.dthink.services.*;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,7 +31,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.apache.commons.io.FileUtils;
 
 // TODO: Add logger with all the actions
@@ -47,13 +54,15 @@ public class ProjectController {
     private final UserRepository userRepository;
     private final FindingRepository findingRepository;
     private final ReactionService reactionService;
+    private final IdeaRepository ideaRepository;
+
 
     public ProjectController(UserController userController, UserService userService, ProjectService projectService,
                              StageService stageService, ExtremeUserCategoryService extremeUserCategoryService,
                              FileResourceService fileResourceService, ResourceTypeService resourceTypeService,
                              CommentService commentService, EmpathyMapService empathyMapService,
                              UserRepository userRepository, ReactionService reactionService,
-                             FindingRepository findingRepository) {
+                             FindingRepository findingRepository, IdeaRepository ideaRepository) {
         this.userController = userController;
         this.userService = userService;
         this.projectService = projectService;
@@ -66,6 +75,7 @@ public class ProjectController {
         this.userRepository = userRepository;
         this.reactionService = reactionService;
         this.findingRepository = findingRepository;
+        this.ideaRepository = ideaRepository;
     }
 
     @GetMapping("/project/view/{id}")
@@ -88,6 +98,36 @@ public class ProjectController {
         }
         else if(status.compareTo("findingsCollection")==0) {
             model.addAttribute("findings", findingRepository.findByProject(project));
+        }
+        else if(status.compareTo("ideaCreation")==0) {
+            model.addAttribute("findings", findingRepository.findByProject(project));
+            List<Idea> ideas = ideaRepository.findByProject(project);
+            ideas.sort(Comparator.comparing(Idea::getReactionsCount).reversed());
+            model.addAttribute("ideas", ideas);
+            List<Comment> allComments = ideas.stream().flatMap(idea -> idea.getComments().stream()).collect(Collectors.toList());
+            model.addAttribute("comments", allComments);
+            long firstCommentUser = -1;
+            if(allComments.size()>0)
+                firstCommentUser = allComments.get(0).getUserId();
+            model.addAttribute("firstCommentUser", firstCommentUser);
+        }
+        else if(status.compareTo("prototypeCreation")==0) {
+            List<Idea> ideas = ideaRepository.findByProject(project);
+            ideas.sort(Comparator.comparing(Idea::getReactionsCount).reversed());
+            model.addAttribute("ideas", ideas);
+
+            Set<FileResource> prototypeScreens = project.getPrototypeScreenShots();
+            model.addAttribute("prototypeScreens", prototypeScreens);
+        }
+        else if(status.compareTo("completed")==0) {
+            int ideasNum = ideaRepository.findByProject(project).size();
+            model.addAttribute("ideasNum", ideasNum);
+            int findingsNum = findingRepository.findByProject(project).size();
+            model.addAttribute("findingsNum", findingsNum);
+            model.addAttribute("resourcesNum", project.getFileResources().size());
+            model.addAttribute("membersNum", project.getMembers().size());
+            model.addAttribute("extremeUsersNum", project.getCategories().size());
+            model.addAttribute("days", project.getDurationInDays());
         }
         return "project/views/"+status;
     }
@@ -127,6 +167,58 @@ public class ProjectController {
         userService.save(user);
         return "redirect:/project/view/"+project.getId();
     }
+
+    @GetMapping("/admin/project/{pid}/finding/remove/{id}")
+    public String removeFinding(@PathVariable("pid") int projectId, @PathVariable("id") long findingId) {
+        Project project = this.projectService.findById(projectId);
+        Finding finding = this.findingRepository.findById(findingId).orElse(null);
+        if (project == null || finding == null)
+            return "error/404";
+        project.removeFinding(finding);
+        projectService.save(project);
+        findingRepository.delete(finding);
+        return "redirect:/project/view/"+project.getId();
+    }
+
+    @GetMapping("/admin/project/{pid}/idea/remove/{id}")
+    public String removeIdea(@PathVariable("pid") int projectId, @PathVariable("id") long ideaId) {
+        Project project = this.projectService.findById(projectId);
+        Idea idea = this.ideaRepository.findById(ideaId).orElse(null);
+        if (project == null || idea == null)
+            return "error/404";
+
+        project.removeIdea(idea);
+        projectService.save(project);
+        ideaRepository.delete(idea);
+        return "redirect:/project/view/"+project.getId();
+    }
+
+    @GetMapping("/admin/project/{pid}/screenshot/remove/{rid}")
+    public String removeScreenshot(@PathVariable("pid") int projectId, @PathVariable("rid") long resourceId) {
+        Project project = this.projectService.findById(projectId);
+        FileResource resource = this.fileResourceService.findById(resourceId);
+        if (project == null || resource == null)
+            return "error/404";
+
+        //Also delete the resource's file from the server
+        File resFile = new File(UPLOAD_DIR.concat("p"+projectId)+System.getProperty("file.separator")+resource.getFileName());
+        try {
+            Files.delete(resFile.toPath());
+        }
+        catch (IOException e) {
+            System.out.println(e);
+        }
+        if (resFile.delete()) {
+            System.out.println("Deleted the file: " + resource.getFileName());
+            project.removePrototypeScreenShot(resource);
+            fileResourceService.delete(resource);
+        }
+        else
+            System.out.println(resFile.exists()+" LOG: Failed to delete file "+resFile.getAbsolutePath());
+        projectService.save(project);
+        return "redirect:/project/view/"+project.getId();
+    }
+
 
     @GetMapping("/admin/project/{pid}/resource/remove/{rid}")
     public String removeFileResource(@PathVariable("pid") int projectId, @PathVariable("rid") long resourceId) {
@@ -218,17 +310,6 @@ public class ProjectController {
         FileResource resource = fileResourceService.findById(resourceId);
         if (resource == null)
             return "error/404";
-//
-//        if(strComment.strip().compareTo("") != 0) {
-//            Comment comment  = new Comment();
-//            comment.setDescription(strComment);
-//            comment.setUser(userService.getLoggedInUser());
-//            comment.setProject(resource.getProject());
-//            commentService.save(comment);
-//            resource.addComment(comment);
-//            System.out.println("Adding comment " + comment);
-//            fileResourceService.save(resource);
-//        }
         return "redirect:/project/view/" + resource.getProject().getId();
     }
 
@@ -252,6 +333,49 @@ public class ProjectController {
         return "redirect:/project/view/" + resource.getProject().getId();
     }
 
+    @PostMapping("/project/{pid}/idea/{iid}/addComment")
+    public String addCommentForIdea(@PathVariable("pid") int pid, @PathVariable("iid") long ideaId,
+                             @RequestParam(value = "ideaComment" , required = true)String strComment) {
+        Project project = projectService.findById(pid);
+        Idea idea = ideaRepository.findById(ideaId).orElse(null);
+        if(project == null || idea == null)
+            return "error/404";
+        Status status = project.getCurrentStage().getStatus();
+        if(!status.equals(Status.IDEA_CREATION))
+            return "error/403";
+
+        if(strComment.strip().compareTo("") != 0) {
+            Comment comment  = new Comment();
+            comment.setDescription(idea.getTitle()+": "+strComment);
+            //comment.setDescription(strComment);
+            comment.setUser(userService.getLoggedInUser());
+            comment.setProject(project);
+            commentService.save(comment);
+            idea.addComment(comment);
+            ideaRepository.save(idea);
+        }
+        return "redirect:/project/view/" + pid;
+    }
+
+    @GetMapping("/project/idea/{iid}/like")
+    public String likeIdea(@PathVariable("iid") long ideaId, Model model) {
+        Idea idea = ideaRepository.findById(ideaId).orElse(null);
+        if(idea == null)
+            return "error/404";
+        Project project = idea.getProject();
+        Status status = project.getCurrentStage().getStatus();
+        if(!status.equals(Status.IDEA_CREATION))
+            return "error/403";
+
+        Reaction like = new Reaction();
+        like.setLiked(true);
+        like.setUser(userService.getLoggedInUser());
+        reactionService.save(like);
+        idea.addReaction(like);
+        ideaRepository.save(idea);
+        return "redirect:/project/view/"+project.getId();
+    }
+
     @GetMapping("/project/{id}/finding/{fid}/like")
     public String likeFinding(@PathVariable("id") int pid, @PathVariable("fid") long fid, Model model) {
         Project project = projectService.findById(pid);
@@ -273,6 +397,44 @@ public class ProjectController {
         finding.setProject(project);
         findingRepository.save(finding);
         return "redirect:/project/view/" + pid;
+    }
+
+    @GetMapping("/project/{id}/idea/new")
+    public String newIdea(@PathVariable("id") int projectId, Model model) {
+        Project project = projectService.findById(projectId);
+        if(project == null)
+            return "error/404";
+        Status status = project.getCurrentStage().getStatus();
+        if(!status.equals(Status.IDEA_CREATION))
+            return "error/403";
+        Idea newIdea = new Idea();
+        newIdea.setProject(project);
+        model.addAttribute("ideaNew", newIdea);
+        return "project/idea/new";
+    }
+
+    @Transactional
+    @PostMapping("/project/{id}/idea/new")
+    public String addFinding(@PathVariable("id") int projectId,
+                             @ModelAttribute("ideaNew") @Valid Idea ideaNew,
+                             BindingResult bindingRes, Model model){
+        Project project = projectService.findById(projectId);
+        if(project == null)
+            return "error/404";
+        ideaNew.setProject(project);
+        model.addAttribute("ideaNew", ideaNew);
+
+        if (bindingRes.hasErrors()) {
+            System.out.println("ERRORS");
+            for(ObjectError error: bindingRes.getAllErrors()){
+                System.out.println(error.getDefaultMessage());
+            }
+            return "project/idea/new";
+        }
+        ideaNew.setUser(userService.getLoggedInUser());
+        project.addIdea(ideaNew);
+        projectService.save(project);
+        return "redirect:/project/view/" + projectId;
     }
 
     @GetMapping("/project/{id}/finding/new")
@@ -311,6 +473,75 @@ public class ProjectController {
         project.addFinding(findingNew);
         projectService.save(project);
         return "redirect:/project/view/" + projectId;
+    }
+
+    @GetMapping("/project/{id}/screenshot/new")
+    public String newScreenShot(@PathVariable("id") int projectId, Model model) {
+        Project project = projectService.findById(projectId);
+        if(project == null)
+            return "error/404";
+
+        Status status = project.getCurrentStage().getStatus();
+        if(!status.equals(Status.PROTOTYPE_CREATION)) {
+            return "error/403";
+        }
+        FileResourceMapper screenShotNew = new FileResourceMapper();
+        ResourceType imageType = resourceTypeService.findByType("IMAGE");
+        screenShotNew.setType(imageType);
+        screenShotNew.setProject(project);
+        model.addAttribute("screenShotNew", screenShotNew);
+        return "project/resource/newScreen";
+    }
+
+    @Transactional
+    @PostMapping("/project/{id}/screenshot/new")
+    public String newScreenShot(@PathVariable("id") int projectId,
+                              @ModelAttribute("screenShotNew") @Valid FileResourceMapper screenShotNew,
+                              BindingResult bindingRes, Model model){
+        Project project = projectService.findById(projectId);
+        if(project == null)
+            return "error/404";
+        screenShotNew.setProject(project);
+        model.addAttribute("screenShotNew", screenShotNew);
+
+        if (bindingRes.hasErrors()) {
+            System.out.println("ERRORS");
+            for(ObjectError error: bindingRes.getAllErrors()){
+                System.out.println(error.getDefaultMessage());
+            }
+            return "project/resource/newScreen";
+        }
+        // check if file is empty
+        if (screenShotNew.getFile().isEmpty()) {
+            bindingRes.rejectValue("file", "error.file", "Το αρχείο είναι άδειο.");
+            return "project/resource/newScreen";
+        }
+        if(fileResourceService.fileNameExistsInProject(screenShotNew.getFile().getOriginalFilename(), project)) {
+            bindingRes.rejectValue("file", "error.file", "Υπάρχει ήδη στο project αρχείο με το ίδιο όνομα.");
+            return "project/resource/newScreen";
+        }
+
+        FileResource fileResource = new FileResource(screenShotNew);
+        fileResource.setProject(project);
+        fileResource.setUser(userService.getLoggedInUser());
+
+        // normalize the file path
+        String fileName = StringUtils.cleanPath(screenShotNew.getFile().getOriginalFilename());
+        // save the file on the local file system
+        File directory = new File(UPLOAD_DIR.concat("p"+projectId));
+        try {
+            if (!directory.exists())
+                directory.mkdir();
+
+            Path path = Paths.get(directory + "/" + fileName);
+            Files.copy(screenShotNew.getFile().getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            System.out.println("ERROR: Creating file from uploaded resource "+fileName);
+        }
+        //Map the resource to a FileResource instance and persist it
+        project.addPrototypeScreenShot(fileResource);
+        projectService.save(project);
+        return "redirect:/project/view/"+projectId;
     }
 
     @GetMapping("/project/{id}/resource/new")
@@ -401,6 +632,29 @@ public class ProjectController {
         project.addFileResource(fileResource);
         projectService.save(project);
         return "redirect:/project/view/" + projectId;
+    }
+
+    @GetMapping(value = "/screenshot/get/{resourceId}")
+    public ResponseEntity<byte[]> downloadScreenShot(@PathVariable long resourceId) throws IOException {
+        FileResource fileResource = fileResourceService.findById(resourceId);
+        if(fileResource==null)
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+
+        String img = UPLOAD_DIR + "p" + fileResource.getProject().getId() + "/" + fileResource.getFileName();
+        Path imageFile = Paths.get(img);
+        org.springframework.core.io.Resource resource = new UrlResource(imageFile.toUri());
+        byte[] image;
+        try {
+            image = ByteStreams.toByteArray(resource.getInputStream());
+        }catch(java.io.FileNotFoundException e){
+            System.out.println(e);
+            resource = new ClassPathResource("static/img/avatars/defaultScreen.jpg");
+            image = ByteStreams.toByteArray(resource.getInputStream());
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        headers.setContentLength(image.length);
+        return new ResponseEntity<>(image, headers, HttpStatus.OK);
     }
 
     @GetMapping("/resource/download/{resourceId}")

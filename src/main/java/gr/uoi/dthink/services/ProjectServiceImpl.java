@@ -42,7 +42,7 @@ public class ProjectServiceImpl implements ProjectService{
 
     @Override
     public Project nextStage(Project project) {
-        if(project.getCurrentStage()==null){
+        if(project.getCurrentStage() == null){
             // This is the beginning of the project
             Stage challengeDefinition = new Stage(Status.CHALLENGE_DEFINITION);
             stageService.save(challengeDefinition);
@@ -55,7 +55,7 @@ public class ProjectServiceImpl implements ProjectService{
                 Stage challengeDefinition = project.getChallengeDefinition();
                 challengeDefinition.setEndDate(new Date());
                 stageService.save(challengeDefinition);
-                if(project.getResourceCollection()!= null) {
+                if(project.getResourceCollection() == null) {
                     Stage resourceCollection = new Stage(Status.RESOURCE_COLLECTION);
                     stageService.save(resourceCollection);
                     project.setResourceCollection(resourceCollection);
@@ -66,7 +66,7 @@ public class ProjectServiceImpl implements ProjectService{
                 Stage resourceCollection = project.getResourceCollection();
                 resourceCollection.setEndDate(new Date());
                 stageService.save(resourceCollection);
-                if(project.getFindingsCollection()!= null) {
+                if(project.getFindingsCollection() == null) {
                     Stage findingsCollection = new Stage(Status.FINDINGS_COLLECTION);
                     stageService.save(findingsCollection);
                     project.setFindingsCollection(findingsCollection);
@@ -77,7 +77,7 @@ public class ProjectServiceImpl implements ProjectService{
                 Stage findingsCollection = project.getFindingsCollection();
                 findingsCollection.setEndDate(new Date());
                 stageService.save(findingsCollection);
-                if(project.getIdeaCreation()!= null) {
+                if(project.getIdeaCreation() == null) {
                     Stage ideaCreation = new Stage(Status.IDEA_CREATION);
                     stageService.save(ideaCreation);
                     project.setIdeaCreation(ideaCreation);
@@ -88,7 +88,7 @@ public class ProjectServiceImpl implements ProjectService{
                 Stage ideaCreation = project.getIdeaCreation();
                 ideaCreation.setEndDate(new Date());
                 stageService.save(ideaCreation);
-                if(project.getPrototypeCreation()!= null) {
+                if(project.getPrototypeCreation() == null) {
                     Stage prototypeCreation = new Stage(Status.PROTOTYPE_CREATION);
                     stageService.save(prototypeCreation);
                     project.setPrototypeCreation(prototypeCreation);
@@ -99,7 +99,7 @@ public class ProjectServiceImpl implements ProjectService{
                 Stage prototypeCreation = project.getPrototypeCreation();
                 prototypeCreation.setEndDate(new Date());
                 stageService.save(prototypeCreation);
-                if(project.getCompletedProject()!= null) {
+                if(project.getCompletedProject() == null) {
                     Stage completedProject = new Stage(Status.COMPLETED);
                     completedProject.setEndDate(new Date());
                     stageService.save(completedProject);
@@ -107,7 +107,7 @@ public class ProjectServiceImpl implements ProjectService{
                 }
                 project.setCurrentStage(project.getCompletedProject());
                 projectRepository.save(project);
-            }
+            } //else if (status.equals(Status.COMPLETED)) {}
         }
         return project;
     }
@@ -116,7 +116,10 @@ public class ProjectServiceImpl implements ProjectService{
     public Project previousStage(Project project) {
         if(project.getCurrentStage()!=null) {
             Status status = project.getCurrentStage().getStatus();
-            if (status.equals(Status.PROTOTYPE_CREATION)) {
+            if (status.equals(Status.COMPLETED)) {
+                project.setCurrentStage(project.getPrototypeCreation());
+                projectRepository.save(project);
+            } else if (status.equals(Status.PROTOTYPE_CREATION)) {
                 project.setCurrentStage(project.getIdeaCreation());
                 projectRepository.save(project);
             } else if (status.equals(Status.IDEA_CREATION)) {

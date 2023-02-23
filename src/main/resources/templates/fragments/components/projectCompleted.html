@@ -1,0 +1,86 @@
+<div class="row" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+    <div class="col-md-12">
+        <div class="container-fluid">
+
+            <div class="mb-3 card">
+                <div class="card-header-tab card-header">
+                    <div class="card-header-title font-size-lg text-capitalize font-weight-normal">
+                        <i class="header-icon lnr-charts icon-gradient bg-happy-green"> </i>
+                        Πληροφορίες Project
+                    </div>
+                </div>
+                <div class="no-gutters row">
+                    <div class="col-sm-6 col-md-4 col-xl-4">
+                        <div class="card no-shadow rm-border bg-transparent widget-chart text-left">
+                            <div class="icon-wrapper rounded-circle">
+                                <div class="icon-wrapper-bg opacity-10 bg-warning"></div>
+                                <i class="lnr-bubble text-dark opacity-8"></i>
+                            </div>
+                            <div class="widget-chart-content">
+                                <div class="widget-subheading">Διαπιστώσεις</div>
+                                <div class="widget-numbers" th:text="${findingsNum}">1</div>
+                                <div class="widget-description opacity-8 text-focus">
+                                    Από
+                                    <span class="text-info pl-1">
+                                        <span class="pl-1" th:text="${extremeUsersNum}">1</span>
+                                    </span>
+                                    extreme users
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divider m-0 d-md-none d-sm-block"></div>
+                    </div>
+                    <div class="col-sm-6 col-md-4 col-xl-4">
+                        <div class="card no-shadow rm-border bg-transparent widget-chart text-left">
+                            <div class="icon-wrapper rounded-circle">
+                                <div class="icon-wrapper-bg opacity-9 bg-danger"></div>
+                                <i class="lnr-graduation-hat text-white"></i>
+                            </div>
+                            <div class="widget-chart-content">
+                                <div class="widget-subheading">Ιδέες</div>
+                                <div class="widget-numbers"><span th:text="${ideasNum}">1</span></div>
+                                <div class="widget-description opacity-8 text-focus">
+                                    Στις οποίες κατέληξε μια ομάδα
+                                    <span class="text-info pl-1">
+                                        <span class="pl-1" th:text="${membersNum}">1</span>
+                                    </span>
+                                    ανθρώπων
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divider m-0 d-md-none d-sm-block"></div>
+                    </div>
+                    <div class="col-sm-12 col-md-4 col-xl-4">
+                        <div class="card no-shadow rm-border bg-transparent widget-chart text-left">
+                            <div class="icon-wrapper rounded-circle">
+                                <div class="icon-wrapper-bg opacity-9 bg-success"></div>
+                                <i class="lnr-laptop-phone text-white"></i>
+                            </div>
+                            <div class="widget-chart-content">
+                                <div class="widget-subheading">Υλικό</div>
+                                <div class="widget-numbers" th:text="${resourcesNum}"><span>1</span></div>
+                                <div class="widget-description opacity-8 text-focus">
+                                    Το οποίο συγκεντρώθηκε μέσα σε
+                                    <span class="text-info pl-1">
+                                        <span class="pl-1" th:text="${days}">1</span>
+                                    </span>
+                                    ημέρες
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<!--                <div class="text-center d-block p-3 card-footer">-->
+<!--                    <button class="btn-pill btn-shadow btn-wide fsize-1 btn btn-primary btn-lg">-->
+<!--                        <span class="mr-2 opacity-7">-->
+<!--                            <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>-->
+<!--                        </span>-->
+<!--                        <span class="mr-1">Δείτε το συνολικό Report</span>-->
+<!--                    </button>-->
+<!--                </div>-->
+            </div>
+
+        </div>
+    </div>
+</div>

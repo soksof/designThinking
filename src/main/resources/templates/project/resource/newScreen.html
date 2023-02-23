@@ -1,7 +1,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:with="http://www.thymeleaf.org/extras/with"
       layout:decorate="~{layout}"
-      with:title="Μεταφόρτωση νέου υλικού">
+      with:title="Μεταφόρτωση εικόνων πρωτοτύπου">
 <th:block layout:fragment="content">
     <div class="app-main__inner">
         <!-- MAIN CONTENT TITLE -->
@@ -9,10 +9,10 @@
             <div class="page-title-wrapper">
                 <div class="page-title-heading">
                     <div class="page-title-icon">
-                        <i class="pe-7s-cloud-upload  icon-gradient bg-mean-fruit">
+                        <i class="pe-7s-display1 icon-gradient bg-mean-fruit">
                         </i>
                     </div>
-                    <div>Προσθήκη νέου υλικού
+                    <div>Προσθήκη εικόνων από πρωτότυπο
                         <div class="page-title-subheading">Παρακαλώ συμπληρώστε τα παρακάτω πεδία
                         </div>
                     </div>
@@ -23,8 +23,8 @@
 
         <div class="main-card mb-3 card">
             <div class="card-body">
-                <form action="#" th:action="@{/project/{pid}/resource/new(pid=${resourceNew.getProject.getId()})}"
-                      th:object="${resourceNew}" method="post" enctype="multipart/form-data"
+                <form action="#" th:action="@{/project/{pid}/screenshot/new(pid=${screenShotNew.getProject.getId()})}"
+                      th:object="${screenShotNew}" method="post" enctype="multipart/form-data"
                       class="needs-validation" novalidate>
                     <div class="form-row">
                         <div class="col-md-6">
@@ -33,38 +33,6 @@
                                        type="text" class="form-control">
                                 <em id="titleError" class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">
                                     title ERROR</em>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="col-md-3">
-                            <div class="position-relative form-group"><label for="type">Τύπος Αρχείου</label>
-                                <select class="mb-2 form-control" id="type" name="type"
-                                        th:field="*{type}">
-                                    <option value="" selected></option>
-                                    <option th:each="fileType : ${resourceTypes}"
-                                            th:value="${fileType.getId()}"
-                                            th:text="${fileType.getType()}">
-                                    </option>
-                                </select>
-                                <em id="typeError" class="error" th:if="${#fields.hasErrors('type')}"
-                                    th:errors="*{type}">
-                                    file type ERROR</em>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="position-relative form-group"><label for="extremeUserCategory">Κατηγορία extreme user</label>
-                                <select class="mb-2 form-control" id="extremeUserCategory" name="extremeUserCategory"
-                                        th:field="*{extremeUserCategory}">
-                                    <option value="" selected></option>
-                                    <option th:each="category : ${resourceNew.getProject().getCategories()}"
-                                            th:value="${category.getId()}"
-                                            th:text="${category.getName()}">
-                                    </option>
-                                </select>
-                                <em id="categoryError" class="error" th:if="${#fields.hasErrors('extremeUserCategory')}"
-                                    th:errors="*{extremeUserCategory}">
-                                    extreme User Category ERROR</em>
                             </div>
                         </div>
                     </div>
@@ -98,10 +66,5 @@
             </div>
         </div>
     </div>
-    <script>
-        $(document).ready(function () {
-            $('.js-example-basic-single').select2();
-        });
-    </script>
 </th:block>
 </html>

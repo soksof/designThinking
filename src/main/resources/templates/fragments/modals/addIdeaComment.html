@@ -1,0 +1,37 @@
+<div th:each="idea : ${ideas}">
+    <div class="modal fade" th:id="'modalIdeaCom_'+${idea.getId()}" tabindex="-1" role="dialog" data-backdrop="false"
+         aria-labelledby="addFeelsModalTitle" aria-hidden="true" xmlns:th="http://www.thymeleaf.org">
+        <div class="modal-dialog" role="document">
+            <form class="modal-content" th:onsubmit="'return validateIdeaCommentForm('+${idea.getId()}+')'" th:id="'formIdeaCom_'+${idea.getId()}"
+                  th:action="@{/project/{pid}/idea/{iid}/addComment(pid=${project.getId()}, iid=${idea.getId})}"
+                  method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMemberModalTitle">Συζήτηση για την ιδέα</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="position-relative form-group">
+                        <label for="ideaComment" class="">Σχόλιο</label>
+                        <textarea name="ideaComment" id="ideaComment" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Άκυρο</button>
+                    <button type="submit" class="btn btn-primary">Καταχώρηση</button>
+                </div>
+            </form>
+        </div>
+        <script th:inline="javascript">
+            function validateIdeaCommentForm(formName) {
+                var comment = document.forms.namedItem(formName).elements.namedItem("ideaComment").value;
+                if(comment == "") {
+                    alert("Το σχόλιο δεν μπορεί να είναι κενό.");
+                    return false;
+                }
+                return true;
+            }
+        </script>
+    </div>
+</div>

@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Entity
 public class Project {
@@ -30,13 +31,16 @@ public class Project {
     Set<ExtremeUserCategory> categories;
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "projects")
     private Set<User> members = new LinkedHashSet<>();
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
-            mappedBy = "project")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<FileResource> fileResources = new LinkedHashSet<>();
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
             mappedBy = "project")
     private Set<Finding> findings = new LinkedHashSet<>();
-
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,
+            mappedBy = "project")
+    private List<Idea> ideas = new ArrayList<>();
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<FileResource> prototypeScreenShots = new LinkedHashSet<>();
     @NotNull(message="Η ημερομηνία έναρξης είναι κενή!")
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -150,6 +154,10 @@ public class Project {
         this.findings.remove(finding);
     }
 
+    public void removeIdea(Idea idea){
+        this.ideas.remove(idea);
+    }
+
     public void removeExtremeUserCategory(ExtremeUserCategory category){
         this.categories.remove(category);
     }
@@ -173,6 +181,12 @@ public class Project {
 
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public long getDurationInDays(){
+        long timeDiff = Math.abs(this.getCompletedProject().getEndDate().getTime() - this.getChallengeDefinition().getStartDate().getTime());
+        long duration = TimeUnit.DAYS.convert(timeDiff, TimeUnit.MILLISECONDS);
+        return duration;
     }
 
     public Date getEndDate() {
@@ -266,6 +280,10 @@ public class Project {
         return !this.getCurrentStage().getStatus().equals(Status.CHALLENGE_DEFINITION);
     }
 
+    public boolean hasNextStage(){
+        return !this.getCurrentStage().getStatus().equals(Status.COMPLETED);
+    }
+
     public boolean haveVisitedNextStage(){
         Status status = this.getCurrentStage().getStatus();
         if (status.equals(Status.CHALLENGE_DEFINITION)) {
@@ -334,6 +352,10 @@ public class Project {
         this.findings.add(finding);
     }
 
+    public void addIdea(Idea idea){
+        this.ideas.add(idea);
+    }
+
     public void setFileResources(Set<FileResource> fileResources) {
         this.fileResources = new HashSet<>();
         this.fileResources.addAll(fileResources);
@@ -342,6 +364,11 @@ public class Project {
     public void setFindings(Set<Finding> findings) {
         this.findings = new HashSet<>();
         this.findings.addAll(findings);
+    }
+
+    public void setIdeas(List<Idea> ideas) {
+        this.ideas = new ArrayList<>();
+        this.ideas.addAll(ideas);
     }
 
     public int getTotalFindingLikes(){
@@ -404,5 +431,26 @@ public class Project {
 //            }catch(java.io.IOException e222){
 //            }
         }
+    }
+
+    public List<Idea> getIdeas() {
+        return ideas;
+    }
+
+    public Set<FileResource> getPrototypeScreenShots() {
+        return prototypeScreenShots;
+    }
+
+    public void setPrototypeScreenShots(Set<FileResource> prototypeScreenShots) {
+        this.prototypeScreenShots = new HashSet<>();
+        this.prototypeScreenShots.addAll(prototypeScreenShots);
+    }
+
+    public void addPrototypeScreenShot(FileResource fileResource){
+        this.prototypeScreenShots.add(fileResource);
+    }
+
+    public void removePrototypeScreenShot(FileResource resource){
+        this.prototypeScreenShots.remove(resource);
     }
 }

@@ -11,20 +11,28 @@
             <div class="page-title-wrapper">
                 <div class="page-title-heading">
                     <div class="page-title-icon">
-                        <i class="pe-7s-albums icon-gradient bg-mean-fruit"></i>
+                        <i class="pe-7s-rocket icon-gradient bg-mean-fruit"></i>
                     </div>
                     <div><span th:text="${project.getName()}"></span>
-                        <div class="page-title-subheading"><span th:text="'Τρέχων στάδιο'+${project.getStatus()}"></span></div>
+                        <div class="page-title-subheading"><span th:text="${project.getStatus()}"></span></div>
                     </div>
                 </div>
             </div>
         </div>
         <!-- END OF MAIN CONTENT TITLE -->
         <div class="row">
-            <!-- Member List component -->
-            <th:block layout:insert="~{fragments/components/projectMemberList}"/>
-            <!-- project timeline component -->
-            <th:block layout:insert="~{fragments/components/projectTimeline}"/>
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12" >
+                <th:block layout:insert="~{fragments/components/projectCompleted}"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3" >
+                <th:block layout:insert="~{fragments/components/projectMemberList}"/>
+            </div>
+            <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5" >
+                <!-- project timeline component -->
+                <th:block layout:insert="~{fragments/components/projectTimeline}"/>
+            </div>
         </div>
     </div>
     <!-- Add member modal -->
@@ -33,7 +41,8 @@
     <th:block layout:insert="~{fragments/modals/removeMemberConfirm}"/>
     <!-- Complete stage confirmation modal -->
     <th:block layout:insert="~{fragments/modals/nextStageConfirm}"/>
-
+    <!-- Previous stage confirmation modal -->
+    <th:block layout:insert="~{fragments/modals/previousStageConfirm}"/>
     </th:block>
 </th:block>
 </html>

@@ -6,7 +6,7 @@ import java.util.List;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity
+@MappedSuperclass
 public class Resource {
     @Id
     @GeneratedValue
@@ -78,8 +78,18 @@ public class Resource {
         return comments;
     }
 
+    public int getCommentsCount(){
+        return getComments().size();
+    }
+
+    public long getFirstCommentedUserId(){
+        if(this.comments.size()>0)
+            return this.comments.get(0).getUserId();
+        return -1;
+    }
+
     public void setComments(List<Comment> comments) {
-        this.comments = new ArrayList<Comment>();
+        this.comments = new ArrayList<>();
         this.comments.addAll(comments);
     }
 
@@ -91,8 +101,12 @@ public class Resource {
         return reactions;
     }
 
+    public int getReactionsCount(){
+        return getReactions().size();
+    }
+
     public void setReactions(List<Reaction> reactions) {
-        this.reactions = new ArrayList<Reaction>();
+        this.reactions = new ArrayList<>();
         this.reactions.addAll(reactions);
     }
 

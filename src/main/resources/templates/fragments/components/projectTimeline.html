@@ -1,6 +1,5 @@
-<div class="col-mb-3" xmlns:th="http://www.thymeleaf.org">
-<!--<div class="col-md-12 col-lg-6 col-xl-5" xmlns:th="http://www.thymeleaf.org">-->
-    <div class="card-hover-shadow-2x mb-3 card">
+<!--<div class="col-mb-3" >-->
+    <div class="card-hover-shadow-2x mb-3 card" xmlns:th="http://www.thymeleaf.org">
         <div class="card-header-tab card-header">
             <div class="card-header-title font-size-lg text-capitalize font-weight-normal">
                 <i class="header-icon pe-7s-date icon-gradient bg-amy-crisp"> </i>
@@ -40,37 +39,32 @@
                     </div>
                 </div>
             </div>
-<!--            <div th:if="${isManager == true}" class="d-block text-center card-footer">-->
             <div class="d-block text-center card-footer">
                 <button th:if="${project.hasPreviousStage()}" class="mb-2 mr-2 btn-icon btn btn-primary" data-toggle="modal" data-target="#previousStageModal">
                     <i class="pe-7s-left-arrow btn-icon-wrapper"></i>
                     Προηγούμενη φάση
                 </button>
-
-                <button th:if="${!project.haveVisitedNextStage() and isManager}" class="mb-2 mr-2 btn-icon btn btn-primary" data-toggle="modal" data-target="#nextStageModal">
+                <button th:if="${!project.haveVisitedNextStage() and isManager and project.hasNextStage()}" class="mb-2 mr-2 btn-icon btn btn-primary" data-toggle="modal" data-target="#nextStageModal">
                     <i class="pe-7s-right-arrow btn-icon-wrapper">
                     </i>
                     Ολοκλήρωση φάσης
                 </button>
-                <button th:if="${project.haveVisitedNextStage()}" class="mb-2 mr-2 btn-icon btn btn-primary" data-toggle="modal" data-target="#nextStageModal">
+                <button th:if="${project.haveVisitedNextStage() and project.hasNextStage()}" class="mb-2 mr-2 btn-icon btn btn-primary" data-toggle="modal" data-target="#nextStageModal">
                     <i class="pe-7s-right-arrow btn-icon-wrapper">
                     </i>
                     Επόμενη φάση
                 </button>
-
-
-
             </div>
         </div>
-    </div>
-    <script>
-        function hideDiv(divId) {
-            let x = document.getElementById(divId);
-            if (x.style.display === "none") {
-                x.style.display = "block";
-            } else {
-                x.style.display = "none";
+        <script>
+            function hideDiv(divId) {
+                let x = document.getElementById(divId);
+                if (x.style.display === "none") {
+                    x.style.display = "block";
+                } else {
+                    x.style.display = "none";
+                }
             }
-        }
-    </script>
-</div>
+        </script>
+    </div>
+

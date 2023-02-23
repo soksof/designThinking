@@ -11,10 +11,10 @@
                 <div class="page-title-wrapper">
                     <div class="page-title-heading">
                         <div class="page-title-icon">
-                            <i class="pe-7s-albums icon-gradient bg-mean-fruit"></i>
+                            <i class="pe-7s-chat icon-gradient bg-mean-fruit"></i>
                         </div>
                         <div><span th:text="${project.getName()}"></span>
-                            <div class="page-title-subheading"><span th:text="'Τρέχων στάδιο'+${project.getStatus()}"></span></div>
+                            <div class="page-title-subheading"><span th:text="${project.getStatus()}"></span></div>
                         </div>
                     </div>
                     <div class="page-title-actions">

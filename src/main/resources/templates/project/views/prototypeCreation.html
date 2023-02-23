@@ -11,30 +11,43 @@
             <div class="page-title-wrapper">
                 <div class="page-title-heading">
                     <div class="page-title-icon">
-                        <i class="pe-7s-albums icon-gradient bg-mean-fruit"></i>
+                        <i class="pe-7s-plugin icon-gradient bg-mean-fruit"></i>
                     </div>
                     <div><span th:text="${project.getName()}"></span>
-                        <div class="page-title-subheading"><span th:text="'Τρέχων στάδιο'+${project.getStatus()}"></span></div>
+                        <div class="page-title-subheading"><span th:text="${project.getStatus()}"></span></div>
                     </div>
                 </div>
             </div>
         </div>
         <!-- END OF MAIN CONTENT TITLE -->
         <div class="row">
+            <!-- Prototype screenshots component -->
+            <th:block layout:insert="~{fragments/components/projectPrototypeScreens}"/>
+            <!-- Ideas List component -->
+<!--            <th:block layout:insert="~{fragments/components/projectIdeasList}"/>-->
             <!-- Member List component -->
-            <th:block layout:insert="~{fragments/components/projectMemberList}"/>
-            <!-- project timeline component -->
-            <th:block layout:insert="~{fragments/components/projectTimeline}"/>
+            <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3" >
+                <th:block layout:insert="~{fragments/components/projectMemberList}"/>
+            </div>
+            <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5" >
+                <!-- project timeline component -->
+                <th:block layout:insert="~{fragments/components/projectTimeline}"/>
+            </div>
         </div>
     </div>
         <!-- Add member modal -->
         <th:block layout:insert="~{fragments/modals/addMembers}"/>
+        <!-- Add idea comment modal -->
+        <th:block layout:insert="~{fragments/modals/addIdeaComment}"/>
         <!-- Delete confirmation modals -->
+        <th:block layout:insert="~{fragments/modals/removeIdeaConfirm}"/>
         <th:block layout:insert="~{fragments/modals/removeMemberConfirm}"/>
+        <th:block layout:insert="~{fragments/modals/removeScreenshotConfirm}"/>
         <!-- Complete stage confirmation modal -->
         <th:block layout:insert="~{fragments/modals/nextStageConfirm}"/>
         <!-- Previous stage confirmation modal -->
         <th:block layout:insert="~{fragments/modals/previousStageConfirm}"/>
+
     </th:block>
 </th:block>
 </html>

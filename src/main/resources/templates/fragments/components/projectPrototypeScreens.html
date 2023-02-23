@@ -1,0 +1,66 @@
+<div class="row" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+    <div class="col-md-12">
+        <div class="container-fluid">
+
+            <div class="jumbotron">
+                <h1 class="text-center">Στιγμιότυπα Οθόνης</h1>
+                <p class="text-center">Εδώ μπορείτε να βρείτε συγκεντρωμένα (και να ανεβάσετε) στιγμιότυπα οθόνης του πρωτοτύπου.</p>
+            </div>
+
+            <div class="row">
+
+<!--                <div class="col-sm-12 col-lg-6 col-xl-4" th:each="screen : ${prototypeScreens}">-->
+<!--                    <div class="mb-3 profile-responsive card">-->
+<!--                        <a style="text-decoration: none;"-->
+<!--                           target="_blank" rel="noopener noreferrer" th:href="@{/screenshot/get/{rid}(rid=${screen.getId()})}">-->
+
+<!--                            <div class="dropdown-menu-header">-->
+<!--                                <div class="dropdown-menu-header-inner">-->
+<!--                                    <div class="menu-header-image opacity-10"-->
+<!--                                         th:style="|background-image: url(@{/screenshot/get/{rid}(rid=${screen.getId()})});|"></div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                        <ul class="list-group list-group-flush">-->
+<!--                            <li class="list-group-item">-->
+<!--                                <div class="widget-content pt-1 pl-0 pr-0">-->
+<!--                                    <div class="text-center">-->
+<!--                                        <h5 class="widget-heading opacity-10 mb-0" th:text="${screen.getTitle()}">Title</h5>-->
+<!--                                        <h6 class="mt-3 mb-3">-->
+<!--                                            <span class="pr-2" th:text="${screen.getDescription()}">description</span>-->
+<!--                                        </h6>-->
+
+<!--                                        <button data-toggle="modal" th:data-target="${'#sshot_modal_'+screen.getId()}"-->
+<!--                                                class="btn-wide btn-pill btn btn-outline-danger">Delete Image</button>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+
+                <div class="col-sm-6 col-md-4 col-lg-3" th:each="screen : ${prototypeScreens}">
+                    <figure>
+                        <a target="_blank" rel="noopener noreferrer" th:href="@{/screenshot/get/{rid}(rid=${screen.getId()})}">
+                        <img class="img-thumbnail grayscale"
+                             th:src="@{/screenshot/get/{rid}(rid=${screen.getId()})}"
+                        th:title="${screen.getDescription()}">
+                        </a>
+                        <figcaption class="text-center" th:text="${screen.getTitle()}">Caption</figcaption>
+                    </figure>
+                </div>
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="widget-chart widget-chart-hover br-br">
+                        <div class="icon-wrapper">
+                            <a style="text-decoration: none;" class="dot-btn-wrapper" th:href="@{/project/{pid}/screenshot/new(pid=${project.getId()})}">
+                                <i class="dot-btn-icon lnr-picture icon-gradient bg-vicious-stance"></i>
+                            </a>
+                        </div>
+                        <div class="widget-subheading fsize-1 pt-2 opacity-10 font-weight-bold">Προσθέστε screenshot</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

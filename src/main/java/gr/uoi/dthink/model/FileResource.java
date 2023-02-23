@@ -7,7 +7,7 @@ import javax.persistence.ManyToOne;
 @Entity
 public class FileResource extends Resource{
     private String description;
-    @Column(columnDefinition = "MEDIUMTEXT")
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
     @ManyToOne
     private ResourceType type;
