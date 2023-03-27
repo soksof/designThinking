@@ -1,2 +1,3 @@
-# designThinking
-Web platform for applying the design thinking methodology
+# Πλατφόρμα για την εφαρμογή της μεθοδολογίας «Σχεδιαστικής Σκέψης» (Design Thinking) για το έργο με κωδικό 82478
+## <sup> στο πλαίσιο του επιχειρισιακού προγράμματος ["Ήπειρος 2014-2020"](https://www.espa-epirus.gr/category/pleropories-28) </sup>
+
